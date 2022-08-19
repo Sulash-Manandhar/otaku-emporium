@@ -9,6 +9,6 @@ const {
 
 router.post("/", registerUser);
 router.post("/login", loginUser);
-router.post("/getMe", protect, getMe);
+router.post("/getLoggedInUser", protect, getMe);
 
 module.exports = router;

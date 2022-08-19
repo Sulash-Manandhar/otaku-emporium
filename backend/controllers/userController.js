@@ -3,13 +3,48 @@ const bcrypt = require("bcryptjs");
 const asyncHandler = require("express-async-handler");
 const User = require("../models/userModel");
 
+//@desc UTILS
+//Generate JWT
+const generateToken = (id, email) => {
+  return jwt.sign({ id, email }, process.env.JWT_SECRET, {
+    expiresIn: "2d",
+  });
+};
+
+//Match regrex
+const passwordValidation = (password) => {
+  const pattern =
+    /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}/g;
+  const found = password.match(pattern);
+  console.log("~ found", found);
+
+  return found === null ? false : true;
+};
+
 //@desc Register User
 //@route POST/api/users
 const registerUser = asyncHandler(async (req, res) => {
-  const { name, email, password } = req.body;
-  if (!name || !email || !password) {
+  const { name, email, password, password2 } = req.body;
+
+  //validation check
+  if (!name || !email || !password || !password2) {
     res.status(400);
     throw new Error("Please fill all fields");
+  }
+  if (name.length <= 3) {
+    res.status(400);
+    throw new Error("User name should be atleast three characters long.");
+  }
+
+  if (!passwordValidation(password)) {
+    res.status(400);
+    throw new Error(
+      "Passwords should be atleast 8 characters long, at least 1 letter, 1 number and 1 special character."
+    );
+  }
+  if (password !== password2) {
+    res.status(400);
+    throw new Error("Passwords do not match.");
   }
 
   //check if user exists
@@ -37,7 +72,7 @@ const registerUser = asyncHandler(async (req, res) => {
     });
   } else {
     res.status(400);
-    throw new Error("user registration success");
+    throw new Error(`User ${email} registrated successfull.`);
   }
 });
 
@@ -52,7 +87,10 @@ const loginUser = asyncHandler(async (req, res) => {
     throw new Error(`User with email ${email} is not registered.`);
   }
 
-  console.log(await bcrypt.compare(password, user.password));
+  if (!user.verification) {
+    res.status(400);
+    throw new Error(`User with email ${email} is not verified.`);
+  }
   if (await bcrypt.compare(password, user.password)) {
     res.status(201).json({
       user: { _id: user.id, name: user.name, email: user.email },
@@ -73,13 +111,6 @@ const getMe = asyncHandler(async (req, res) => {
     message: "User is logged in",
   });
 });
-
-//Generate JWT
-const generateToken = (id, email) => {
-  return jwt.sign({ id, email }, process.env.JWT_SECRET, {
-    expiresIn: "2d",
-  });
-};
 
 module.exports = {
   registerUser,
