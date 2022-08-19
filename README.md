@@ -29,3 +29,6 @@ localhost:3000 (Client)
 
 #### 7. To Sent Backend Request 
 localhost:500/{request URL}
+
+#### 7. To Run Sass server 
+sass --watch ./client/src/stylesheets/index.scss ./client/src/stylesheets/css/index.min.css
