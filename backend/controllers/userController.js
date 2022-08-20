@@ -118,31 +118,18 @@ const getMe = asyncHandler(async (req, res) => {
 });
 
 
-//Init Nodemailer
-let transporter = nodemailer.createTransport({
-  host: "smpt-mail.outlook.com",
-  auth: {
-    user: process.env.AUTH_EMAIL,
-    pass: process.env.AUTH_PASS,
-  }
-})
 
 //@desc Generate 6 digit OTP code
 //@route /api/users/otp
-const sendOTPVerification = async({_id, email}, res) => {
-  try {
-    const otp = `${Math.floor(100000 + Math.random() * 900000)}`;
-    console.log(otp)
-    //mail options
-    const mailOptions = {
-      from: process.env.AUTH_EMAIL,
-      to: email,
-      subject: "Verify Your Email",
-      html: `<p>Enter <b>${otp}</b> in the website to verify your email address and complete registration process.`
-    }
-  } catch (error) {
+let transporter = nodemailer.createTransport({
+  host:'official.otakuemporium@gmail.com',
+  port: 587,
+  secure: false,
+  auth: {
+    user: 'official.otakuemporium@gmail.com',
+    pass: 'Herald12345@##',
   }
-}
+})
 
 module.exports = {
   registerUser,

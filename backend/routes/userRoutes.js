@@ -5,12 +5,12 @@ const {
   registerUser,
   loginUser,
   getMe,
-  OTP,
+  sendVerificationCode,
 } = require("../controllers/userController");
 
 router.post("/", registerUser);
 router.post("/login", loginUser);
 router.post("/getLoggedInUser", protect, getMe);
-router.post("/otp", OTP);
+router.post("/send-verification-code", sendVerificationCode);
 
 module.exports = router;
