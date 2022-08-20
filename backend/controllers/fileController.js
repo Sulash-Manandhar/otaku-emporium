@@ -5,7 +5,7 @@ const asyncHandler = require("express-async-handler");
 //@route POST /api/file/upload
 const uploadFile = asyncHandler(async (req, res) => {
   //request's file property
-  if (req.files === null) {
+  if (!req.files) {
     res.status(400);
     throw new Error("No file found.");
   }
@@ -14,7 +14,6 @@ const uploadFile = asyncHandler(async (req, res) => {
   const file = req.files.file;
   await file.mv(`./client/public/uploads/${file.name}`, (err) => {
     if (err) {
-      console.log(err);
       res.status(500);
       throw new Error(err);
     }
