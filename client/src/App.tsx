@@ -1,5 +1,15 @@
+import Header from "./components/Header";
+import Footer from "./components/Footer";
+import Dashboard from "./pages/Dashboard";
+
 const App = () => {
-  return <div>App</div>;
+  return (
+    <div>
+      <Header />
+      <Dashboard />
+      <Footer />
+    </div>
+  );
 };
 
 export default App;
