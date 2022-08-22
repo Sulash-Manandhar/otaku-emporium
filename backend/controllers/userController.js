@@ -4,6 +4,16 @@ const asyncHandler = require("express-async-handler");
 const User = require("../models/userModel");
 const nodemailer = require("nodemailer");
 
+// Nodemailer setup
+let transporter = nodemailer.createTransport({
+  service: 'gmail',
+  host: "smtp.gmail.com",
+  auth: {
+    user: 'official.otakuemporium@gmail.com',
+    pass: 'Herald12345@##'
+  }
+})
+
 //@desc UTILS
 //Generate JWT
 const generateToken = (id, email) => {
@@ -121,18 +131,38 @@ const getMe = asyncHandler(async (req, res) => {
 
 //@desc Generate 6 digit OTP code
 //@route /api/users/otp
-let transporter = nodemailer.createTransport({
-  host:'official.otakuemporium@gmail.com',
-  port: 587,
-  secure: false,
-  auth: {
-    user: 'official.otakuemporium@gmail.com',
-    pass: 'Herald12345@##',
+const sendVerificationCode = asyncHandler(async (req, res) => {
+  const { email } = req.body;
+
+  console.log(email)
+  console.log("hello");
+  const otp = 100000;
+  const mailOptions = {
+    from: 'official.otakuemporium@gmail.com',
+    to: email,
+    subject: "Verify Your Email",
+    html: `<p>Hello</p>`,
   }
-})
+
+  try {
+    //save otp record
+    transporter.sendMail(mailOptions);
+    res.json({
+      status : "Pending",
+      message : "Verification otp email sent",
+      data : {
+        email
+      }
+    });
+  } catch (err) {
+    res.status(500);
+    throw new Error(err);
+  }
+});
 
 module.exports = {
   registerUser,
   loginUser,
   getMe,
+  sendVerificationCode,
 };
