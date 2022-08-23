@@ -16,6 +16,7 @@ app.use(fileUpload());
 console.log(process.env.MONGO_URI);
 app.use("/api/users", require("./routes/userRoutes"));
 app.use("/api/file", require("./routes/fileRoute"));
+app.use("/api/apparel", require("./routes/apparelRoute"));
 
 app.use(errorHandler);
 app.listen(port, () => console.log(`Server started on port ${port}`));
