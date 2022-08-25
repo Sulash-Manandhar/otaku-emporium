@@ -1,18 +1,23 @@
+import React from "react";
 import Header from "./components/Header";
 import Footer from "./components/Footer";
-import Dashboard from "./pages/Dashboard";
-import { BrowserRouter, Route, Routes } from "react-router-dom";
-import Login from "./pages/Auth/Login";
-import Signup from "./pages/Auth/Signup";
+import { BrowserRouter } from "react-router-dom";
 import RouteList from "./router/RouteList";
+import { ChakraProvider } from "@chakra-ui/react";
+import { theme } from "./themes/theme";
+import axios from "axios";
 
 const App = () => {
   return (
-    <BrowserRouter>
-      <Header />
-      <RouteList />
-      <Footer />
-    </BrowserRouter>
+    <>
+      <ChakraProvider theme={theme}>
+        <BrowserRouter>
+          <Header />
+          <RouteList />
+          <Footer />
+        </BrowserRouter>
+      </ChakraProvider>
+    </>
   );
 };
 

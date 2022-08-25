@@ -14,6 +14,7 @@ const RouteList = () => {
         <Route path="/verify-email" element={<VerifyEmail />} />
       </Route>
       <Route path="/" element={<Dashboard />} />
+      <Route path="*" element={<div>404 Page Not Found</div>} />
     </Routes>
   );
 };
