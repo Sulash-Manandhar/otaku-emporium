@@ -3,16 +3,16 @@ const bcrypt = require("bcryptjs");
 const asyncHandler = require("express-async-handler");
 const User = require("../models/userModel");
 const nodemailer = require("nodemailer");
+const emailValidator = require("email-validator");
 
 // Nodemailer setup
 let transporter = nodemailer.createTransport({
   service: 'gmail',
-  host: "smtp.gmail.com",
   auth: {
-    user: 'official.otakuemporium@gmail.com',
-    pass: 'Herald12345@##'
-  }
-})
+    user: process.env.AUTH_EMAIL,
+    pass: process.env.AUTH_PASS,
+  },
+});
 
 //@desc UTILS
 //Generate JWT
@@ -20,6 +20,13 @@ const generateToken = (id, email) => {
   return jwt.sign({ id, email }, process.env.JWT_SECRET, {
     expiresIn: "2d",
   });
+};
+
+//@desc UTILS
+//Generate OTP code
+const generateOTP = () => {
+  otp = Math.floor(Math.random()* 10000) + 99999;
+  return otp;
 };
 
 //Match regrex
@@ -127,37 +134,26 @@ const getMe = asyncHandler(async (req, res) => {
   });
 });
 
-
-
 //@desc Generate 6 digit OTP code
 //@route /api/users/otp
 const sendVerificationCode = asyncHandler(async (req, res) => {
   const { email } = req.body;
-
-  console.log(email)
-  console.log("hello");
-  const otp = 100000;
-  const mailOptions = {
-    from: 'official.otakuemporium@gmail.com',
-    to: email,
-    subject: "Verify Your Email",
-    html: `<p>Hello</p>`,
-  }
-
-  try {
-    //save otp record
-    transporter.sendMail(mailOptions);
-    res.json({
-      status : "Pending",
-      message : "Verification otp email sent",
-      data : {
-        email
+    const OTP = generateOTP();
+    const mailOptions = {
+      from: process.env.AUTH_EMAIL,
+      to: email,
+      subject: "Verify Your Email",
+      html: `<p>Hello your OTP is ${OTP}</p>`,
+    }
+    transporter.sendMail(mailOptions, function(error, info){
+      if (!emailValidator.validate(email)) {
+        console.log('email doesnt exist');
+      } else {
+        res.status(200).json({
+          message: `The email has been sent to ${email}` + info.response,
+        });
       }
-    });
-  } catch (err) {
-    res.status(500);
-    throw new Error(err);
-  }
+    });  
 });
 
 module.exports = {
