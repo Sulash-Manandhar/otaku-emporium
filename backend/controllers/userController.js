@@ -147,7 +147,10 @@ const sendVerificationCode = asyncHandler(async (req, res) => {
     }
     transporter.sendMail(mailOptions, function(error, info){
       if (!emailValidator.validate(email)) {
-        console.log('email doesnt exist');
+        console.log('invalid email');
+        res.status(400).json({
+          message: `Invalid email: ${email}`,
+        });
       } else {
         res.status(200).json({
           message: `The email has been sent to ${email}` + info.response,
