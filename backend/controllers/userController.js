@@ -2,6 +2,17 @@ const jwt = require("jsonwebtoken");
 const bcrypt = require("bcryptjs");
 const asyncHandler = require("express-async-handler");
 const User = require("../models/userModel");
+const nodemailer = require("nodemailer");
+const emailValidator = require("email-validator");
+
+// Nodemailer setup
+let transporter = nodemailer.createTransport({
+  service: 'gmail',
+  auth: {
+    user: process.env.AUTH_EMAIL,
+    pass: process.env.AUTH_PASS,
+  },
+});
 
 //@desc UTILS
 //Generate JWT
@@ -9,6 +20,13 @@ const generateToken = (id, email) => {
   return jwt.sign({ id, email }, process.env.JWT_SECRET, {
     expiresIn: "2d",
   });
+};
+
+//@desc UTILS
+//Generate OTP code
+const generateOTP = () => {
+  otp = Math.floor(Math.random()* 10000) + 99999;
+  return otp;
 };
 
 //Match regrex
@@ -116,8 +134,34 @@ const getMe = asyncHandler(async (req, res) => {
   });
 });
 
+//@desc Generate 6 digit OTP code
+//@route /api/users/otp
+const sendVerificationCode = asyncHandler(async (req, res) => {
+  const { email } = req.body;
+    const OTP = generateOTP();
+    const mailOptions = {
+      from: process.env.AUTH_EMAIL,
+      to: email,
+      subject: "Verify Your Email",
+      html: `<p>Hello your OTP is ${OTP}</p>`,
+    }
+    transporter.sendMail(mailOptions, function(error, info){
+      if (!emailValidator.validate(email)) {
+        console.log('invalid email');
+        res.status(400).json({
+          message: `Invalid email: ${email}`,
+        });
+      } else {
+        res.status(200).json({
+          message: `The email has been sent to ${email}` + info.response,
+        });
+      }
+    });  
+});
+
 module.exports = {
   registerUser,
   loginUser,
   getMe,
+  sendVerificationCode,
 };
