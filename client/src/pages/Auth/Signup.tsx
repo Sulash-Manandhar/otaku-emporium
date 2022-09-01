@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import * as Yup from "yup";
 import {
   Box,
@@ -14,6 +14,8 @@ import InputField from "../../components/Form/InputField";
 import axios from "axios";
 
 const Signup = () => {
+  const [errorMessage, setErrorMessage] = useState("");
+
   const formik = useFormik({
     initialValues: {
       name: "",
@@ -24,19 +26,19 @@ const Signup = () => {
     },
     validationSchema: Yup.object({
       name: Yup.string()
-        .required("Name is required")
-        .min(3, "Name must be at least 3 characters"),
+        .required("Name field is empty.")
+        .min(3, "Name must be at least 3 characters."),
       email: Yup.string()
-        .email("Email is invalid")
+        .email("Please enter a valid email address.")
         .required("Email is required"),
       password: Yup.string()
-        .required("Password is required")
+        .required("Password field is empty")
         .matches(
           /^(?=.*\d)(?=.*[!@#$%^&*])(?=.*[a-z])(?=.*[A-Z]).{8,}$/,
           "Password must contain at least 8 characters, a capital letter, a symbol and a number."
         ),
       confirm_password: Yup.string()
-        .required("Confirm password is required")
+        .required("Confirm password is empty")
         .oneOf([Yup.ref("password"), null], "Passwords must match"),
       terms: Yup.bool().oneOf(
         [true],
@@ -48,7 +50,6 @@ const Signup = () => {
         name: values.name,
         email: values.email,
         password: values.password,
-        password2: values.confirm_password,
       };
       axios
         .post("api/users/", newUser)
@@ -56,7 +57,7 @@ const Signup = () => {
           console.log(res.data);
         })
         .catch((err) => {
-          console.log(err);
+          setErrorMessage(err.response.data.message);
         });
     },
   });
@@ -66,6 +67,7 @@ const Signup = () => {
       <Heading as="h1" variant="h1">
         Sign up
       </Heading>
+
       <form onSubmit={formik.handleSubmit}>
         {/* full name  */}
         <InputField

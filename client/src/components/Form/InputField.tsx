@@ -43,14 +43,13 @@ const InputField: React.FC<InputFieldProps> = (props) => {
           p="0"
           m="0"
           fontSize="16px"
-          background={
-            formik.touched[id] && formik.errors[id] ? "danger.300" : "white"
-          }
+          background="transparent"
           _autofill={{
             boxShadow: "0 0 0 30px white inset",
           }}
         />
       </Box>
+
       {formik.touched[id] && formik.errors[id] && (
         <Text color="danger.500" fontSize="xs">
           {formik.errors[id]}
