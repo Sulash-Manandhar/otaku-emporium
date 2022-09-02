@@ -6,10 +6,10 @@ export const ButtonTheme = {
   sizes: {},
   variants: {
     secondary: {
-      bg: "secondary.400",
+      bg: "black.100",
       color: "#ffffff",
       _hover: {
-        bg: "#3e3e3e",
+        bg: "black.75",
       },
     },
   },

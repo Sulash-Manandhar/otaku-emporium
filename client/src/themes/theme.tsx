@@ -9,6 +9,7 @@ export const theme = extendTheme({
       body: {
         fontFamily: "Roboto, sans-serif",
         fontSize: "16px",
+        color: "black.75",
       },
     },
   },
@@ -20,21 +21,25 @@ export const theme = extendTheme({
   },
   colors: {
     primary: {
-      300: "#0C794A",
-      400: "#77ACB7",
+      100: "#876D97",
     },
     secondary: {
-      300: "#E4E4E8",
-      400: "#1A1A1A",
+      100: "#8C567C",
     },
     danger: {
-      300: "#FCF2F6",
-      400: "#F8B097",
-      500: "#8A4229",
+      10: "#FFF3F2",
+      25: "#FFE0DF",
+      50: "#FFC1C0",
+      75: "#FFA2A0",
+      100: "#FF8381",
     },
-    success: {
-      400: "#0C794A",
-      500: "#5F797F",
+    black: {
+      5: "#F3F3F3",
+      10: "#E7E7E7",
+      25: "#C3C2C3",
+      50: "#868587",
+      75: "#4A484B",
+      100: "#0D0B0F",
     },
   },
   shadows: {
