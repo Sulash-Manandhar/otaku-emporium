@@ -1,9 +1,11 @@
 export const HeadingTheme = {
   baseStyle: {
     fontFamily: "garamond",
+    color: "black.100",
   },
   sizes: {},
   variants: {
+    //base size:18px, scale:1.250(Major Third)
     h1: {
       fontSize: "54px",
     },

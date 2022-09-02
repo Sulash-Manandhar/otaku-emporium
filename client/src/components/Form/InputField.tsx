@@ -17,17 +17,15 @@ const InputField: React.FC<InputFieldProps> = (props) => {
       <Box
         border="2px solid"
         borderColor={
-          formik.touched[id] && formik.errors[id]
-            ? "danger.400"
-            : "secondary.300"
+          formik.touched[id] && formik.errors[id] ? "danger.100" : "black.25"
         }
         borderRadius="8px"
         backgroundColor={
-          formik.touched[id] && formik.errors[id] ? "danger.300" : "white"
+          formik.touched[id] && formik.errors[id] ? "danger.10" : "transparent"
         }
         p="8px 8px 0px 8px"
         _focusWithin={{
-          borderColor: "primary.400",
+          borderColor: "secondary.100",
         }}
       >
         <FormLabel htmlFor={id} m="0" fontSize="12px">
@@ -51,7 +49,7 @@ const InputField: React.FC<InputFieldProps> = (props) => {
       </Box>
 
       {formik.touched[id] && formik.errors[id] && (
-        <Text color="danger.500" fontSize="xs">
+        <Text color="danger.75" fontSize="xs">
           {formik.errors[id]}
         </Text>
       )}
