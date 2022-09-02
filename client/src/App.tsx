@@ -11,9 +11,7 @@ const App = () => {
     <>
       <ChakraProvider theme={theme}>
         <BrowserRouter>
-          <Header />
           <RouteList />
-          <Footer />
         </BrowserRouter>
       </ChakraProvider>
     </>
