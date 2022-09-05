@@ -21,9 +21,17 @@ export const theme = extendTheme({
   },
   colors: {
     primary: {
+      10: "#F3F0F5",
+      25: "#E1DBE5",
+      50: "#C3B6CB",
+      75: "#A591B1",
       100: "#876D97",
     },
     secondary: {
+      10: "#F3EEF2",
+      25: "#E2D5DE",
+      50: "#C5ABBD",
+      75: "#A9809D",
       100: "#8C567C",
     },
     danger: {
