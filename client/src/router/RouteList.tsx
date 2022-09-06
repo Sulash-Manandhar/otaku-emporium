@@ -1,6 +1,7 @@
 import { Route, Routes } from "react-router-dom";
 import Login from "../pages/Auth/Login";
 import Signup from "../pages/Auth/Signup";
+import TermsAndConditions from "../pages/Auth/TermsAndConditions";
 import VerifyEmail from "../pages/Auth/VerifyEmail";
 import VerifyOPT from "../pages/Auth/VerifyOPT";
 import Dashboard from "../pages/Dashboard";
@@ -15,6 +16,7 @@ const RouteList = () => {
         <Route path="/signup" element={<Signup />} />
         <Route path="/verify-email" element={<VerifyEmail />} />
         <Route path="/verify-opt-code" element={<VerifyOPT />} />
+        <Route path="/terms-and-conditions" element={<TermsAndConditions />} />
       </Route>
       <Route element={<Dashboard />}>
         <Route path="/" element={<Home />} />
