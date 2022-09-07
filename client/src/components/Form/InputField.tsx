@@ -4,7 +4,7 @@ import React from "react";
 interface InputFieldProps {
   id: string;
   label: string;
-  type: "email" | "password" | "text";
+  type: "email" | "password" | "text" | "tel";
   placeholder: string;
   formik: any;
 }
