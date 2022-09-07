@@ -2,6 +2,10 @@ import axios from "axios";
 
 axios.defaults.baseURL = "http://localhost:5000/";
 
+axios.create({
+  baseURL: process.env.BASE_URL,
+});
+
 axios.interceptors.request.use((request: any) => {
   let access_token = localStorage.getItem("access_token");
   if (access_token) {

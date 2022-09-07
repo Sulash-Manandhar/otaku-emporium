@@ -10,6 +10,7 @@ import {
   Flex,
   Image,
   VStack,
+  useToast,
 } from "@chakra-ui/react";
 import { useFormik } from "formik";
 import InputField from "../../components/Form/InputField";
@@ -17,8 +18,11 @@ import axios from "axios";
 import { NavLink } from "react-router-dom";
 
 const Signup = () => {
-  const [errorMessage, setErrorMessage] = useState("");
-
+  const toast = useToast({
+    position: "bottom",
+    duration: 3000,
+    isClosable: true,
+  });
   const formik = useFormik({
     initialValues: {
       name: "",
@@ -57,10 +61,16 @@ const Signup = () => {
       axios
         .post("api/users/", newUser)
         .then((res) => {
-          console.log(res.data);
+          toast({
+            title: res.data.message,
+            status: "success",
+          });
         })
         .catch((err) => {
-          setErrorMessage(err.response.data.message);
+          toast({
+            title: err.response.data.message,
+            status: "error",
+          });
         });
     },
   });

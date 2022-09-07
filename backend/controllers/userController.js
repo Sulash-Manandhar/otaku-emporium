@@ -7,7 +7,7 @@ const emailValidator = require("email-validator");
 
 // Nodemailer setup
 let transporter = nodemailer.createTransport({
-  service: 'gmail',
+  service: "gmail",
   auth: {
     user: process.env.AUTH_EMAIL,
     pass: process.env.AUTH_PASS,
@@ -25,7 +25,7 @@ const generateToken = (id, email) => {
 //@desc UTILS
 //Generate OTP code
 const generateOTP = () => {
-  otp = Math.floor(Math.random()* 10000) + 99999;
+  otp = Math.floor(Math.random() * 10000) + 99999;
   return otp;
 };
 
@@ -63,7 +63,7 @@ const registerUser = asyncHandler(async (req, res) => {
   const userExists = await User.findOne({ email });
   if (userExists) {
     res.status(400);
-    throw new Error("User already exists");
+    throw new Error(`'${email}' is already registered.`);
   }
 
   //Hash password
@@ -138,25 +138,25 @@ const getMe = asyncHandler(async (req, res) => {
 //@route /api/users/otp
 const sendVerificationCode = asyncHandler(async (req, res) => {
   const { email } = req.body;
-    const OTP = generateOTP();
-    const mailOptions = {
-      from: process.env.AUTH_EMAIL,
-      to: email,
-      subject: "Verify Your Email",
-      html: `<p>Hello your OTP is ${OTP}</p>`,
+  const OTP = generateOTP();
+  const mailOptions = {
+    from: process.env.AUTH_EMAIL,
+    to: email,
+    subject: "Verify Your Email",
+    html: `<p>Hello your OTP is ${OTP}</p>`,
+  };
+  transporter.sendMail(mailOptions, function (error, info) {
+    if (!emailValidator.validate(email)) {
+      console.log("invalid email");
+      res.status(400).json({
+        message: `Invalid email: ${email}`,
+      });
+    } else {
+      res.status(200).json({
+        message: `The email has been sent to ${email}` + info.response,
+      });
     }
-    transporter.sendMail(mailOptions, function(error, info){
-      if (!emailValidator.validate(email)) {
-        console.log('invalid email');
-        res.status(400).json({
-          message: `Invalid email: ${email}`,
-        });
-      } else {
-        res.status(200).json({
-          message: `The email has been sent to ${email}` + info.response,
-        });
-      }
-    });  
+  });
 });
 
 module.exports = {
