@@ -10,19 +10,25 @@ import {
   Flex,
   Image,
   VStack,
+  Alert,
+  AlertDescription,
+  AlertIcon,
+  CloseButton,
   useToast,
 } from "@chakra-ui/react";
 import { useFormik } from "formik";
 import InputField from "../../components/Form/InputField";
 import axios from "axios";
-import { NavLink } from "react-router-dom";
+import { NavLink, useNavigate } from "react-router-dom";
 
 const Signup = () => {
+  const navigate = useNavigate();
   const toast = useToast({
-    position: "bottom",
     duration: 3000,
     isClosable: true,
   });
+  const [errorMessage, setErrorMessage] = useState("");
+
   const formik = useFormik({
     initialValues: {
       name: "",
@@ -61,10 +67,12 @@ const Signup = () => {
       axios
         .post("api/users/", newUser)
         .then((res) => {
+          let userData = { ...res.data.user };
           toast({
-            title: res.data.message,
             status: "success",
+            title: res.data.message,
           });
+          navigate(`/verify-opt-code/${userData._id}/${userData.email}`);
         })
         .catch((err) => {
           toast({
@@ -109,7 +117,25 @@ const Signup = () => {
         <Heading as="h1" variant="h1" color="black.100">
           Sign up
         </Heading>
-
+        {/* Error status alert box  */}
+        {errorMessage !== "" && (
+          <Alert
+            status="error"
+            my="20px"
+            variant="left-accent"
+            justifyContent="space-between"
+          >
+            <HStack>
+              <AlertIcon />
+              <AlertDescription>{errorMessage}</AlertDescription>
+            </HStack>
+            <CloseButton
+              onClick={(e: React.MouseEvent<HTMLButtonElement>) =>
+                setErrorMessage("")
+              }
+            />
+          </Alert>
+        )}
         <form onSubmit={formik.handleSubmit}>
           {/* full name  */}
           <InputField
@@ -169,6 +195,14 @@ const Signup = () => {
             <Button type="submit" variant="primary" w="100%">
               Sign up
             </Button>
+          </Box>
+          <Box>
+            Already have a account?{" "}
+            <NavLink to="/login">
+              <Text as="span" color="secondary.100" fontWeight="semibold">
+                Login Now
+              </Text>
+            </NavLink>
           </Box>
         </form>
       </Box>

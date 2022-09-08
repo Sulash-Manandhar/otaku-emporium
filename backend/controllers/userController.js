@@ -17,9 +17,10 @@ let transporter = nodemailer.createTransport({
 
 //@desc UTILS
 //Generate JWT
-const generateToken = (id, email) => {
+const generateToken = (id, email, remember) => {
+  const expTime = remember ? "15d" : "1d";
   return jwt.sign({ id, email }, process.env.JWT_SECRET, {
-    expiresIn: "2d",
+    expiresIn: expTime,
   });
 };
 
@@ -46,7 +47,7 @@ const registerUser = asyncHandler(async (req, res) => {
   //validation check
   if (!name || !email || !password) {
     res.status(400);
-    throw new Error("Please fill all fields");
+    throw new Error("Please fill all fields.");
   }
   if (name.length <= 3) {
     res.status(400);
@@ -56,7 +57,7 @@ const registerUser = asyncHandler(async (req, res) => {
   if (!passwordValidation(password)) {
     res.status(400);
     throw new Error(
-      "Passwords should be atleast 8 characters long, at least 1 letter, 1 number and 1 special character."
+      "Password must contain at least 8 characters, a capital letter, a symbol and a number."
     );
   }
 
@@ -64,7 +65,7 @@ const registerUser = asyncHandler(async (req, res) => {
   const userExists = await User.findOne({ email });
   if (userExists) {
     res.status(400);
-    throw new Error(`'${email}' is already registered.`);
+    throw new Error(`'${userExists.email}' is already registered.`);
   }
 
   //Hash password
@@ -77,32 +78,26 @@ const registerUser = asyncHandler(async (req, res) => {
     email,
     password: hashedPassword,
   });
-  if (user) {
-    res.status(201).json({
-      user: {
-        _id: user.id,
-        name: user.name,
-        email: user.email,
-      },
-      message: `${user.name} has been successfully registered.`,
-    });
-    if (user) {
-      res.status(201).json({
-        _id: user.id,
-        name: user.name,
-        email: user.email,
-      });
-    } else {
-      res.status(400);
-      throw new Error(`User ${email} registrated Failed.`);
-    }
+
+  if (!user) {
+    res.status(500);
+    throw new Error(`User ${email} registrated Failed.`);
   }
+  res.status(201).json({
+    user: {
+      _id: user.id,
+      name: user.name,
+      email: user.email,
+    },
+    message: `'${user.name}' has been successfully registered.`,
+  });
 });
 
 //@desc Authenticate a User
 //@route POST/api/users/login
 const loginUser = asyncHandler(async (req, res) => {
   const { email, password } = req.body;
+  const remember = req.body.remember || false;
   if (!email || !password) {
     res.status(400);
     throw new Error(`Details are missing.`);
@@ -110,22 +105,24 @@ const loginUser = asyncHandler(async (req, res) => {
 
   const user = await User.findOne({ email });
   if (!user) {
-    res.status(400);
-    throw new Error(`User with email ${email} is not registered.`);
+    res.status(404);
+    throw new Error(`User with email '${email}' is not registered.`);
   }
 
-  if (!user.verification) {
-    res.status(400);
-    throw new Error(`User with email ${email} is not verified.`);
-  }
   if (await bcrypt.compare(password, user.password)) {
-    res.status(201).json({
+    if (!user.verification) {
+      return res.status(401).json({
+        message: `User with email '${email}' is not verified.`,
+        user: { _id: user.id, name: user.name, email: user.email },
+      });
+    }
+    return res.status(201).json({
       user: { _id: user.id, name: user.name, email: user.email },
-      token: generateToken(user._id, user.email),
+      token: generateToken(user._id, user.email, remember),
     });
   } else {
     res.status(400);
-    throw new Error("Password do not match");
+    throw new Error("Password do not match.");
   }
 });
 

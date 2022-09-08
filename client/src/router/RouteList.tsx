@@ -14,8 +14,8 @@ const RouteList = () => {
       <Route element={<AuthRoute />}>
         <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<Signup />} />
-        <Route path="/verify-email" element={<VerifyEmail />} />
-        <Route path="/verify-opt-code" element={<VerifyOPT />} />
+        <Route path="/verify-email/:id/:email" element={<VerifyEmail />} />
+        <Route path="/verify-opt-code/:id/:email" element={<VerifyOPT />} />
         <Route path="/terms-and-conditions" element={<TermsAndConditions />} />
       </Route>
       <Route element={<Dashboard />}>
