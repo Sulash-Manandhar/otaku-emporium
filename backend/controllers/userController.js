@@ -4,6 +4,7 @@ const asyncHandler = require("express-async-handler");
 const User = require("../models/userModel");
 const nodemailer = require("nodemailer");
 const emailValidator = require("email-validator");
+const OPT = require("../models/optModel");
 
 // Nodemailer setup
 let transporter = nodemailer.createTransport({
@@ -102,6 +103,10 @@ const registerUser = asyncHandler(async (req, res) => {
 //@route POST/api/users/login
 const loginUser = asyncHandler(async (req, res) => {
   const { email, password } = req.body;
+  if (!email || !password) {
+    res.status(400);
+    throw new Error(`Details are missing.`);
+  }
 
   const user = await User.findOne({ email });
   if (!user) {
@@ -135,27 +140,43 @@ const getMe = asyncHandler(async (req, res) => {
 });
 
 //@desc Generate 6 digit OTP code
-//@route /api/users/otp
+//@route /api/users/send-verification-code/:id
 const sendVerificationCode = asyncHandler(async (req, res) => {
-  const { email } = req.body;
+  const email = req.body;
+  const id = req.params.id;
+  //if email address is missing
+  if (!email) {
+    res.status(400);
+    throw new Error("Email address is required.");
+  }
+  //validates email address
+  if (!emailValidator.validate(email)) {
+    res.status(400);
+    throw new Error("Invalid Email Address.");
+  }
+
   const OTP = generateOTP();
+
+  //mail format
   const mailOptions = {
     from: process.env.AUTH_EMAIL,
     to: email,
-    subject: "Verify Your Email",
-    html: `<p>Hello your OTP is ${OTP}</p>`,
+    subject: "Otaku Emporium - Verify Your Email Address", //Subject Line
+    html: `<p>Hello your OTP code is ${OTP}</p>`,
   };
+
+  //sends mail to the defined email address
   transporter.sendMail(mailOptions, function (error, info) {
-    if (!emailValidator.validate(email)) {
-      console.log("invalid email");
-      res.status(400).json({
-        message: `Invalid email: ${email}`,
-      });
-    } else {
-      res.status(200).json({
-        message: `The email has been sent to ${email}` + info.response,
+    if (error) {
+      console.log(error);
+      return res.status(500).json({
+        message: error.response,
       });
     }
+    console.log(info);
+    res.status(200).json({
+      message: `The email has been sent to ${email}`,
+    });
   });
 });
 
