@@ -4,6 +4,7 @@ const asyncHandler = require("express-async-handler");
 const User = require("../models/userModel");
 const nodemailer = require("nodemailer");
 const emailValidator = require("email-validator");
+const OPT = require("../models/optModel");
 
 // Nodemailer setup
 let transporter = nodemailer.createTransport({
@@ -16,9 +17,10 @@ let transporter = nodemailer.createTransport({
 
 //@desc UTILS
 //Generate JWT
-const generateToken = (id, email) => {
+const generateToken = (id, email, remember) => {
+  const expTime = remember ? "15d" : "1d";
   return jwt.sign({ id, email }, process.env.JWT_SECRET, {
-    expiresIn: "2d",
+    expiresIn: expTime,
   });
 };
 
@@ -45,7 +47,7 @@ const registerUser = asyncHandler(async (req, res) => {
   //validation check
   if (!name || !email || !password) {
     res.status(400);
-    throw new Error("Please fill all fields");
+    throw new Error("Please fill all fields.");
   }
   if (name.length <= 3) {
     res.status(400);
@@ -55,7 +57,7 @@ const registerUser = asyncHandler(async (req, res) => {
   if (!passwordValidation(password)) {
     res.status(400);
     throw new Error(
-      "Passwords should be atleast 8 characters long, at least 1 letter, 1 number and 1 special character."
+      "Password must contain at least 8 characters, a capital letter, a symbol and a number."
     );
   }
 
@@ -63,7 +65,7 @@ const registerUser = asyncHandler(async (req, res) => {
   const userExists = await User.findOne({ email });
   if (userExists) {
     res.status(400);
-    throw new Error(`'${email}' is already registered.`);
+    throw new Error(`'${userExists.email}' is already registered.`);
   }
 
   //Hash password
@@ -76,51 +78,51 @@ const registerUser = asyncHandler(async (req, res) => {
     email,
     password: hashedPassword,
   });
-  if (user) {
-    res.status(201).json({
-      user: {
-        _id: user.id,
-        name: user.name,
-        email: user.email,
-      },
-      message: `${user.name} has been successfully registered.`,
-    });
-    if (user) {
-      res.status(201).json({
-        _id: user.id,
-        name: user.name,
-        email: user.email,
-      });
-    } else {
-      res.status(400);
-      throw new Error(`User ${email} registrated Failed.`);
-    }
+
+  if (!user) {
+    res.status(500);
+    throw new Error(`User ${email} registrated Failed.`);
   }
+  res.status(201).json({
+    user: {
+      _id: user.id,
+      name: user.name,
+      email: user.email,
+    },
+    message: `'${user.name}' has been successfully registered.`,
+  });
 });
 
 //@desc Authenticate a User
 //@route POST/api/users/login
 const loginUser = asyncHandler(async (req, res) => {
   const { email, password } = req.body;
+  const remember = req.body.remember || false;
+  if (!email || !password) {
+    res.status(400);
+    throw new Error(`Details are missing.`);
+  }
 
   const user = await User.findOne({ email });
   if (!user) {
-    res.status(400);
-    throw new Error(`User with email ${email} is not registered.`);
+    res.status(404);
+    throw new Error(`User with email '${email}' is not registered.`);
   }
 
-  if (!user.verification) {
-    res.status(400);
-    throw new Error(`User with email ${email} is not verified.`);
-  }
   if (await bcrypt.compare(password, user.password)) {
-    res.status(201).json({
+    if (!user.verification) {
+      return res.status(401).json({
+        message: `User with email '${email}' is not verified.`,
+        user: { _id: user.id, name: user.name, email: user.email },
+      });
+    }
+    return res.status(201).json({
       user: { _id: user.id, name: user.name, email: user.email },
-      token: generateToken(user._id, user.email),
+      token: generateToken(user._id, user.email, remember),
     });
   } else {
     res.status(400);
-    throw new Error("Password do not match");
+    throw new Error("Password do not match.");
   }
 });
 
@@ -135,27 +137,43 @@ const getMe = asyncHandler(async (req, res) => {
 });
 
 //@desc Generate 6 digit OTP code
-//@route /api/users/otp
+//@route /api/users/send-verification-code/:id
 const sendVerificationCode = asyncHandler(async (req, res) => {
-  const { email } = req.body;
+  const email = req.body;
+  const id = req.params.id;
+  //if email address is missing
+  if (!email) {
+    res.status(400);
+    throw new Error("Email address is required.");
+  }
+  //validates email address
+  if (!emailValidator.validate(email)) {
+    res.status(400);
+    throw new Error("Invalid Email Address.");
+  }
+
   const OTP = generateOTP();
+
+  //mail format
   const mailOptions = {
     from: process.env.AUTH_EMAIL,
     to: email,
-    subject: "Verify Your Email",
-    html: `<p>Hello your OTP is ${OTP}</p>`,
+    subject: "Otaku Emporium - Verify Your Email Address", //Subject Line
+    html: `<p>Hello your OTP code is ${OTP}</p>`,
   };
+
+  //sends mail to the defined email address
   transporter.sendMail(mailOptions, function (error, info) {
-    if (!emailValidator.validate(email)) {
-      console.log("invalid email");
-      res.status(400).json({
-        message: `Invalid email: ${email}`,
-      });
-    } else {
-      res.status(200).json({
-        message: `The email has been sent to ${email}` + info.response,
+    if (error) {
+      console.log(error);
+      return res.status(500).json({
+        message: error.response,
       });
     }
+    console.log(info);
+    res.status(200).json({
+      message: `The email has been sent to ${email}`,
+    });
   });
 });
 

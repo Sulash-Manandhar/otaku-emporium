@@ -11,6 +11,6 @@ const {
 router.post("/", registerUser);
 router.post("/login", loginUser);
 router.post("/getLoggedInUser", protect, getMe);
-router.post("/send-verification-code", sendVerificationCode);
+router.post("/send-verification-code/:id", sendVerificationCode);
 
 module.exports = router;
