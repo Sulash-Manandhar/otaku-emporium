@@ -179,11 +179,10 @@ const sendVerificationCode = asyncHandler(async (req, res) => {
   if (alreadySent) {
     await alreadySent.remove();
   }
-  const generatedCode = generateOTP();
   //add opt to the database
   const code = await OPT.create({
     user_id: user.id,
-    opt_code: generatedCode,
+    opt_code: generateOTP(),
   });
   if (!code) {
     res.status(500);
@@ -227,10 +226,20 @@ const sendVerificationCode = asyncHandler(async (req, res) => {
 //@desc Verify OPT code
 //@route /api/users/verify-opt-code/:id
 const verifyOPTCode = asyncHandler(async (req, res) => {
-  const { email, code } = req.body;
-  if (!email || !code) {
+  const { user_id, code } = req.body;
+  if (!user_id || !code) {
     res.status(400);
     throw new Error(`Fields are missing.`);
+  }
+
+  const optUser = await OPT.findOne({ optUser_id });
+  if (!optUser) {
+    res.status(400);
+    throw new Error(`Verification Code has not been sent.`);
+  }
+  if (code !== optUser.opt_code) {
+    res.status(400);
+    throw new Error(`Invalid verification code.`);
   }
 });
 
