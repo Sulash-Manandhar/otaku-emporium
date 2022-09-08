@@ -4,6 +4,7 @@ const optSchema = mongoose.Schema(
     user_id: {
       type: String,
       required: [true, "User Id is not defined."],
+      unique: true,
     },
     opt_code: {
       type: String,
