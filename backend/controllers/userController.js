@@ -5,6 +5,7 @@ const User = require("../models/userModel");
 const nodemailer = require("nodemailer");
 const emailValidator = require("email-validator");
 const OPT = require("../models/optModel");
+const hbs = require("nodemailer-express-handlebars");
 
 // Nodemailer setup
 let transporter = nodemailer.createTransport({
@@ -14,6 +15,20 @@ let transporter = nodemailer.createTransport({
     pass: process.env.AUTH_PASS,
   },
 });
+
+//template options
+transporter.use(
+  "compile",
+  hbs({
+    viewEngine: {
+      extName: ".handlebars",
+      partialsDir: "./backend/views",
+      defaultLayout: false,
+    },
+    viewPath: "./backend/views",
+    extName: ".handlebars",
+  })
+);
 
 //@desc UTILS
 //Generate JWT
@@ -137,29 +152,60 @@ const getMe = asyncHandler(async (req, res) => {
 });
 
 //@desc Generate 6 digit OTP code
-//@route /api/users/send-verification-code/:id
+//@route /api/users/send-verification-code
 const sendVerificationCode = asyncHandler(async (req, res) => {
-  const email = req.body;
-  const id = req.params.id;
+  const email = req.body.email;
   //if email address is missing
   if (!email) {
     res.status(400);
     throw new Error("Email address is required.");
   }
+
   //validates email address
   if (!emailValidator.validate(email)) {
     res.status(400);
     throw new Error("Invalid Email Address.");
   }
 
-  const OTP = generateOTP();
+  //validate user
+  const user = await User.findOne({ email });
+  if (!user) {
+    res.status(400);
+    throw new Error(`User with '${email}' is not registered.`);
+  }
+  //check if verification code is already sent to the user
+  const alreadySent = await OPT.findOne({ user_id: user.id });
+  //if verification is already sent it removes it
+  if (alreadySent) {
+    await alreadySent.remove();
+  }
+  //add opt to the database
+  const code = await OPT.create({
+    user_id: user.id,
+    opt_code: generateOTP(),
+  });
+  if (!code) {
+    res.status(500);
+    throw new Error("Error while generating code.");
+  }
 
   //mail format
   const mailOptions = {
     from: process.env.AUTH_EMAIL,
     to: email,
     subject: "Otaku Emporium - Verify Your Email Address", //Subject Line
-    html: `<p>Hello your OTP code is ${OTP}</p>`,
+    template: "VerificationCode",
+    context: {
+      opt_code: code.opt_code,
+      email: email,
+    },
+    attachments: [
+      {
+        filename: "OpenEmail.jpg",
+        path: "./backend/assests/jpg/OpenEmail.jpg",
+        cid: "openEmail",
+      },
+    ],
   };
 
   //sends mail to the defined email address
@@ -177,9 +223,30 @@ const sendVerificationCode = asyncHandler(async (req, res) => {
   });
 });
 
+//@desc Verify OPT code
+//@route /api/users/verify-opt-code/:id
+const verifyOPTCode = asyncHandler(async (req, res) => {
+  const { user_id, code } = req.body;
+  if (!user_id || !code) {
+    res.status(400);
+    throw new Error(`Fields are missing.`);
+  }
+
+  const optUser = await OPT.findOne({ optUser_id });
+  if (!optUser) {
+    res.status(400);
+    throw new Error(`Verification Code has not been sent.`);
+  }
+  if (code !== optUser.opt_code) {
+    res.status(400);
+    throw new Error(`Invalid verification code.`);
+  }
+});
+
 module.exports = {
   registerUser,
   loginUser,
   getMe,
   sendVerificationCode,
+  verifyOPTCode,
 };
