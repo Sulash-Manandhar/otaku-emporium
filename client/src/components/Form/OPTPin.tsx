@@ -1,6 +1,5 @@
 import { HStack, PinInput, PinInputField, Button, Box } from "@chakra-ui/react";
 import React, { useState } from "react";
-import { PinSchema } from "../../Schema/PinInput.schema";
 
 const OPTPin = () => {
   const [isInValid, setIsInValid] = useState<boolean>(false);
@@ -9,6 +8,7 @@ const OPTPin = () => {
   const onSubmit = (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
     console.log(pin);
+    setIsInValid(true);
   };
 
   return (

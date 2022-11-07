@@ -1,11 +1,4 @@
-import {
-  Box,
-  Container,
-  Heading,
-  ListItem,
-  OrderedList,
-  Text,
-} from "@chakra-ui/react";
+import { Box, Heading, ListItem, OrderedList, Text } from "@chakra-ui/react";
 import React from "react";
 
 const TermsAndConditions = () => {
