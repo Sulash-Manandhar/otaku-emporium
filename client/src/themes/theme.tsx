@@ -28,6 +28,13 @@ export const theme = extendTheme({
       300: "#333d44",
       400: "#1F2A31",
     },
+    form: {
+      labe: "#F0F0E8",
+      background: "#333131",
+      errorOutline: "#E41E2A",
+      errorLabel: "#EB565F",
+      errorBackground: "#8C3D42",
+    },
   },
   shadows: {
     light: "0px 1px 15px #00000029",

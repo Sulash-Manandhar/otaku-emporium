@@ -114,7 +114,7 @@ const Signup = () => {
       </VStack>
       {/* Form Component  */}
       <Box w="45%">
-        <Heading as="h1" variant="h1" color="black.100">
+        <Heading as="h1" variant="h1" color="form.errorLabel">
           Sign up
         </Heading>
         {/* Error status alert box  */}
