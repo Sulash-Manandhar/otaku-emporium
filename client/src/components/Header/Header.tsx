@@ -24,7 +24,7 @@ const Header = () => {
               <IconButton
                 aria-label="menu-icon"
                 variant="unstyled"
-                fontSize={32}
+                fontSize="24px"
                 color="white"
                 icon={isNavOpen ? <AiOutlineClose /> : <AiOutlineMenu />}
               />
@@ -46,7 +46,7 @@ const Header = () => {
               onClick={() => navigate("/")}
             >
               <GiLaurelCrown fontSize="32px" />
-              <Heading as="h3" variant="h3" fontStyle="h5" fontWeight="500">
+              <Heading as="h4" variant="h4" fontWeight="500">
                 Otaku Emporium
               </Heading>
             </Flex>

@@ -21,15 +21,15 @@ export const theme = extendTheme({
   },
   colors: {
     red: {
-      400: "#EC2330",
+      400: "#E41E2A",
       500: "#dd212d",
     },
     black: {
       300: "#333d44",
-      400: "#1F2A31",
+      400: "#202A30",
     },
     form: {
-      labe: "#F0F0E8",
+      label: "#F0F0E8",
       background: "#333131",
       errorOutline: "#E41E2A",
       errorLabel: "#EB565F",

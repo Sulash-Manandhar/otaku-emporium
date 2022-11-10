@@ -1,4 +1,4 @@
-import { Box, Heading } from "@chakra-ui/react";
+import { Box, Text } from "@chakra-ui/react";
 import React from "react";
 import { useNavigate } from "react-router-dom";
 
@@ -8,6 +8,7 @@ const NavigationMenu = () => {
     <Box py="8px" backgroundColor="black.400" color="white">
       <Box
         display="inline-block"
+        fontSize="18px"
         sx={{
           " & > *": {
             _hover: {
@@ -18,30 +19,20 @@ const NavigationMenu = () => {
           },
         }}
       >
-        <Box p="8px 16px 8px 8px">
-          <Heading as="h4" variant="h4" onClick={() => navigate("/")}>
-            Home
-          </Heading>
+        <Box p="8px 16px 8px 8px" onClick={() => navigate("/")}>
+          <Text>Home</Text>
         </Box>
-        <Box p="8px 16px 8px 8px">
-          <Heading as="h4" variant="h4" onClick={() => navigate("/apparels")}>
-            Apparels
-          </Heading>
+        <Box p="8px 16px 8px 8px" onClick={() => navigate("/apparels")}>
+          <Text>Apparels</Text>
         </Box>
         <Box p="8px 16px 8px 8px" onClick={() => navigate("user/favorites")}>
-          <Heading as="h4" variant="h4">
-            My Favorites
-          </Heading>
+          <Text>My Favorites</Text>
         </Box>
         <Box p="8px 16px 8px 8px" onClick={() => navigate("user/profile")}>
-          <Heading as="h4" variant="h4">
-            My Profile
-          </Heading>
+          <Text>My Profile</Text>
         </Box>
         <Box p="8px 16px 8px 8px" onClick={() => navigate("/login")}>
-          <Heading as="h4" variant="h4">
-            Sign Up/Login
-          </Heading>
+          <Text>Sign Up/Login</Text>
         </Box>
       </Box>
     </Box>
