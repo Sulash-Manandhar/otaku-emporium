@@ -1,12 +1,23 @@
-import { Box, Flex, FormLabel, Input } from "@chakra-ui/react";
+import {
+  Box,
+  Flex,
+  FormLabel,
+  Icon,
+  Input,
+  InputGroup,
+  InputRightAddon,
+  Text,
+} from "@chakra-ui/react";
 import React, { useState, useEffect } from "react";
+import { AiFillEye, AiFillEyeInvisible, AiFillWarning } from "react-icons/ai";
+import { validateInput } from "../../constant/functions";
 import { FormDataSchema, formIdSchema } from "../../Schema/Form.schema";
 
 const formLabelStyle = {
   m: "0",
   fontSize: "12px",
-  color: "form.label",
   fontWeight: "bold",
+  textTransform: "uppercase",
 };
 
 interface InputFieldProps {
@@ -21,44 +32,19 @@ interface InputFieldProps {
 const InputField: React.FC<InputFieldProps> = (props) => {
   const { id, label, type, placeholder, formData, setFormData } = props;
   const [isInputEmpty, setIsInputEmpty] = useState(true);
+  const [show, setShow] = useState(false);
+  let errorMessage: string = "";
 
   useEffect(() => {
     setIsInputEmpty(() => (formData[id].value === "" ? true : false));
   }, [id, formData]);
 
-  const validateInput = (value: string) => {
-    if (id === "name") {
-      if (value.length < 3) {
-        return "Name should be atleast 3 character long.";
-      }
-    }
-
-    if (id === "email") {
-      if (
-        !value.match(
-          /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/
-        )
-      ) {
-        return "Invalid email address.";
-      }
-    }
-    if (id === "password") {
-      if (
-        !value.match(/^(?=.*\d)(?=.*[!@#$%^&*])(?=.*[a-z])(?=.*[A-Z]).{8,}$/)
-      ) {
-        return "Password must contain at least 8 characters, a capital letter, a symbol and a number.";
-      }
-    }
-    if (id === "confirmPassword") {
-      if (value !== formData?.confirmPassword?.value) {
-        return "Passwords do not match";
-      }
-    }
-    return "";
-  };
   const handleOnChange = (e: React.FormEvent<HTMLInputElement>) => {
-    let errorMessage: string = "";
-    errorMessage = validateInput(e.currentTarget.value);
+    if (id !== "confirmPassword") {
+      errorMessage = validateInput(id, e.currentTarget.value);
+    } else {
+      errorMessage = validateInput(id, e.currentTarget.value, formData);
+    }
 
     let newFormData = {
       ...formData,
@@ -71,6 +57,22 @@ const InputField: React.FC<InputFieldProps> = (props) => {
     setFormData(newFormData);
   };
 
+  const handleOnBlur = (e: React.FormEvent<HTMLInputElement>) => {
+    if (id !== "confirmPassword") {
+      errorMessage = validateInput(id, e.currentTarget.value);
+    } else {
+      errorMessage = validateInput(id, e.currentTarget.value, formData);
+    }
+    let newFormData = {
+      ...formData,
+      [id]: {
+        ...formData[id],
+        value: e.currentTarget.value,
+        error: errorMessage,
+      },
+    };
+    setFormData(newFormData);
+  };
   return (
     <Box my="16px">
       <Flex
@@ -78,37 +80,78 @@ const InputField: React.FC<InputFieldProps> = (props) => {
         p={!isInputEmpty ? "8px 8px 0px 8px" : "8px"}
         justifyContent="flex-start"
         border="2px solid"
-        borderColor="transparent"
+        borderColor={formData[id]?.error ? "form.errorOutline" : "transparent"}
         borderRadius="4px"
-        backgroundColor="form.background"
+        backgroundColor={
+          formData[id]?.error ? "form.errorBackground" : "form.background"
+        }
+        _focusWithin={{
+          backgroundColor: "form.background",
+          borderColor: formData[id]?.error ? "form.errorOutline" : "white",
+        }}
       >
         {!isInputEmpty && (
-          <FormLabel htmlFor={id} sx={formLabelStyle}>
+          <FormLabel
+            htmlFor={id}
+            sx={formLabelStyle}
+            color={formData[id]?.error ? "form.errorLabel" : "form.label"}
+          >
             {label}
           </FormLabel>
         )}
-        <Input
-          id={id}
-          type={type}
-          variant="unstyled"
-          color="form.label"
-          placeholder={placeholder}
-          p="0"
-          m="0"
-          value={formData[id].value}
-          onChange={handleOnChange}
-          fontSize="16px"
-          _placeholder={{
-            color: "form.label",
-            fontSize: "16px",
-            fontWeight: "semi-bold",
-          }}
-          background="transparent"
-          _autofill={{
-            boxShadow: "0 0 0 30px white inset",
-          }}
-        />
+        <InputGroup>
+          <Input
+            id={id}
+            type={show ? "text" : type}
+            variant="unstyled"
+            color="form.label"
+            placeholder={placeholder}
+            p="0"
+            m="0"
+            value={formData[id].value}
+            onChange={handleOnChange}
+            onBlur={handleOnBlur}
+            fontSize="16px"
+            _placeholder={{
+              color: formData[id]?.error ? "form.errorLabel" : "form.label",
+              fontSize: "16px",
+              fontWeight: "semi-bold",
+              textTransform: "uppercase",
+            }}
+            background="transparent"
+          />
+          {(id === "password" || id === "confirmPassword") && (
+            <InputRightAddon
+              backgroundColor="none"
+              color="white"
+              background="transparent"
+              border="none"
+              children={
+                <Icon
+                  as={show ? AiFillEyeInvisible : AiFillEye}
+                  _hover={{
+                    cursor: "pointer",
+                  }}
+                  onClick={() => setShow((prev) => !prev)}
+                />
+              }
+            />
+          )}
+        </InputGroup>
       </Flex>
+      {formData[id]?.error && (
+        <Flex color="form.errorLabel" alignItems="center" gap="8px" mt="8px">
+          <AiFillWarning fontSize="18px" />
+          <Text
+            color="form.errorLabel"
+            fontWeight="bold"
+            fontSize="14px"
+            textTransform="capitalize"
+          >
+            {formData[id].error}
+          </Text>
+        </Flex>
+      )}
     </Box>
   );
 };
