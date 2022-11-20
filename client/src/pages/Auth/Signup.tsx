@@ -10,9 +10,10 @@ import {
   useToast,
 } from "@chakra-ui/react";
 import InputField from "../../components/Form/InputField";
-import { NavLink } from "react-router-dom";
+import { NavLink, useNavigate } from "react-router-dom";
 import { FormDataSchema } from "../../Schema/Form.schema";
 import { AiFillWarning } from "react-icons/ai";
+import { GiLaurelCrown } from "react-icons/gi";
 
 const Signup = () => {
   const [formData, setFormData] = useState<FormDataSchema>({
@@ -42,6 +43,7 @@ const Signup = () => {
     duration: 3000,
     isClosable: true,
   });
+  const navigate = useNavigate();
 
   const handleonSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -73,16 +75,32 @@ const Signup = () => {
       w="100vw"
       h="100vh"
       direction="column"
-      p="16px"
+      p="0px 16px"
       backgroundColor="black.400"
     >
-      <Box>
-        <Box clipPath="polygon(20% 0%, 80% 0%, 100% 100%, 0% 100%)">
-          Otaku Emporium
-        </Box>
+      <Box mx="auto" mb="16px">
+        <Flex
+          clipPath="polygon(10% 0%, 90% 0%, 100% 100%, 0% 100%)"
+          width={["250px", "500px"]}
+          background="red.400"
+          color="white"
+          p="8px"
+          justifyContent="center"
+          _hover={{
+            backgroundColor: "red.500",
+            cursor: "pointer",
+          }}
+        >
+          <Flex alignItems="center" gap="16px" onClick={() => navigate("/")}>
+            <GiLaurelCrown fontSize="28px" />
+            <Heading variant={["h6", "h4"]} fontWeight="500">
+              Otaku Emporium
+            </Heading>
+          </Flex>
+        </Flex>
       </Box>
       {/* Form Component  */}
-      <Box w="45%">
+      <Box w={["100%", "60%", "45%"]}>
         <Heading as="h1" variant="h1" color="white">
           Sign up
         </Heading>
