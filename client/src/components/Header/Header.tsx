@@ -1,42 +1,50 @@
-import { Box, Flex, Heading, IconButton } from "@chakra-ui/react";
+import { Box, Flex, Heading, Icon } from "@chakra-ui/react";
 import { AiOutlineClose, AiOutlineMenu } from "react-icons/ai";
 import { GiLaurelCrown } from "react-icons/gi";
 import Searchbar from "./Searchbar/Searchbar";
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
 import NavigationMenu from "./NavigationMenu";
+import { iconPadding, iconSize } from "../../constant/style";
 
 const Header = () => {
   const navigate = useNavigate();
   const [isNavOpen, setIsNavOpen] = useState(false);
+  const [isSearchBarOpen, setIsSearchBarOpen] = useState(false);
 
   return (
     <Box>
-      <Flex justifyContent="space-between" backgroundColor="black.400">
+      <Flex
+        justifyContent="space-between"
+        backgroundColor="black.400"
+        pl="16px"
+      >
         {/* Menu Button and Home button  */}
-        <Flex>
+        <Flex alignItems="center">
           <Box
-            p="8px"
+            p={iconPadding}
             clipPath="polygon(0 0, 100% 0%, 60% 100%, 0% 100%)"
             backgroundColor="black.400"
+            width={["30px", "auto"]}
           >
-            <Box mr="24px" onClick={() => setIsNavOpen((prev) => !prev)}>
-              <IconButton
-                aria-label="menu-icon"
-                variant="unstyled"
-                fontSize="24px"
-                color="white"
-                icon={isNavOpen ? <AiOutlineClose /> : <AiOutlineMenu />}
-              />
-            </Box>
+            <Icon
+              aria-label="menu-icon"
+              fontSize={iconSize}
+              color="white"
+              onClick={() => setIsNavOpen((prev) => !prev)}
+              as={isNavOpen ? AiOutlineClose : AiOutlineMenu}
+            />
           </Box>
+
           <Box
             backgroundColor="red.400"
-            p="8px"
+            p={iconPadding}
+            width={["230px", "auto"]}
             clipPath=" polygon(15% 0, 100% 0%, 100% 100%, 0% 100%)"
             _hover={{
               backgroundColor: "red.500",
             }}
+            display={[isSearchBarOpen ? "none" : "block", "block"]}
           >
             <Flex
               ml="32px"
@@ -45,15 +53,18 @@ const Header = () => {
               gap="16px"
               onClick={() => navigate("/")}
             >
-              <GiLaurelCrown fontSize="32px" />
-              <Heading as="h4" variant="h4" fontWeight="500">
+              <Icon as={GiLaurelCrown} fontSize={iconSize} />
+              <Heading size="h4" fontWeight="500">
                 Otaku Emporium
               </Heading>
             </Flex>
           </Box>
         </Flex>
         {/* Search Botton  */}
-        <Searchbar />
+        <Searchbar
+          isSearchBarOpen={isSearchBarOpen}
+          setIsSearchBarOpen={setIsSearchBarOpen}
+        />
       </Flex>
       {/* SubMenu */}
       {isNavOpen && <NavigationMenu />}

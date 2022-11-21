@@ -1,38 +1,53 @@
-import { Flex, Input, IconButton } from "@chakra-ui/react";
+import { Flex, Input, IconButton, Box, Icon } from "@chakra-ui/react";
 import { useState } from "react";
 import { AiOutlineClose, AiOutlineSearch } from "react-icons/ai";
+import { iconSize, iconPadding } from "../../../constant/style";
 
-const SearchBar = () => {
-  const [isSearchBarOpen, setIsSearchBarOpen] = useState(false);
+type Props = {
+  isSearchBarOpen: boolean;
+  setIsSearchBarOpen: any;
+};
+
+const SearchBar = (props: Props) => {
+  const { isSearchBarOpen, setIsSearchBarOpen } = props;
 
   return (
     <Flex
-      p="8px"
-      alignItems="center"
       backgroundColor="red.400"
+      flex={isSearchBarOpen ? "auto" : "1fr"}
       _hover={{
         backgroundColor: "red.500",
       }}
-      clipPath=" polygon(10% 0, 100% 0, 100% 100%, 0% 100%)"
+      clipPath={[
+        "polygon(11% 0, 100% 0, 100% 100%, 0% 100%)",
+        "polygon(5% 0, 100% 0, 100% 100%, 0% 100%)",
+      ]}
+      p={iconPadding}
+      justifyContent="flex-end"
+      w={["50px", "auto"]}
     >
-      <Flex ml="24px" flexDir="row">
+      <Flex
+        ml={["0px", "24px"]}
+        w="80%"
+        justifyContent="flex-end"
+        gap="8px"
+        alignItems="center"
+      >
         {isSearchBarOpen && (
           <Input
             type="text"
-            variant="unstyled"
-            size="sm"
-            borderBottom="1px solid"
-            borderColor="white"
+            variant="flushed"
+            size={["sm", "md"]}
             color="white"
+            autoFocus={true}
           />
         )}
-        <IconButton
+        <Icon
           aria-label="Search"
-          fontSize="24px"
-          variant="link"
+          fontSize={iconSize}
           color="white"
-          onClick={() => setIsSearchBarOpen((prev) => !prev)}
-          icon={isSearchBarOpen ? <AiOutlineClose /> : <AiOutlineSearch />}
+          as={isSearchBarOpen ? AiOutlineClose : AiOutlineSearch}
+          onClick={() => setIsSearchBarOpen((prev: boolean) => !prev)}
         />
       </Flex>
     </Flex>

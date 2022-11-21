@@ -78,6 +78,7 @@ const InputField: React.FC<InputFieldProps> = (props) => {
       <Flex
         flexDir="column"
         p={!isInputEmpty ? "8px 8px 0px 8px" : "8px"}
+        w="100%"
         justifyContent="flex-start"
         border="2px solid"
         borderColor={formData[id]?.error ? "form.errorOutline" : "transparent"}
@@ -119,6 +120,8 @@ const InputField: React.FC<InputFieldProps> = (props) => {
               textTransform: "uppercase",
             }}
             background="transparent"
+            isRequired
+            autoFocus={id === "name" ? true : false}
           />
           {(id === "password" || id === "confirmPassword") && (
             <InputRightAddon
