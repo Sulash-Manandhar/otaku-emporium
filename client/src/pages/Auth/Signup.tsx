@@ -1,4 +1,3 @@
-import React, { useState } from "react";
 import {
   Box,
   Button,
@@ -11,65 +10,53 @@ import {
 } from "@chakra-ui/react";
 import InputField from "../../components/Form/InputField";
 import { NavLink, useNavigate } from "react-router-dom";
-import { FormDataSchema } from "../../Schema/Form.schema";
 import { AiFillWarning } from "react-icons/ai";
 import { GiLaurelCrown } from "react-icons/gi";
+import { useFormik } from "formik";
+import * as Yup from "yup";
 
 const Signup = () => {
-  const [formData, setFormData] = useState<FormDataSchema>({
-    name: {
-      value: "",
-      error: "",
-    },
-    email: {
-      value: "",
-      error: "",
-    },
-    password: {
-      value: "",
-      error: "",
-    },
-    confirmPassword: {
-      value: "",
-      error: "",
-    },
-  });
-  const [isTermsAndConditionChecked, setIsTermsAndConditionChecked] = useState({
-    onClick: false,
-    value: false,
-  });
-
   const navigate = useNavigate();
 
-  const handleonSubmit = (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    if (isTermsAndConditionChecked.value === false) {
-      let newisTermsAndConditionChecked = {
-        ...isTermsAndConditionChecked,
-        onClick: true,
+  const formik = useFormik({
+    initialValues: {
+      name: "",
+      email: "",
+      password: "",
+      confirm_password: "",
+      terms: false,
+    },
+    validationSchema: Yup.object({
+      name: Yup.string()
+        .required("Name field is empty.")
+        .min(3, "Name must be at least 3 characters."),
+      email: Yup.string()
+        .email("Please enter a valid email address.")
+        .required("Email is required"),
+      password: Yup.string()
+        .required("Password field is empty")
+        .matches(
+          /^(?=.*\d)(?=.*[!@#$%^&*])(?=.*[a-z])(?=.*[A-Z]).{8,}$/,
+          "Password must contain at least 8 characters, a capital letter, a symbol and a number."
+        ),
+      confirm_password: Yup.string()
+        .required("Confirm password is empty")
+        .oneOf([Yup.ref("password"), null], "Passwords must match"),
+      terms: Yup.bool().oneOf(
+        [true],
+        "Please accept terms and conditions to register."
+      ),
+    }),
+    onSubmit: (values: any) => {
+      let newUser = {
+        name: values.name,
+        email: values.email,
+        password: values.password,
+        confirm: values.confirm_password,
       };
-      setIsTermsAndConditionChecked(newisTermsAndConditionChecked);
-    } else {
-      const newFormData = {
-        name: formData.name.value,
-        email: formData.email.value,
-        password: formData.password.value,
-      };
-      console.log(newFormData);
-    }
-  };
-
-  /**
-   * This function checks if agreement to terms and condition is checked or not
-   * @param e :event
-   */
-  const handleCheckbox = (e: any) => {
-    let newisTermsAndConditionChecked = {
-      ...isTermsAndConditionChecked,
-      value: e.currentTarget.checked,
-    };
-    setIsTermsAndConditionChecked(newisTermsAndConditionChecked);
-  };
+      console.log(newUser);
+    },
+  });
 
   return (
     <Flex
@@ -119,15 +106,14 @@ const Signup = () => {
             Sign up
           </Heading>
           <Box w="100%">
-            <form onSubmit={handleonSubmit}>
+            <form onSubmit={formik.handleSubmit}>
               {/* full name  */}
               <InputField
                 id="name"
                 type="text"
                 label="Full Name"
                 placeholder="Full Name"
-                formData={formData}
-                setFormData={setFormData}
+                formik={formik}
               />
               {/* EMAIL ADDRESS  */}
               <InputField
@@ -135,8 +121,7 @@ const Signup = () => {
                 type="email"
                 label="Email Address"
                 placeholder="Email Address"
-                formData={formData}
-                setFormData={setFormData}
+                formik={formik}
               />
               {/* Password  */}
               <InputField
@@ -144,17 +129,15 @@ const Signup = () => {
                 type="password"
                 label="Password"
                 placeholder="Password"
-                formData={formData}
-                setFormData={setFormData}
+                formik={formik}
               />
               {/* confirm password  */}
               <InputField
-                id="confirmPassword"
+                id="confirm_password"
                 type="password"
                 label="Confirm Password"
                 placeholder="Confirm Password"
-                formData={formData}
-                setFormData={setFormData}
+                formik={formik}
               />
               {/* Terms and Condition  */}
               <Box my="8px">
@@ -162,10 +145,10 @@ const Signup = () => {
                   <Checkbox
                     id="terms"
                     color="form.formLabel"
-                    onChange={handleCheckbox}
+                    onChange={formik.handleChange}
+                    onBlur={formik.handleBlur}
                     borderColor={
-                      isTermsAndConditionChecked.onClick &&
-                      !isTermsAndConditionChecked.value
+                      formik.touched.terms && formik.errors.terms
                         ? "form.errorOutline"
                         : "white"
                     }
@@ -183,25 +166,24 @@ const Signup = () => {
                     </Text>
                   </NavLink>
                 </HStack>
-                {isTermsAndConditionChecked.onClick &&
-                  !isTermsAndConditionChecked.value && (
-                    <Flex
+                {formik.errors.terms && formik.touched.terms && (
+                  <Flex
+                    color="form.errorLabel"
+                    alignItems="center"
+                    gap="8px"
+                    mt="8px"
+                  >
+                    <AiFillWarning fontSize="18px" />
+                    <Text
                       color="form.errorLabel"
-                      alignItems="center"
-                      gap="8px"
-                      mt="8px"
+                      fontWeight="bold"
+                      fontSize="14px"
+                      textTransform="capitalize"
                     >
-                      <AiFillWarning fontSize="18px" />
-                      <Text
-                        color="form.errorLabel"
-                        fontWeight="bold"
-                        fontSize="14px"
-                        textTransform="capitalize"
-                      >
-                        Should agree to terms and conditions.
-                      </Text>
-                    </Flex>
-                  )}
+                      {formik.errors.terms}
+                    </Text>
+                  </Flex>
+                )}
               </Box>
               <Button type="submit" variant="secondary" my="8px" w="100%">
                 Sign up

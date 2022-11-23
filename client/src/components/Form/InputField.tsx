@@ -8,10 +8,9 @@ import {
   InputRightAddon,
   Text,
 } from "@chakra-ui/react";
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { AiFillEye, AiFillEyeInvisible, AiFillWarning } from "react-icons/ai";
-import { validateInput } from "../../constant/functions";
-import { FormDataSchema, formIdSchema } from "../../Schema/Form.schema";
+import { formIdSchema } from "../../Schema/Form.schema";
 
 const formLabelStyle = {
   m: "0",
@@ -25,77 +24,41 @@ interface InputFieldProps {
   label: string;
   type: "email" | "password" | "text" | "tel";
   placeholder: string;
-  formData: FormDataSchema;
-  setFormData: (params: FormDataSchema) => void;
+  formik: any;
 }
 
 const InputField: React.FC<InputFieldProps> = (props) => {
-  const { id, label, type, placeholder, formData, setFormData } = props;
-  const [isInputEmpty, setIsInputEmpty] = useState(true);
+  const { id, label, type, placeholder, formik } = props;
   const [show, setShow] = useState(false);
-  let errorMessage: string = "";
 
-  useEffect(() => {
-    setIsInputEmpty(() => (formData[id].value === "" ? true : false));
-  }, [id, formData]);
+  const { values, touched, errors } = formik;
 
-  const handleOnChange = (e: React.FormEvent<HTMLInputElement>) => {
-    if (id !== "confirmPassword") {
-      errorMessage = validateInput(id, e.currentTarget.value);
-    } else {
-      errorMessage = validateInput(id, e.currentTarget.value, formData);
-    }
-
-    let newFormData = {
-      ...formData,
-      [id]: {
-        ...formData[id],
-        value: e.currentTarget.value,
-        error: errorMessage,
-      },
-    };
-    setFormData(newFormData);
-  };
-
-  const handleOnBlur = (e: React.FormEvent<HTMLInputElement>) => {
-    if (id !== "confirmPassword") {
-      errorMessage = validateInput(id, e.currentTarget.value);
-    } else {
-      errorMessage = validateInput(id, e.currentTarget.value, formData);
-    }
-    let newFormData = {
-      ...formData,
-      [id]: {
-        ...formData[id],
-        value: e.currentTarget.value,
-        error: errorMessage,
-      },
-    };
-    setFormData(newFormData);
-  };
   return (
     <Box my="16px">
       <Flex
         flexDir="column"
-        p={!isInputEmpty ? "8px 8px 0px 8px" : "8px"}
+        p="8px"
         w="100%"
         justifyContent="flex-start"
         border="2px solid"
-        borderColor={formData[id]?.error ? "form.errorOutline" : "transparent"}
+        borderColor={
+          touched[id] && errors[id] ? "form.errorOutline" : "transparent"
+        }
         borderRadius="4px"
         backgroundColor={
-          formData[id]?.error ? "form.errorBackground" : "form.background"
+          touched[id] && errors[id] ? "form.errorBackground" : "form.background"
         }
         _focusWithin={{
           backgroundColor: "form.background",
-          borderColor: formData[id]?.error ? "form.errorOutline" : "white",
+          borderColor:
+            touched[id] && errors[id] ? "form.errorOutline" : "white",
         }}
       >
-        {!isInputEmpty && (
+        {values[id] && (
           <FormLabel
             htmlFor={id}
             sx={formLabelStyle}
-            color={formData[id]?.error ? "form.errorLabel" : "form.label"}
+            color={touched[id] && errors[id] ? "form.errorLabel" : "form.label"}
           >
             {label}
           </FormLabel>
@@ -109,24 +72,23 @@ const InputField: React.FC<InputFieldProps> = (props) => {
             placeholder={placeholder}
             p="0"
             m="0"
-            value={formData[id].value}
-            onChange={handleOnChange}
-            onBlur={handleOnBlur}
+            onChange={formik.handleChange}
+            onBlur={formik.handleBlur}
             fontSize="16px"
             _placeholder={{
-              color: formData[id]?.error ? "form.errorLabel" : "form.label",
+              color:
+                touched[id] && errors[id] ? "form.errorLabel" : "form.label",
               fontSize: "16px",
               fontWeight: "semi-bold",
               textTransform: "uppercase",
             }}
             background="transparent"
-            isRequired
-            autoFocus={id === "name" ? true : false}
           />
-          {(id === "password" || id === "confirmPassword") && (
+          {(id === "password" || id === "confirm_password") && (
             <InputRightAddon
               backgroundColor="none"
               color="white"
+              h="auto"
               background="transparent"
               border="none"
               children={
@@ -142,7 +104,8 @@ const InputField: React.FC<InputFieldProps> = (props) => {
           )}
         </InputGroup>
       </Flex>
-      {formData[id]?.error && (
+      {/* Display Error  */}
+      {touched[id] && errors[id] && (
         <Flex color="form.errorLabel" alignItems="center" gap="8px" mt="8px">
           <AiFillWarning fontSize="18px" />
           <Text
@@ -151,7 +114,7 @@ const InputField: React.FC<InputFieldProps> = (props) => {
             fontSize="14px"
             textTransform="capitalize"
           >
-            {formData[id].error}
+            {errors[id]}
           </Text>
         </Flex>
       )}

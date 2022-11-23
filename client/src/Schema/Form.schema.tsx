@@ -7,16 +7,4 @@ export type PinSchema = {
   pin6: number;
 };
 
-export type FormDataSchema = {
-  name: formKey;
-  email: formKey;
-  password: formKey;
-  confirmPassword: formKey;
-};
-
-export interface formKey {
-  value: string;
-  error: string;
-}
-
-export type formIdSchema = "name" | "email" | "password" | "confirmPassword";
+export type formIdSchema = "name" | "email" | "password" | "confirm_password";
