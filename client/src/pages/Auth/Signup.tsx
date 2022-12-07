@@ -14,7 +14,8 @@ import { AiFillWarning } from "react-icons/ai";
 import { GiLaurelCrown } from "react-icons/gi";
 import { useFormik } from "formik";
 import * as Yup from "yup";
-
+import axios from "../../utils/axiosInterceptor";
+// import axios from "axios";
 const Signup = () => {
   const navigate = useNavigate();
 
@@ -54,7 +55,15 @@ const Signup = () => {
         password: values.password,
         confirm: values.confirm_password,
       };
-      console.log(newUser);
+
+      axios
+        .post("/users", newUser)
+        .then((res) => {
+          // console.log(res);
+        })
+        .catch((err) => {
+          // console.log(err);
+        });
     },
   });
 

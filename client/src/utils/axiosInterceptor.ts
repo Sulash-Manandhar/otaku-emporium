@@ -1,30 +1,33 @@
 import axios from "axios";
 
-axios.defaults.baseURL = "http://localhost:5000/";
+axios.defaults.baseURL = "http://localhost:5000/api";
 
 axios.create({
   baseURL: process.env.BASE_URL,
 });
 
-axios.interceptors.request.use((request: any) => {
-  let access_token = localStorage.getItem("access_token");
-  if (access_token) {
-    request.headers.Authorization = "Bearer " + access_token;
+//request interceptors
+axios.interceptors.request.use(
+  (request: any) => {
+    console.log(request);
+    request.headers.common["Accept"] = "application/json";
+
+    let access_token = localStorage.getItem("access_token");
+    if (access_token) {
+      request.headers.Authorization = "Bearer " + access_token;
+    }
+    return request;
+  },
+  (error) => {
+    return Promise.reject(error);
   }
-  return request;
-});
+);
 
 axios.interceptors.response.use(
   (response: any) => {
-    return response.data;
+    return response;
   },
   (error) => {
-    if (error.response.status === 401) {
-      console.log("Unauthorized");
-    }
-    if (error.reponse.status === 503) {
-      console.log("Server is offline");
-    }
     return Promise.reject(error);
   }
 );
