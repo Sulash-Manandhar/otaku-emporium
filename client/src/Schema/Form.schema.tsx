@@ -6,3 +6,5 @@ export type PinSchema = {
   pin5: number;
   pin6: number;
 };
+
+export type formIdSchema = "name" | "email" | "password" | "confirm_password";

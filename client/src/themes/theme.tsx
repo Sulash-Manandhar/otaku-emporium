@@ -1,7 +1,7 @@
 import { extendTheme } from "@chakra-ui/react";
 import { ButtonTheme as Button } from "./components/ButtonTheme";
 import { HeadingTheme as Heading } from "./components/HeadingTheme";
-
+import { TooltipTheme as Tooltip } from "./components/TooltipTheme";
 // 2. Call `extendTheme` and pass your custom values
 export const theme = extendTheme({
   styles: {
@@ -20,13 +20,11 @@ export const theme = extendTheme({
     },
   },
   colors: {
-    red: {
-      400: "#EC2330",
-      500: "#dd212d",
+    green: {
+      400: "#0AC5A8",
     },
-    black: {
-      300: "#333d44",
-      400: "#1F2A31",
+    gray: {
+      400: "#EBEBEB",
     },
   },
   shadows: {
@@ -35,5 +33,6 @@ export const theme = extendTheme({
   components: {
     Button,
     Heading,
+    Tooltip,
   },
 });

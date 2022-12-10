@@ -3,8 +3,7 @@ export const HeadingTheme = {
     fontFamily: "garamond",
     color: "black.100",
   },
-  sizes: {},
-  variants: {
+  sizes: {
     //base size:18px, scale:1.250(Major Third)
     h1: {
       fontSize: "54px",
@@ -16,10 +15,10 @@ export const HeadingTheme = {
       fontSize: "35px",
     },
     h4: {
-      fontSize: "28px",
+      fontSize: ["22px", "28px"],
     },
     h5: {
-      fontSize: "22px",
+      fontSize: ["18px", "22px"],
     },
     h6: {
       fontSize: "18px",
@@ -28,4 +27,5 @@ export const HeadingTheme = {
       fontSize: "14px",
     },
   },
+  variants: {},
 };
