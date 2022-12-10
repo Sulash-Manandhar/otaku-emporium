@@ -8,7 +8,7 @@ const PageNotFound = () => {
   return (
     <Grid placeItems="center" h="100vh" w="100wh">
       <Flex direction="column" alignItems="center" gap={8}>
-        <Image alt="Page not found(404)" src="./images/404.svg" w="50%" />
+        <Image alt="Page not found(404)" src="/images/404.svg" w="50%" />
         <Text fontWeight="bold" fontSize="2xl">
           Page Not Found
         </Text>
