@@ -28,9 +28,11 @@ const NavIconLink = () => {
           <AiOutlineShoppingCart />
         </Circle>
       </Tooltip>
-      <Circle size="35px" bg="red.500" color="white" position="relative">
-        <AiOutlineHeart />
-      </Circle>
+      <Tooltip label="Favourite" hasArrow>
+        <Circle size="35px" bg="red.500" color="white" position="relative">
+          <AiOutlineHeart />
+        </Circle>
+      </Tooltip>
     </Flex>
   );
 };

@@ -1,10 +1,4 @@
-import {
-  InputGroup,
-  Input,
-  InputRightAddon,
-  Box,
-  IconButton,
-} from "@chakra-ui/react";
+import { InputGroup, Input, InputRightAddon, Box } from "@chakra-ui/react";
 import React from "react";
 import { AiOutlineSearch } from "react-icons/ai";
 

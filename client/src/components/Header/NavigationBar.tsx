@@ -1,5 +1,5 @@
 import { Flex } from "@chakra-ui/react";
-import { Link } from "react-router-dom";
+import { NavLink } from "react-router-dom";
 import React from "react";
 import NavIconLink from "./NavIconLink";
 
@@ -14,9 +14,9 @@ const NavigationBar = () => {
       alignItems="Center"
     >
       <Flex gap="16px">
-        <Link to="/">Home</Link>
-        <Link to="/apparels">Apparels</Link>
-        <Link to="/accessories">Accessories</Link>
+        <NavLink to="/">Home</NavLink>
+        <NavLink to="/apparels">Apparels</NavLink>
+        <NavLink to="/accessories">Accessories</NavLink>
       </Flex>
       <NavIconLink />
     </Flex>

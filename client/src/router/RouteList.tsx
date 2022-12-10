@@ -1,4 +1,5 @@
 import { Route, Routes } from "react-router-dom";
+import urls from "../constant/urls";
 import PageNotFound from "../pages/404";
 import Login from "../pages/Auth/Login";
 import Signup from "../pages/Auth/Signup";
@@ -16,17 +17,20 @@ const RouteList = () => {
   return (
     <Routes>
       <Route element={<AuthRoute />}>
-        <Route path="/login" element={<Login />} />
-        <Route path="/signup" element={<Signup />} />
-        <Route path="/verify-email/:id/:email" element={<VerifyEmail />} />
-        <Route path="/verify-opt-code/:id/:email" element={<VerifyOPT />} />
-        <Route path="/terms-and-conditions" element={<TermsAndConditions />} />
+        <Route path={urls.log_in} element={<Login />} />
+        <Route path={urls.sign_in} element={<Signup />} />
+        <Route path={urls.verify_email} element={<VerifyEmail />} />
+        <Route path={urls.verify_opt} element={<VerifyOPT />} />
+        <Route
+          path={urls.terms_and_condition}
+          element={<TermsAndConditions />}
+        />
       </Route>
       <Route element={<Dashboard />}>
-        <Route path="/" element={<Home />} />
-        <Route path="/apparels" element={<Apparels />} />
-        <Route path="/user/profile" element={<Profile />} />
-        <Route path="/user/favorites" element={<Favorites />} />
+        <Route path={urls.home} element={<Home />} />
+        <Route path={urls.apparels} element={<Apparels />} />
+        <Route path={urls.profile} element={<Profile />} />
+        <Route path={urls.favourite} element={<Favorites />} />
       </Route>
       {/* 404  Page Not found */}
       <Route path="*" element={<PageNotFound />} />
