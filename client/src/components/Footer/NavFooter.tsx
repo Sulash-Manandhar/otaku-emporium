@@ -6,13 +6,14 @@ import { linkDetail } from "../../Schema/link.schema";
 
 const NavFooter = () => {
   return (
-    <Flex justifyContent="flex-start" gap={32}>
+    <Flex justifyContent="flex-start" gap={[5, 32]}>
       <Box>
         <Badge colorScheme="blue">Pages</Badge>
         <List color="gray.600">
           {PUBLIC_LINK.map((item: linkDetail) => (
             <NavLink to={item.path} key={item.id}>
               <ListItem
+                fontSize={["sm", "md"]}
                 _hover={{
                   color: "blue.600",
                 }}
@@ -30,6 +31,7 @@ const NavFooter = () => {
           {AUTH_LINK.map((item: linkDetail) => (
             <NavLink to={item.path} key={item.id}>
               <ListItem
+                fontSize={["sm", "md"]}
                 _hover={{
                   color: "green.600",
                 }}
@@ -47,6 +49,7 @@ const NavFooter = () => {
           {SOCIAL_LINK.map((item: linkDetail) => (
             <a href={item.path} key={item.id}>
               <ListItem
+                fontSize={["sm", "md"]}
                 _hover={{
                   color: "orange.400",
                 }}

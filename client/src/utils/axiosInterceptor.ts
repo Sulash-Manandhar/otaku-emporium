@@ -1,6 +1,6 @@
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
-import urls from "../route/urls";
+import urls from "../routes/urls";
 import { getAccessToken, getRefreshToken, setAccessToken } from "./auth";
 
 // axios.defaults.baseURL = process.env.REACT_APP_BASE_URL ;
