@@ -2,7 +2,7 @@ import { Button, Flex, Grid, Image, Text } from "@chakra-ui/react";
 import React from "react";
 import { AiTwotoneHome } from "react-icons/ai";
 import { NavLink } from "react-router-dom";
-import urls from "../constant/urls";
+import urls from "../route/urls";
 
 const PageNotFound = () => {
   return (

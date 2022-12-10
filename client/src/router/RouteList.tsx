@@ -1,5 +1,5 @@
 import { Route, Routes } from "react-router-dom";
-import urls from "../constant/urls";
+import urls from "../route/urls";
 import PageNotFound from "../pages/404";
 import Login from "../pages/Auth/Login";
 import Signup from "../pages/Auth/Signup";

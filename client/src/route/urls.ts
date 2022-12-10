@@ -1,4 +1,5 @@
 const urls = {
+  jsonplaceholder: "https://jsonplaceholder.typicode.com/users",
   home: "/",
   apparels: "/apparels",
   profile: "/user/profile",

@@ -3,7 +3,7 @@ import { GiFeatherNecklace, GiRolledCloth } from "react-icons/gi";
 import { IoMdPerson } from "react-icons/io";
 import { BsFillCartFill } from "react-icons/bs";
 import { LINK_SCHEMA } from "../Schema/link.schema";
-import urls from "./urls";
+import urls from "../route/urls";
 
 export const PUBLIC_LINK: LINK_SCHEMA = [
   {
