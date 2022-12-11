@@ -1,11 +1,14 @@
+import { ChakraProvider } from "@chakra-ui/react";
 import React from "react";
 import { BrowserRouter } from "react-router-dom";
-import RouteList from "./router/RouteList";
-import { ChakraProvider } from "@chakra-ui/react";
-import { theme } from "./themes/theme";
 import "./App.css";
+import RouteList from "./router/RouteList";
+import { theme } from "./themes/theme";
+import { initInterceptor } from "./utils/axiosInterceptor";
 
 const App = () => {
+  initInterceptor();
+
   return (
     <>
       <ChakraProvider theme={theme}>

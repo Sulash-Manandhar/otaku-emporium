@@ -1,17 +1,4 @@
-import {
-  Badge,
-  Box,
-  Button,
-  Flex,
-  FormControl,
-  FormHelperText,
-  FormLabel,
-  Input,
-  List,
-  ListIcon,
-  ListItem,
-  Text,
-} from "@chakra-ui/react";
+import { Box, Flex } from "@chakra-ui/react";
 import Spacer from "../Utils";
 import FooterDescription from "./FooterDescription";
 import NavFooter from "./NavFooter";

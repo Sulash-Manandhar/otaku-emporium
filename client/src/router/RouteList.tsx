@@ -1,17 +1,22 @@
+import { lazy } from "react";
 import { Route, Routes } from "react-router-dom";
-import urls from "../routes/urls";
 import PageNotFound from "../pages/404";
-import Login from "../pages/Auth/Login";
-import Signup from "../pages/Auth/Signup";
-import TermsAndConditions from "../pages/Auth/TermsAndConditions";
-import VerifyEmail from "../pages/Auth/VerifyEmail";
-import VerifyOPT from "../pages/Auth/VerifyOPT";
 import Dashboard from "../pages/Dashboard";
-import Apparels from "../pages/Dashboard/Apparels";
-import Favorites from "../pages/Dashboard/Favorites";
-import Home from "../pages/Dashboard/Home";
-import Profile from "../pages/Dashboard/Profile";
+import urls from "../routes/urls";
 import AuthRoute from "./AuthRoute";
+
+const Login = lazy(() => import("../pages/Auth/Login"));
+const Signup = lazy(() => import("../pages/Auth/Signup"));
+const VerifyEmail = lazy(() => import("../pages/Auth/VerifyEmail"));
+const VerifyOPT = lazy(() => import("../pages/Auth/VerifyOPT"));
+const TermsAndConditions = lazy(
+  () => import("../pages/Auth/TermsAndConditions")
+);
+
+const Home = lazy(() => import("../pages/Dashboard/Home"));
+const Profile = lazy(() => import("../pages/Dashboard/Profile"));
+const Apparels = lazy(() => import("../pages/Dashboard/Apparels"));
+const Favorites = lazy(() => import("../pages/Dashboard/Favorites"));
 
 const RouteList = () => {
   return (

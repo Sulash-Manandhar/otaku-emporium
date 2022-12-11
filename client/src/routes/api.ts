@@ -3,6 +3,9 @@ const file = "/files";
 const apparels = "/apparels";
 
 const api = {
+  //json placeholder free api
+  try_api: "/public/v2/users",
+
   // Authentication
   register: `${user}/`,
   login: `${user}/login`,
@@ -15,7 +18,7 @@ const api = {
   update_apparel: `${apparels}/:id`,
 
   //file
-  upload_image: "${file}/upload",
+  upload_image: `${file}/upload`,
 };
 
 export default api;
