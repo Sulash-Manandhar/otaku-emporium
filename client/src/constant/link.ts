@@ -1,9 +1,9 @@
-import { AiFillHeart, AiTwotoneHome } from "react-icons/ai";
+import { AiFillHeart, AiFillInstagram, AiTwotoneHome } from "react-icons/ai";
 import { GiFeatherNecklace, GiRolledCloth } from "react-icons/gi";
-import { IoMdPerson } from "react-icons/io";
-import { BsFillCartFill } from "react-icons/bs";
+import { IoLogoWhatsapp, IoMdPerson } from "react-icons/io";
+import { BsFacebook, BsFillCartFill } from "react-icons/bs";
 import { LINK_SCHEMA } from "../Schema/link.schema";
-import urls from "./urls";
+import urls from "../routes/urls";
 
 export const PUBLIC_LINK: LINK_SCHEMA = [
   {
@@ -44,5 +44,26 @@ export const AUTH_LINK: LINK_SCHEMA = [
     name: "Favourite",
     icon: AiFillHeart,
     path: urls.favourite,
+  },
+];
+
+export const SOCIAL_LINK: LINK_SCHEMA = [
+  {
+    id: 1,
+    name: "Instagram",
+    icon: AiFillInstagram,
+    path: urls.instagram,
+  },
+  {
+    id: 2,
+    name: "WhatsApp",
+    icon: IoLogoWhatsapp,
+    path: urls.whatsapp,
+  },
+  {
+    id: 3,
+    name: "Facebook",
+    icon: BsFacebook,
+    path: urls.facebook,
   },
 ];

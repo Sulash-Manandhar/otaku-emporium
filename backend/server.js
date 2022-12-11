@@ -14,8 +14,8 @@ app.use(express.urlencoded({ extended: false }));
 app.use(fileUpload());
 
 app.use("/api/users", require("./routes/userRoutes"));
-app.use("/api/file", require("./routes/fileRoute"));
-app.use("/api/apparel", require("./routes/apparelRoute"));
+app.use("/api/files", require("./routes/fileRoute"));
+app.use("/api/apparels", require("./routes/apparelRoute"));
 
 app.use(errorHandler);
 app.listen(port, () => console.log(`Server started on port ${port}`));

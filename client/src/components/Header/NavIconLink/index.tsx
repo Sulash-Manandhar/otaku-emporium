@@ -10,10 +10,17 @@ const NavIconLink = () => {
           size="sm"
           name="Sulash Manandhar"
           src="https://bit.ly/dan-abramov"
+          cursor="pointer"
         />
       </Tooltip>
       <Tooltip label="Cart" hasArrow>
-        <Circle size="35px" bg="telegram.500" color="white" position="relative">
+        <Circle
+          size="35px"
+          bg="telegram.500"
+          color="white"
+          position="relative"
+          cursor="pointer"
+        >
           <Badge
             position="absolute"
             top={-1}
@@ -29,7 +36,13 @@ const NavIconLink = () => {
         </Circle>
       </Tooltip>
       <Tooltip label="Favourite" hasArrow>
-        <Circle size="35px" bg="red.500" color="white" position="relative">
+        <Circle
+          size="35px"
+          bg="red.500"
+          color="white"
+          position="relative"
+          cursor="pointer"
+        >
           <AiOutlineHeart />
         </Circle>
       </Tooltip>

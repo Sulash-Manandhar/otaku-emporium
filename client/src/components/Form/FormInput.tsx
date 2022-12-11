@@ -5,7 +5,7 @@ import {
   Input,
 } from "@chakra-ui/react";
 import React from "react";
-import { formIdSchema } from "../../Schema/Form.schema";
+import { formIdSchema } from "../../Schema/form.schema";
 
 interface Props {
   id: formIdSchema;
