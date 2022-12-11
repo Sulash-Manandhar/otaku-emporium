@@ -10,6 +10,7 @@ const urls = {
   verify_email: "/verify-email/:id/:email",
   verify_opt: "/verify-opt-code/:id/:email",
   terms_and_condition: "/terms-and-conditions",
+  forgot_password: "/forgot-password",
 
   // socail media link
   facebook: "https://youtu.be/dQw4w9WgXcQ?t=161",

@@ -1,5 +1,5 @@
 import { Box, Flex } from "@chakra-ui/react";
-import Spacer from "../Utils";
+import Spacer from "../Utils/Spacer";
 import FooterDescription from "./FooterDescription";
 import NavFooter from "./NavFooter";
 import Subsscribe from "./Subsscribe";
