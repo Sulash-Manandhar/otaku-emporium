@@ -10,7 +10,7 @@ const {
 const { model } = require("mongoose");
 
 router.post("/", addApparel);
-router.delete("/:id", deleteApparel);
-router.patch("/:id", updateApparel);
+router.delete("/:id", protect, deleteApparel);
+router.patch("/:id", protect, updateApparel);
 
 module.exports = router;
