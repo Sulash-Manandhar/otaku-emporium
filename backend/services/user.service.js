@@ -5,7 +5,6 @@ const emailValidator = require("email-validator");
 const OPT = require("../models/optModel");
 const nodemailer = require("nodemailer");
 const hbs = require("nodemailer-express-handlebars");
-const jwt = require("jsonwebtoken");
 
 const {
   generateToken,
@@ -179,30 +178,19 @@ const me = async (user, res) => {
   });
 };
 
-const generateRefreshToken = async (body, res) => {
-  const refreshToken = body.refreshToken;
+const generateRefreshToken = async (req, res) => {
+  const { user } = req;
+  const { _id, name, email } = await User.findById(user.id);
 
-  try {
-    if (!refreshToken) throw "Refresh token is missing";
-
-    const decoded = jwt.verify(refreshToken, process.env.JWT_SECRET);
-
-    const user = await User.findById(decoded.id).select("-password");
-
-    returnResponse(res, {
-      status: 200,
-      msg: "Access Token updated",
-      data: {
-        user: { id: user._id, name: user.name, email: user.email },
-        access_token: generateToken(user._id, user.email),
-        refresh_token: generateToken(user._id, user.email, true),
-      },
-    });
-  } catch (error) {
-    logger.error(error);
-    res.status(401);
-    throw new Error(error);
-  }
+  returnResponse(res, {
+    status: 200,
+    msg: "Access Token updated",
+    data: {
+      user: { id: _id, name: name, email: email },
+      access_token: generateToken(_id, email),
+      refresh_token: generateToken(_id, email, true),
+    },
+  });
 };
 
 const sendEmail = async (email, res) => {

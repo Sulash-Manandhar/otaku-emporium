@@ -39,8 +39,7 @@ const getMe = asyncHandler(async (req, res) => {
  */
 const refreshToken = asyncHandler(async (req, res) => {
   logger.info("Fetching refresh token");
-  console.log("body", req.body.refreshToken);
-  await generateRefreshToken(req.body, res);
+  await generateRefreshToken(req, res);
 });
 
 /**
