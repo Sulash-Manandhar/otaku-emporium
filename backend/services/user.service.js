@@ -1,0 +1,361 @@
+const User = require("../models/userModel");
+const logger = require("../utils/Logger");
+const bcrypt = require("bcryptjs");
+const emailValidator = require("email-validator");
+const OPT = require("../models/optModel");
+const nodemailer = require("nodemailer");
+const hbs = require("nodemailer-express-handlebars");
+const jwt = require("jsonwebtoken");
+
+const {
+  generateToken,
+  generateOTP,
+  passwordValidation,
+  throwError,
+  returnResponse,
+} = require("../utils/functions");
+
+const transporter = nodemailer.createTransport({
+  service: "gmail",
+  auth: {
+    user: process.env.AUTH_EMAIL,
+    pass: process.env.AUTH_PASS,
+  },
+});
+
+//template options
+transporter.use(
+  "compile",
+  hbs({
+    viewEngine: {
+      extName: ".handlebars",
+      partialsDir: "./backend/views",
+      defaultLayout: false,
+    },
+    viewPath: "./backend/views",
+    extName: ".handlebars",
+  })
+);
+
+const login = async (body, res) => {
+  const { email, password } = body;
+  const remember = body.remember || false;
+
+  logger.info(`User is logging In..`);
+
+  if (!email || !password) {
+    throwError(res, {
+      status: 400,
+      msg: "Details are missing.",
+    });
+  }
+
+  const user = await User.findOne({ email });
+
+  if (!user) {
+    throwError(res, {
+      status: 404,
+      msg: `User with email '${email}' is not registered.`,
+    });
+  }
+
+  const isValid = await bcrypt.compare(password, user.password);
+
+  if (!isValid) {
+    throwError(res, {
+      status: 400,
+      msg: `User '${email}' password do not match.`,
+    });
+  }
+
+  if (!user.verification) {
+    returnResponse(res, {
+      status: 401,
+      success: false,
+      msg: `User with email '${email}' is not verified.`,
+      data: {
+        user: { _id: user.id, name: user.name, email: user.email },
+      },
+    });
+  }
+
+  logger.info("Generating User token");
+  return returnResponse(res, {
+    status: 200,
+    msg: `User '${email}' is successfully logged in`,
+    data: {
+      user: { id: user.id, name: user.name, email: user.email },
+      access_token: generateToken(user.id, user.email),
+      refresh_token: remember ? generateToken(user.id, user.email, true) : null,
+    },
+  });
+};
+
+const register = async (body, res) => {
+  const { name, email, password } = body;
+  logger.info("User is registering...");
+  let errMsg = [];
+
+  //validation check
+  if (!name || !email || !password) {
+    throwError(res, {
+      status: 400,
+      msg: "Details are missing",
+    });
+  }
+
+  if (name.length <= 3) {
+    errMsg.push("Username should be atleast three characters long.");
+  }
+  if (!emailValidator.validate(email)) {
+    errMsg.push("Email Address is not valid");
+  }
+
+  if (errMsg.length > 0) {
+    throwError(res, {
+      status: 400,
+      msg: errMsg,
+    });
+  }
+
+  if (!passwordValidation(password)) {
+    throwError(res, {
+      status: 400,
+      msg: "Password must contain at least 8 characters, a capital letter, small letter a symbol and a number.",
+    });
+  }
+
+  //check if user exists
+  const userExists = await User.findOne({ email });
+
+  if (userExists) {
+    throwError(res, {
+      status: 400,
+      msg: "'${userExists.email}' is already registered.",
+    });
+  }
+
+  //Hash password
+  const salt = await bcrypt.genSalt(10);
+  const hashedPassword = await bcrypt.hash(password, salt);
+
+  //register user data into db
+  const user = await User.create({
+    name,
+    email,
+    password: hashedPassword,
+  });
+
+  if (!user) {
+    throwError(res, {
+      status: 500,
+      msg: "User ${email} registrated Failed.",
+    });
+  }
+  return returnResponse(res, {
+    status: 200,
+    msg: `'${user.name}' has been successfully registered.`,
+    data: {
+      user: {
+        id: user.id,
+        name: user.name,
+        email: user.email,
+      },
+    },
+  });
+};
+
+const me = async (user, res) => {
+  logger.info("Logged in user details...");
+  const { _id, name, email } = await User.findById(user.id);
+  logger.info("Logged in user details sent..");
+
+  return returnResponse(res, {
+    status: 200,
+    msg: `User is logged in`,
+    data: {
+      user: { _id: _id, name: name, email: email },
+    },
+  });
+};
+
+const generateRefreshToken = async (body, res) => {
+  const refreshToken = body.refreshToken;
+
+  try {
+    if (!refreshToken) throw "Refresh token is missing";
+
+    const decoded = jwt.verify(refreshToken, process.env.JWT_SECRET);
+
+    const user = await User.findById(decoded.id).select("-password");
+
+    returnResponse(res, {
+      status: 200,
+      msg: "Access Token updated",
+      data: {
+        user: { id: user._id, name: user.name, email: user.email },
+        access_token: generateToken(user._id, user.email),
+        refresh_token: generateToken(user._id, user.email, true),
+      },
+    });
+  } catch (error) {
+    logger.error(error);
+    res.status(401);
+    throw new Error(error);
+  }
+};
+
+const sendEmail = async (email, res) => {
+  //if email address is missing
+  if (!email) {
+    throwError(res, {
+      status: 400,
+      msg: `"Email address is required."`,
+    });
+  }
+
+  //validates email address
+  if (!emailValidator.validate(email)) {
+    throwError(res, {
+      status: 400,
+      msg: `Invalid Email Address.`,
+    });
+  }
+
+  //validate user
+  const user = await User.findOne({ email });
+  if (!user) {
+    throwError(res, {
+      status: 400,
+      msg: `User with '${email}' is not registered.`,
+    });
+  }
+
+  //check if verification code is already sent to the user
+  const alreadySent = await OPT.findOne({ user_id: user.id });
+  //if verification is already sent it removes it
+  if (alreadySent) {
+    await alreadySent.remove();
+  }
+  //add opt to the database
+  const code = await OPT.create({
+    user_id: user.id,
+    opt_code: generateOTP(),
+  });
+  logger.info("OPT code generated..");
+
+  //mail format
+  const mailOptions = {
+    from: process.env.AUTH_EMAIL,
+    to: email,
+    subject: "Otaku Emporium - Verify Your Email Address", //Subject Line
+    template: "VerificationCode",
+    context: {
+      opt_code: code.opt_code,
+      email: email,
+    },
+    attachments: [
+      {
+        filename: "OpenEmail.jpg",
+        path: "./backend/assests/jpg/OpenEmail.jpg",
+        cid: "openEmail",
+      },
+    ],
+  };
+  logger.info("Sending email...");
+
+  //sends mail to the defined email address
+  transporter.sendMail(mailOptions, function (error, info) {
+    if (error) {
+      throwError(res, {
+        status: 400,
+        msg: error.response,
+      });
+    }
+    logger.info(info);
+
+    return returnResponse(res, {
+      status: 200,
+      msg: `The email has been sent to ${email}`,
+    });
+  });
+};
+
+const OPTverification = async (body, res) => {
+  const { user_id, code } = body;
+
+  if (!user_id || !code) {
+    throwError(res, {
+      status: 400,
+      msg: "Details are missing.",
+    });
+  }
+
+  if (user_id.length < 12) {
+    logger.error("Invalid user id.");
+    res.status(400);
+    throw new Error("Invalid User id.");
+  }
+
+  //is user registered
+  const user = await User.findById(user_id);
+
+  if (!user) {
+    throwError(res, {
+      status: 400,
+      msg: `User is not registered.`,
+    });
+  }
+  //if user is already verified
+  if (user.verification) {
+    return returnResponse(res, {
+      status: 200,
+      msg: `User ${user.name} is already verified.`,
+    });
+  }
+
+  //verification email sent to the user?
+  const optUser = await OPT.findOne({ user_id });
+  if (!optUser) {
+    throwError(res, {
+      status: 400,
+      msg: `Verification email is yet to be sent to the user.`,
+    });
+  }
+
+  if (code !== optUser.opt_code) {
+    throwError(res, {
+      status: 400,
+      msg: `Invalid verification code.`,
+    });
+  }
+
+  //updating user verification code.
+  const updateUser = await User.findByIdAndUpdate(
+    user_id,
+    { verification: true },
+    { new: false }
+  );
+  if (!updateUser) {
+    throwError(res, {
+      status: 500,
+      msg: `Error while updating user verification status.`,
+    });
+  }
+  await optUser.remove();
+
+  logger.info("User verification status updated successfully.");
+  return returnResponse(res, {
+    status: 200,
+    msg: `User verification status updated successfully.`,
+  });
+};
+
+module.exports = {
+  login,
+  register,
+  me,
+  generateRefreshToken,
+  sendEmail,
+  OPTverification,
+};
