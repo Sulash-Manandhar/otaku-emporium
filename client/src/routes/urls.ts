@@ -8,7 +8,7 @@ const urls = {
   log_in: "/login",
   sign_in: "/signup",
   verify_email: "/verify-email/:id/:email",
-  verify_opt: "/verify-opt-code/:id/:email",
+  verify_opt: "/verify-opt-code/:id",
   terms_and_condition: "/terms-and-conditions",
   forgot_password: "/forgot-password",
 

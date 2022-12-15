@@ -12,15 +12,26 @@ import {
   useToast,
   Alert,
   AlertIcon,
+  CloseButton,
+  AlertDialog,
+  AlertDialogBody,
+  AlertDialogCloseButton,
+  AlertDialogContent,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogOverlay,
+  useDisclosure,
 } from "@chakra-ui/react";
 import { useFormik } from "formik";
 import { useMutation } from "react-query";
-import { NavLink } from "react-router-dom";
+import { Navigate, NavLink } from "react-router-dom";
 import * as Yup from "yup";
 import FormInput from "../../components/Form/FormInput";
 import PasswordInput from "../../components/Form/PasswordInput";
-import { registerUser } from "../../utils/requestApi";
-import { useState } from "react";
+import { registerUserAPI, sendVerificationAPI } from "../../utils/requestApi";
+import { useRef, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import urls from "../../routes/urls";
 
 const INITIAL_VALUE = {
   name: "",
@@ -31,25 +42,52 @@ const INITIAL_VALUE = {
 };
 
 const Signup = () => {
-  const [errorMessage, setErrorMessage] = useState("");
-
+  const { isOpen, onOpen, onClose } = useDisclosure();
   const toast = useToast({
     isClosable: true,
     duration: 3000,
     position: "bottom",
   });
+  const navigate = useNavigate();
 
-  const register = useMutation((data: any) => registerUser(data), {
+  const [errorMessage, setErrorMessage] = useState("");
+
+  const cancelRef = useRef<any>();
+
+  const handleNavigationToVerifyCode = (e: any) => {
+    e.preventDefault();
+    if (user) {
+      navigate(urls.verify_opt.replace(":id", user.id));
+    }
+  };
+
+  const sendVerificationCode = useMutation(
+    (data: any) => sendVerificationAPI(data),
+    {
+      onSuccess: () => {
+        onOpen();
+      },
+      onError: () => {
+        navigate(urls.log_in);
+      },
+    }
+  );
+
+  const register = useMutation((data: any) => registerUserAPI(data), {
     onSuccess: (res) => {
       toast({
         title: `${res?.data?.msg}`,
         status: "success",
       });
+      const { email } = res?.data?.data?.user;
+      sendVerificationCode.mutate(email);
     },
     onError: (err: any) => {
       setErrorMessage(err?.response?.data?.message);
     },
   });
+
+  const user = register?.data?.data?.data?.user;
 
   const formik = useFormik({
     initialValues: INITIAL_VALUE,
@@ -83,17 +121,48 @@ const Signup = () => {
       register.mutate(newUser);
     },
   });
+
   return (
     <Box p={8}>
       <Box mb="8">
         <Heading size="h3">Sign Up</Heading>
         <Text>Sign up now get access to many exciting features.</Text>
       </Box>
+      <AlertDialog
+        motionPreset="slideInBottom"
+        leastDestructiveRef={cancelRef}
+        onClose={onClose}
+        isOpen={isOpen}
+        isCentered
+      >
+        <AlertDialogOverlay />
+
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            Verification Code (OPT) has been sent to your email address.
+          </AlertDialogHeader>
+          <AlertDialogBody>
+            You will be navigated to verify code page.
+          </AlertDialogBody>
+          <AlertDialogFooter>
+            <Button ml={3} onClick={handleNavigationToVerifyCode}>
+              Verify OPT Code
+            </Button>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
       <form onSubmit={formik.handleSubmit}>
         {errorMessage.length > 0 && (
-          <Alert status="error">
+          <Alert status="error" mb="4">
             <AlertIcon />
-            {errorMessage}
+            <Box w="100%">{errorMessage}</Box>
+            <CloseButton
+              alignSelf="flex-start"
+              position="relative"
+              right={0}
+              top={0}
+              onClick={() => setErrorMessage("")}
+            />
           </Alert>
         )}
         <Grid templateColumns="repeat(2,1fr)" gap={4}>

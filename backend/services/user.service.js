@@ -129,7 +129,7 @@ const register = async (body, res) => {
   if (userExists) {
     throwError(res, {
       status: 400,
-      msg: "'${userExists.email}' is already registered.",
+      msg: `'${userExists.email}' is already registered.`,
     });
   }
 
