@@ -6,6 +6,7 @@ import {
   getRefreshToken,
   setAccessToken,
   setRefreshToken,
+  logout,
 } from "./auth";
 
 // axios.defaults.baseURL = process.env.REACT_APP_BASE_URL ;
@@ -20,7 +21,9 @@ const requestConfig = (request: any) => {
   request.headers["Accept"] = "application/json";
   request.headers["Content-Type"] = "application/json";
 
-  if (access_token) {
+  if (request.url === api.refresh_token) {
+    request.headers["Authorization"] = "Bearer " + getRefreshToken();
+  } else if (access_token) {
     request.headers["Authorization"] = "Bearer " + access_token;
   }
   return request;
@@ -28,20 +31,16 @@ const requestConfig = (request: any) => {
 
 const errorConfig = (error: any) => {
   const originalRequest = error.config;
-  console.log("url", originalRequest.url);
-  console.log("retry", originalRequest._retry);
-
   if (
     error.response.status === 401 &&
     originalRequest.url.includes(api.refresh_token)
   ) {
-    // window.location.replace(urls.home);
+    logout();
+    window.location.replace(urls.home);
     return Promise.reject(error);
   }
 
   if (error.response.status === 401 && !originalRequest._retry) {
-    console.log("originalRequest", originalRequest);
-
     originalRequest._retry = true;
     return axios
       .get(api.refresh_token, {
@@ -51,8 +50,6 @@ const errorConfig = (error: any) => {
       })
       .then((res) => {
         if (res.status === 200) {
-          console.log("res", res);
-
           setAccessToken(res?.data?.data?.access_token);
           setRefreshToken(res?.data?.data?.refresh_token);
           axios.defaults.headers.common[

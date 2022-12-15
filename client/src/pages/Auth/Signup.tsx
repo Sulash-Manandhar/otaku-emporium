@@ -9,12 +9,18 @@ import {
   FormErrorMessage,
   Button,
   Flex,
+  useToast,
+  Alert,
+  AlertIcon,
 } from "@chakra-ui/react";
 import { useFormik } from "formik";
+import { useMutation } from "react-query";
 import { NavLink } from "react-router-dom";
 import * as Yup from "yup";
 import FormInput from "../../components/Form/FormInput";
 import PasswordInput from "../../components/Form/PasswordInput";
+import { registerUser } from "../../utils/requestApi";
+import { useState } from "react";
 
 const INITIAL_VALUE = {
   name: "",
@@ -25,6 +31,26 @@ const INITIAL_VALUE = {
 };
 
 const Signup = () => {
+  const [errorMessage, setErrorMessage] = useState("");
+
+  const toast = useToast({
+    isClosable: true,
+    duration: 3000,
+    position: "bottom",
+  });
+
+  const register = useMutation((data: any) => registerUser(data), {
+    onSuccess: (res) => {
+      toast({
+        title: `${res?.data?.msg}`,
+        status: "success",
+      });
+    },
+    onError: (err: any) => {
+      setErrorMessage(err?.response?.data?.message);
+    },
+  });
+
   const formik = useFormik({
     initialValues: INITIAL_VALUE,
     validationSchema: Yup.object({
@@ -54,7 +80,7 @@ const Signup = () => {
         email: values.email,
         password: values.password,
       };
-      console.log(newUser);
+      register.mutate(newUser);
     },
   });
   return (
@@ -64,6 +90,12 @@ const Signup = () => {
         <Text>Sign up now get access to many exciting features.</Text>
       </Box>
       <form onSubmit={formik.handleSubmit}>
+        {errorMessage.length > 0 && (
+          <Alert status="error">
+            <AlertIcon />
+            {errorMessage}
+          </Alert>
+        )}
         <Grid templateColumns="repeat(2,1fr)" gap={4}>
           <GridItem>
             <FormInput

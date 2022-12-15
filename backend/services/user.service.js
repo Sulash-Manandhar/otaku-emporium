@@ -93,7 +93,6 @@ const login = async (body, res) => {
 const register = async (body, res) => {
   const { name, email, password } = body;
   logger.info("User is registering...");
-  let errMsg = [];
 
   //validation check
   if (!name || !email || !password) {
@@ -104,16 +103,16 @@ const register = async (body, res) => {
   }
 
   if (name.length <= 3) {
-    errMsg.push("Username should be atleast three characters long.");
-  }
-  if (!emailValidator.validate(email)) {
-    errMsg.push("Email Address is not valid");
-  }
-
-  if (errMsg.length > 0) {
     throwError(res, {
       status: 400,
-      msg: errMsg,
+      msg: "Username should be atleast three characters long.",
+    });
+  }
+
+  if (!emailValidator.validate(email)) {
+    throwError(res, {
+      status: 400,
+      msg: "Email Address is not valid.",
     });
   }
 
