@@ -18,7 +18,6 @@ export const useUserModalContext = () => useContext(UserModalContext);
 
 const UserModalProvider: React.FC<Props> = ({ children }) => {
   const [isUserModalOpen, setIsUserModalOpen] = useState(false);
-  console.log(isUserModalOpen);
 
   return (
     <UserModalContext.Provider value={{ isUserModalOpen, setIsUserModalOpen }}>
