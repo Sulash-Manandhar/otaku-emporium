@@ -10,7 +10,9 @@ const api = {
   register: `${user}/`,
   login: `${user}/login`,
   logged_user: `${user}/getLoggedInUser`,
-  send_verification_code: `${user}/verify-opt-code`,
+  send_verification_code: `${user}/send-verification-code`,
+  verify_code: `${user}/verify-opt-code`,
+  refresh_token: `${user}/getRefreshToken`,
 
   //Apparels
   add_apparel: `${apparels}/`,

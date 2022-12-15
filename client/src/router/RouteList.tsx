@@ -4,6 +4,7 @@ import PageNotFound from "../pages/404";
 import Dashboard from "../pages/Dashboard";
 import urls from "../routes/urls";
 import AuthRoute from "./AuthRoute";
+import PrivateRoute from "./PrivateRoute";
 
 const Login = lazy(() => import("../pages/Auth/Login"));
 const Signup = lazy(() => import("../pages/Auth/Signup"));
@@ -27,12 +28,15 @@ const RouteList = () => {
         <Route path={urls.sign_in} element={<Signup />} />
         <Route path={urls.verify_email} element={<VerifyEmail />} />
         <Route path={urls.verify_opt} element={<VerifyOPT />} />
-        <Route path={urls.profile} element={<Profile />} />
-        <Route path={urls.favourite} element={<Favorites />} />
+
         <Route
           path={urls.terms_and_condition}
           element={<TermsAndConditions />}
         />
+      </Route>
+      <Route element={<PrivateRoute />}>
+        <Route path={urls.profile} element={<Profile />} />
+        <Route path={urls.favourite} element={<Favorites />} />
       </Route>
       <Route element={<Dashboard />}>
         <Route path={urls.home} element={<Home />} />

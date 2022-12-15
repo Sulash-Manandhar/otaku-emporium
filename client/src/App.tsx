@@ -8,24 +8,28 @@ import RouteList from "./router/RouteList";
 import { theme } from "./themes/theme";
 import { getAccessToken } from "./utils/auth";
 import { initInterceptor } from "./utils/axiosInterceptor";
+import { QueryClient, QueryClientProvider } from "react-query";
 
 const UserModal = lazy(() => import("./components/Utils/UserModal"));
+const queryClient = new QueryClient();
 
 const App = () => {
   initInterceptor();
   const access_token = getAccessToken();
   return (
     <>
-      <ChakraProvider theme={theme}>
-        <BrowserRouter>
-          <UserModalProvider>
-            <RouteList />
-            <Suspense fallback={<DataLoading />}>
-              {!access_token && <UserModal />}
-            </Suspense>
-          </UserModalProvider>
-        </BrowserRouter>
-      </ChakraProvider>
+      <QueryClientProvider client={queryClient}>
+        <ChakraProvider theme={theme}>
+          <BrowserRouter>
+            <UserModalProvider>
+              <RouteList />
+              <Suspense fallback={<DataLoading />}>
+                {!access_token && <UserModal />}
+              </Suspense>
+            </UserModalProvider>
+          </BrowserRouter>
+        </ChakraProvider>
+      </QueryClientProvider>
     </>
   );
 };

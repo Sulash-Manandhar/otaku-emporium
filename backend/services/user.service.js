@@ -5,7 +5,6 @@ const emailValidator = require("email-validator");
 const OPT = require("../models/optModel");
 const nodemailer = require("nodemailer");
 const hbs = require("nodemailer-express-handlebars");
-const jwt = require("jsonwebtoken");
 
 const {
   generateToken,
@@ -94,7 +93,6 @@ const login = async (body, res) => {
 const register = async (body, res) => {
   const { name, email, password } = body;
   logger.info("User is registering...");
-  let errMsg = [];
 
   //validation check
   if (!name || !email || !password) {
@@ -105,16 +103,16 @@ const register = async (body, res) => {
   }
 
   if (name.length <= 3) {
-    errMsg.push("Username should be atleast three characters long.");
-  }
-  if (!emailValidator.validate(email)) {
-    errMsg.push("Email Address is not valid");
-  }
-
-  if (errMsg.length > 0) {
     throwError(res, {
       status: 400,
-      msg: errMsg,
+      msg: "Username should be atleast three characters long.",
+    });
+  }
+
+  if (!emailValidator.validate(email)) {
+    throwError(res, {
+      status: 400,
+      msg: "Email Address is not valid.",
     });
   }
 
@@ -131,7 +129,7 @@ const register = async (body, res) => {
   if (userExists) {
     throwError(res, {
       status: 400,
-      msg: "'${userExists.email}' is already registered.",
+      msg: `'${userExists.email}' is already registered.`,
     });
   }
 
@@ -179,30 +177,19 @@ const me = async (user, res) => {
   });
 };
 
-const generateRefreshToken = async (body, res) => {
-  const refreshToken = body.refreshToken;
+const generateRefreshToken = async (req, res) => {
+  const { user } = req;
+  const { _id, name, email } = await User.findById(user.id);
 
-  try {
-    if (!refreshToken) throw "Refresh token is missing";
-
-    const decoded = jwt.verify(refreshToken, process.env.JWT_SECRET);
-
-    const user = await User.findById(decoded.id).select("-password");
-
-    returnResponse(res, {
-      status: 200,
-      msg: "Access Token updated",
-      data: {
-        user: { id: user._id, name: user.name, email: user.email },
-        access_token: generateToken(user._id, user.email),
-        refresh_token: generateToken(user._id, user.email, true),
-      },
-    });
-  } catch (error) {
-    logger.error(error);
-    res.status(401);
-    throw new Error(error);
-  }
+  returnResponse(res, {
+    status: 200,
+    msg: "Access Token updated",
+    data: {
+      user: { id: _id, name: name, email: email },
+      access_token: generateToken(_id, email),
+      refresh_token: generateToken(_id, email, true),
+    },
+  });
 };
 
 const sendEmail = async (email, res) => {

@@ -12,7 +12,7 @@ const generateToken = (id, email, refresh = false) => {
   if (refresh) {
     logger.info("Generating refresh token");
     return jwt.sign({ id, email }, process.env.JWT_SECRET, {
-      expiresIn: "1h",
+      expiresIn: "4h",
     });
   }
   logger.info("Generating access token");
@@ -24,7 +24,6 @@ const generateToken = (id, email, refresh = false) => {
 const validateDate = (expired_date) => {
   const expiredInSeconds = new Date(expired_date * 1000);
   const nowInSeconds = new Date();
-  console.log("Exp time", expiredInSeconds - nowInSeconds);
   return expiredInSeconds - nowInSeconds > 0;
 };
 
