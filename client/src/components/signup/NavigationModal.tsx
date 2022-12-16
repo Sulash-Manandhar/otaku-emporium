@@ -15,10 +15,11 @@ interface Props {
   isOpen: boolean;
   onClose: () => void;
   user: any;
+  isLoading: boolean;
 }
 
 const NavigationModal: React.FC<Props> = (props) => {
-  const { isOpen, onClose, user } = props;
+  const { isOpen, onClose, user, isLoading } = props;
 
   const cancelRef = useRef<any>();
   const navigate = useNavigate();
@@ -50,6 +51,7 @@ const NavigationModal: React.FC<Props> = (props) => {
         <AlertDialogFooter>
           <Button
             ml={3}
+            isLoading={isLoading}
             onClick={handleNavigationToVerifyCode}
             colorScheme="linkedin"
           >

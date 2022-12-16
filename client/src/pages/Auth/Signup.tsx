@@ -27,6 +27,7 @@ import { useNavigate } from "react-router-dom";
 import urls from "../../routes/urls";
 import NavigationModal from "../../components/signup/NavigationModal";
 import Loading from "../../components/Utils/Loading";
+import { validateSignUp } from "../../constant/validation";
 
 const INITIAL_VALUE = {
   name: "",
@@ -47,19 +48,12 @@ const Signup = () => {
 
   const [errorMessage, setErrorMessage] = useState("");
 
-  const sendVerificationCode = useMutation(
+  const { mutate: sendVerificationCode, isLoading: sendingCode } = useMutation(
     (data: any) => sendVerificationAPI(data),
     {
-      onSuccess: () => {
-        onOpen();
-      },
-      onError: () => {
-        navigate(urls.log_in);
-      },
+      onError: () => navigate(urls.log_in),
     }
   );
-
-  const { isLoading: sendingCode } = sendVerificationCode;
 
   const register = useMutation((data: any) => registerUserAPI(data), {
     onSuccess: (res) => {
@@ -68,9 +62,10 @@ const Signup = () => {
         status: "success",
       });
       const { email } = res?.data?.data?.user;
-      sendVerificationCode.mutate({
+      sendVerificationCode({
         email: email,
       });
+      onOpen();
     },
     onError: (err: any) => {
       setErrorMessage(err?.response?.data?.message);
@@ -82,41 +77,16 @@ const Signup = () => {
 
   const formik = useFormik({
     initialValues: INITIAL_VALUE,
-    validationSchema: Yup.object({
-      name: Yup.string()
-        .required("Name is required.")
-        .min(3, "Name must be at least 3 characters."),
-      email: Yup.string()
-        .email("Please enter a valid email address.")
-        .required("Email is required"),
-      password: Yup.string()
-        .required("Password is required")
-        .matches(
-          /^(?=.*\d)(?=.*[!@#$%^&*])(?=.*[a-z])(?=.*[A-Z]).{8,}$/,
-          "Password must contain at least 8 characters, a capital letter, a symbol and a number."
-        ),
-      confirm_password: Yup.string()
-        .required("Confirm password is required")
-        .oneOf([Yup.ref("password"), null], "Passwords must match"),
-      terms: Yup.bool().oneOf(
-        [true],
-        "Please accept terms and conditions to register."
-      ),
-    }),
-    onSubmit: (values, { resetForm }) => {
+    validationSchema: validateSignUp,
+    onSubmit: (values) => {
       let newUser = {
         name: values.name,
         email: values.email,
         password: values.password,
       };
       register.mutate(newUser);
-      // resetForm();
     },
   });
-
-  if (sendingCode) {
-    return <Loading />;
-  }
 
   return (
     <Box p={8}>
@@ -124,7 +94,12 @@ const Signup = () => {
         <Heading size="h3">Sign Up</Heading>
         <Text>Sign up now get access to many exciting features.</Text>
       </Box>
-      <NavigationModal isOpen={isOpen} onClose={onClose} user={user} />
+      <NavigationModal
+        isOpen={isOpen}
+        onClose={onClose}
+        user={user}
+        isLoading={sendingCode}
+      />
       <form onSubmit={formik.handleSubmit}>
         {errorMessage.length > 0 && (
           <Alert status="error" mb="4">
