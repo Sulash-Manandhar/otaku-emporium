@@ -13,25 +13,20 @@ import {
   Alert,
   AlertIcon,
   CloseButton,
-  AlertDialog,
-  AlertDialogBody,
-  AlertDialogCloseButton,
-  AlertDialogContent,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogOverlay,
   useDisclosure,
 } from "@chakra-ui/react";
 import { useFormik } from "formik";
 import { useMutation } from "react-query";
-import { Navigate, NavLink } from "react-router-dom";
+import { NavLink } from "react-router-dom";
 import * as Yup from "yup";
 import FormInput from "../../components/Form/FormInput";
 import PasswordInput from "../../components/Form/PasswordInput";
 import { registerUserAPI, sendVerificationAPI } from "../../utils/requestApi";
-import { useRef, useState } from "react";
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import urls from "../../routes/urls";
+import NavigationModal from "../../components/signup/NavigationModal";
+import Loading from "../../components/Utils/Loading";
 
 const INITIAL_VALUE = {
   name: "",
@@ -42,24 +37,15 @@ const INITIAL_VALUE = {
 };
 
 const Signup = () => {
-  const { isOpen, onOpen, onClose } = useDisclosure();
   const toast = useToast({
     isClosable: true,
     duration: 3000,
     position: "bottom",
   });
   const navigate = useNavigate();
+  const { isOpen, onOpen, onClose } = useDisclosure();
 
   const [errorMessage, setErrorMessage] = useState("");
-
-  const cancelRef = useRef<any>();
-
-  const handleNavigationToVerifyCode = (e: any) => {
-    e.preventDefault();
-    if (user) {
-      navigate(urls.verify_opt.replace(":id", user.id));
-    }
-  };
 
   const sendVerificationCode = useMutation(
     (data: any) => sendVerificationAPI(data),
@@ -73,6 +59,8 @@ const Signup = () => {
     }
   );
 
+  const { isLoading: sendingCode } = sendVerificationCode;
+
   const register = useMutation((data: any) => registerUserAPI(data), {
     onSuccess: (res) => {
       toast({
@@ -80,12 +68,15 @@ const Signup = () => {
         status: "success",
       });
       const { email } = res?.data?.data?.user;
-      sendVerificationCode.mutate(email);
+      sendVerificationCode.mutate({
+        email: email,
+      });
     },
     onError: (err: any) => {
       setErrorMessage(err?.response?.data?.message);
     },
   });
+  const { isLoading: addingUser } = register;
 
   const user = register?.data?.data?.data?.user;
 
@@ -112,15 +103,20 @@ const Signup = () => {
         "Please accept terms and conditions to register."
       ),
     }),
-    onSubmit: (values) => {
+    onSubmit: (values, { resetForm }) => {
       let newUser = {
         name: values.name,
         email: values.email,
         password: values.password,
       };
       register.mutate(newUser);
+      // resetForm();
     },
   });
+
+  if (sendingCode) {
+    return <Loading />;
+  }
 
   return (
     <Box p={8}>
@@ -128,29 +124,7 @@ const Signup = () => {
         <Heading size="h3">Sign Up</Heading>
         <Text>Sign up now get access to many exciting features.</Text>
       </Box>
-      <AlertDialog
-        motionPreset="slideInBottom"
-        leastDestructiveRef={cancelRef}
-        onClose={onClose}
-        isOpen={isOpen}
-        isCentered
-      >
-        <AlertDialogOverlay />
-
-        <AlertDialogContent>
-          <AlertDialogHeader>
-            Verification Code (OPT) has been sent to your email address.
-          </AlertDialogHeader>
-          <AlertDialogBody>
-            You will be navigated to verify code page.
-          </AlertDialogBody>
-          <AlertDialogFooter>
-            <Button ml={3} onClick={handleNavigationToVerifyCode}>
-              Verify OPT Code
-            </Button>
-          </AlertDialogFooter>
-        </AlertDialogContent>
-      </AlertDialog>
+      <NavigationModal isOpen={isOpen} onClose={onClose} user={user} />
       <form onSubmit={formik.handleSubmit}>
         {errorMessage.length > 0 && (
           <Alert status="error" mb="4">
@@ -220,7 +194,7 @@ const Signup = () => {
             </FormControl>
           </GridItem>
         </Grid>
-        <Button mt={2} type="submit" colorScheme="blue">
+        <Button mt={2} type="submit" colorScheme="blue" isLoading={addingUser}>
           Submit
         </Button>
       </form>

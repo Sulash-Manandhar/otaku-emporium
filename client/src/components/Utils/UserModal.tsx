@@ -18,13 +18,10 @@ import {
 import { useNavigate } from "react-router-dom";
 import { useUserModalContext } from "../../context/UserModalProvider";
 import urls from "../../routes/urls";
-import { getAccessToken } from "../../utils/auth";
 
 const UserModal = () => {
   const { isUserModalOpen, setIsUserModalOpen } = useUserModalContext();
   const navigate = useNavigate();
-
-  const access_token = getAccessToken();
 
   const handleOnClose = () => {
     setIsUserModalOpen(false);
