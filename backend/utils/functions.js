@@ -1,4 +1,5 @@
 const jwt = require("jsonwebtoken");
+const { PASSWORD_REGREX } = require("../constant/common");
 const logger = require("./Logger");
 
 /**
@@ -42,9 +43,7 @@ const generateOTP = () => {
  * @returns {boolean}
  */
 const passwordValidation = (password) => {
-  const pattern =
-    /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}/g;
-  const found = password.match(pattern);
+  const found = password.match(PASSWORD_REGREX);
   return found === null ? false : true;
 };
 

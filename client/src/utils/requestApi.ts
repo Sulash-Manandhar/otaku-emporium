@@ -11,6 +11,16 @@ export async function registerUserAPI(data: any) {
   });
 }
 
+export async function loginAPI(data: any) {
+  return axios({
+    method: "post",
+    url: api.login,
+    data: data,
+  }).then((response) => {
+    return response?.data;
+  });
+}
+
 export async function sendVerificationAPI(data: any) {
   return axios({
     method: "post",
@@ -18,5 +28,24 @@ export async function sendVerificationAPI(data: any) {
     data: data,
   }).then((response) => {
     return response;
+  });
+}
+
+export async function verifyOPTAPI(data: any) {
+  return axios({
+    method: "post",
+    url: api.verify_code,
+    data: data,
+  }).then((response) => {
+    return response?.data;
+  });
+}
+
+export async function getLoggedInUserAPI() {
+  return axios({
+    method: "get",
+    url: api.logged_user,
+  }).then((response) => {
+    return response?.data;
   });
 }

@@ -14,11 +14,11 @@ import {
   AlertIcon,
   CloseButton,
   useDisclosure,
+  Link,
 } from "@chakra-ui/react";
 import { useFormik } from "formik";
 import { useMutation } from "react-query";
 import { NavLink } from "react-router-dom";
-import * as Yup from "yup";
 import FormInput from "../../components/Form/FormInput";
 import PasswordInput from "../../components/Form/PasswordInput";
 import { registerUserAPI, sendVerificationAPI } from "../../utils/requestApi";
@@ -26,7 +26,6 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import urls from "../../routes/urls";
 import NavigationModal from "../../components/signup/NavigationModal";
-import Loading from "../../components/Utils/Loading";
 import { validateSignUp } from "../../constant/validation";
 
 const INITIAL_VALUE = {
@@ -88,6 +87,8 @@ const Signup = () => {
     },
   });
 
+  const OPTurl = user && urls.verify_opt.replace(":id", user.id);
+
   return (
     <Box p={8}>
       <Box mb="8">
@@ -97,8 +98,12 @@ const Signup = () => {
       <NavigationModal
         isOpen={isOpen}
         onClose={onClose}
-        user={user}
+        url={OPTurl}
         isLoading={sendingCode}
+        contentHeader="Verification Code (OPT) has been sent to your email address."
+        contentBody="You will be navigated to verify code page."
+        buttonMsg="Verify OPT Code"
+        loadingMsg="SendingOPT"
       />
       <form onSubmit={formik.handleSubmit}>
         {errorMessage.length > 0 && (
@@ -173,6 +178,18 @@ const Signup = () => {
           Submit
         </Button>
       </form>
+      <Box my="3">
+        <Flex>
+          <Text>Already have an account? &nbsp;</Text>
+          <Link
+            fontWeight="bold"
+            color="green.500"
+            onClick={() => navigate(urls.log_in)}
+          >
+            Login
+          </Link>
+        </Flex>
+      </Box>
     </Box>
   );
 };

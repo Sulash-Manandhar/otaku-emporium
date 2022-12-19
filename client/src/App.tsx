@@ -10,7 +10,7 @@ import { getAccessToken } from "./utils/auth";
 import { initInterceptor } from "./utils/axiosInterceptor";
 import { QueryClient, QueryClientProvider } from "react-query";
 
-const UserModal = lazy(() => import("./components/Utils/UserModal"));
+const UserModal = lazy(() => import("./components/UserModal/UserModal"));
 const queryClient = new QueryClient();
 
 const App = () => {

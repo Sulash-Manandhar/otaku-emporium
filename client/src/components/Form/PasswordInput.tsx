@@ -9,7 +9,7 @@ import {
 } from "@chakra-ui/react";
 import React, { useState } from "react";
 import { AiFillEye, AiFillEyeInvisible } from "react-icons/ai";
-import { formIdSchema } from "../../Schema/form.schema";
+import { formIdSchema } from "../../Schema/common";
 
 interface Props {
   id: formIdSchema;

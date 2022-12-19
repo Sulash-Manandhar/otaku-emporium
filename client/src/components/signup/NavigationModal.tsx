@@ -14,20 +14,31 @@ import urls from "../../routes/urls";
 interface Props {
   isOpen: boolean;
   onClose: () => void;
-  user: any;
-  isLoading: boolean;
+  isLoading?: boolean;
+  contentHeader: string;
+  contentBody: string;
+  loadingMsg?: string;
+  buttonMsg: string;
+  url: string;
 }
 
 const NavigationModal: React.FC<Props> = (props) => {
-  const { isOpen, onClose, user, isLoading } = props;
+  const {
+    isOpen,
+    onClose,
+    isLoading,
+    contentBody,
+    contentHeader,
+    loadingMsg,
+    buttonMsg,
+    url,
+  } = props;
 
   const cancelRef = useRef<any>();
   const navigate = useNavigate();
 
   const handleNavigationToVerifyCode = () => {
-    if (user) {
-      navigate(urls.verify_opt.replace(":id", user.id));
-    }
+    navigate(url);
     onClose();
   };
 
@@ -42,20 +53,17 @@ const NavigationModal: React.FC<Props> = (props) => {
       <AlertDialogOverlay />
 
       <AlertDialogContent>
-        <AlertDialogHeader>
-          Verification Code (OPT) has been sent to your email address.
-        </AlertDialogHeader>
-        <AlertDialogBody>
-          You will be navigated to verify code page.
-        </AlertDialogBody>
+        <AlertDialogHeader>{contentHeader}</AlertDialogHeader>
+        <AlertDialogBody>{contentBody}</AlertDialogBody>
         <AlertDialogFooter>
           <Button
             ml={3}
             isLoading={isLoading}
+            loadingText={loadingMsg}
             onClick={handleNavigationToVerifyCode}
             colorScheme="linkedin"
           >
-            Verify OPT Code
+            {buttonMsg}
           </Button>
         </AlertDialogFooter>
       </AlertDialogContent>
