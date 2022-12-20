@@ -13,25 +13,20 @@ import {
   Alert,
   AlertIcon,
   CloseButton,
-  AlertDialog,
-  AlertDialogBody,
-  AlertDialogCloseButton,
-  AlertDialogContent,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogOverlay,
   useDisclosure,
+  Link,
 } from "@chakra-ui/react";
 import { useFormik } from "formik";
 import { useMutation } from "react-query";
-import { Navigate, NavLink } from "react-router-dom";
-import * as Yup from "yup";
+import { NavLink } from "react-router-dom";
 import FormInput from "../../components/Form/FormInput";
 import PasswordInput from "../../components/Form/PasswordInput";
 import { registerUserAPI, sendVerificationAPI } from "../../utils/requestApi";
-import { useRef, useState } from "react";
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import urls from "../../routes/urls";
+import NavigationModal from "../../components/signup/NavigationModal";
+import { validateSignUp } from "../../constant/validation";
 
 const INITIAL_VALUE = {
   name: "",
@@ -42,34 +37,20 @@ const INITIAL_VALUE = {
 };
 
 const Signup = () => {
-  const { isOpen, onOpen, onClose } = useDisclosure();
   const toast = useToast({
     isClosable: true,
     duration: 3000,
     position: "bottom",
   });
   const navigate = useNavigate();
+  const { isOpen, onOpen, onClose } = useDisclosure();
 
   const [errorMessage, setErrorMessage] = useState("");
 
-  const cancelRef = useRef<any>();
-
-  const handleNavigationToVerifyCode = (e: any) => {
-    e.preventDefault();
-    if (user) {
-      navigate(urls.verify_opt.replace(":id", user.id));
-    }
-  };
-
-  const sendVerificationCode = useMutation(
+  const { mutate: sendVerificationCode, isLoading: sendingCode } = useMutation(
     (data: any) => sendVerificationAPI(data),
     {
-      onSuccess: () => {
-        onOpen();
-      },
-      onError: () => {
-        navigate(urls.log_in);
-      },
+      onError: () => navigate(urls.log_in),
     }
   );
 
@@ -80,38 +61,22 @@ const Signup = () => {
         status: "success",
       });
       const { email } = res?.data?.data?.user;
-      sendVerificationCode.mutate(email);
+      sendVerificationCode({
+        email: email,
+      });
+      onOpen();
     },
     onError: (err: any) => {
       setErrorMessage(err?.response?.data?.message);
     },
   });
+  const { isLoading: addingUser } = register;
 
   const user = register?.data?.data?.data?.user;
 
   const formik = useFormik({
     initialValues: INITIAL_VALUE,
-    validationSchema: Yup.object({
-      name: Yup.string()
-        .required("Name is required.")
-        .min(3, "Name must be at least 3 characters."),
-      email: Yup.string()
-        .email("Please enter a valid email address.")
-        .required("Email is required"),
-      password: Yup.string()
-        .required("Password is required")
-        .matches(
-          /^(?=.*\d)(?=.*[!@#$%^&*])(?=.*[a-z])(?=.*[A-Z]).{8,}$/,
-          "Password must contain at least 8 characters, a capital letter, a symbol and a number."
-        ),
-      confirm_password: Yup.string()
-        .required("Confirm password is required")
-        .oneOf([Yup.ref("password"), null], "Passwords must match"),
-      terms: Yup.bool().oneOf(
-        [true],
-        "Please accept terms and conditions to register."
-      ),
-    }),
+    validationSchema: validateSignUp,
     onSubmit: (values) => {
       let newUser = {
         name: values.name,
@@ -122,35 +87,24 @@ const Signup = () => {
     },
   });
 
+  const OPTurl = user && urls.verify_opt.replace(":id", user.id);
+
   return (
     <Box p={8}>
       <Box mb="8">
         <Heading size="h3">Sign Up</Heading>
         <Text>Sign up now get access to many exciting features.</Text>
       </Box>
-      <AlertDialog
-        motionPreset="slideInBottom"
-        leastDestructiveRef={cancelRef}
-        onClose={onClose}
+      <NavigationModal
         isOpen={isOpen}
-        isCentered
-      >
-        <AlertDialogOverlay />
-
-        <AlertDialogContent>
-          <AlertDialogHeader>
-            Verification Code (OPT) has been sent to your email address.
-          </AlertDialogHeader>
-          <AlertDialogBody>
-            You will be navigated to verify code page.
-          </AlertDialogBody>
-          <AlertDialogFooter>
-            <Button ml={3} onClick={handleNavigationToVerifyCode}>
-              Verify OPT Code
-            </Button>
-          </AlertDialogFooter>
-        </AlertDialogContent>
-      </AlertDialog>
+        onClose={onClose}
+        url={OPTurl}
+        isLoading={sendingCode}
+        contentHeader="Verification Code (OPT) has been sent to your email address."
+        contentBody="You will be navigated to verify code page."
+        buttonMsg="Verify OPT Code"
+        loadingMsg="SendingOPT"
+      />
       <form onSubmit={formik.handleSubmit}>
         {errorMessage.length > 0 && (
           <Alert status="error" mb="4">
@@ -220,10 +174,22 @@ const Signup = () => {
             </FormControl>
           </GridItem>
         </Grid>
-        <Button mt={2} type="submit" colorScheme="blue">
+        <Button mt={2} type="submit" colorScheme="blue" isLoading={addingUser}>
           Submit
         </Button>
       </form>
+      <Box my="3">
+        <Flex>
+          <Text>Already have an account? &nbsp;</Text>
+          <Link
+            fontWeight="bold"
+            color="green.500"
+            onClick={() => navigate(urls.log_in)}
+          >
+            Login
+          </Link>
+        </Flex>
+      </Box>
     </Box>
   );
 };

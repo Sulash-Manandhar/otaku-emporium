@@ -7,8 +7,10 @@ export function getRefreshToken() {
   return localStorage.getItem(REFRESH_TOKEN);
 }
 
-export function getUserStatus() {
-  return localStorage.getItem(USER_INFO);
+export function getUserInfo() {
+  let user = localStorage.getItem(USER_INFO);
+  if (user) return JSON.parse(user);
+  return user;
 }
 
 export function setAccessToken(token: string) {

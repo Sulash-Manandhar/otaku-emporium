@@ -9,11 +9,21 @@ const {
   verifyOPTCode,
   refreshToken,
 } = require("../controllers/userController");
+const {
+  validateLoginParams,
+  validateRegisterParams,
+  validateSendVerificationEmailParams,
+  validateVerifyOPTParams,
+} = require("../validators/user.validator");
 
-router.post("/", registerUser);
-router.post("/login", loginUser);
-router.post("/send-verification-code", sendVerificationCode);
-router.post("/verify-opt-code", verifyOPTCode);
+router.post("/", validateRegisterParams, registerUser);
+router.post("/login", validateLoginParams, loginUser);
+router.post(
+  "/send-verification-code",
+  validateSendVerificationEmailParams,
+  sendVerificationCode
+);
+router.post("/verify-opt-code", validateVerifyOPTParams, verifyOPTCode);
 router.get("/getLoggedInUser", protect, getMe);
 router.get("/getRefreshToken", protect, refreshToken);
 

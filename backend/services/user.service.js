@@ -1,7 +1,6 @@
 const User = require("../models/userModel");
 const logger = require("../utils/Logger");
 const bcrypt = require("bcryptjs");
-const emailValidator = require("email-validator");
 const OPT = require("../models/optModel");
 const nodemailer = require("nodemailer");
 const hbs = require("nodemailer-express-handlebars");
@@ -9,7 +8,6 @@ const hbs = require("nodemailer-express-handlebars");
 const {
   generateToken,
   generateOTP,
-  passwordValidation,
   throwError,
   returnResponse,
 } = require("../utils/functions");
@@ -37,17 +35,8 @@ transporter.use(
 );
 
 const login = async (body, res) => {
-  const { email, password } = body;
-  const remember = body.remember || false;
-
+  const { email, password, remember = false } = body;
   logger.info(`User is logging In..`);
-
-  if (!email || !password) {
-    throwError(res, {
-      status: 400,
-      msg: "Details are missing.",
-    });
-  }
 
   const user = await User.findOne({ email });
 
@@ -63,17 +52,17 @@ const login = async (body, res) => {
   if (!isValid) {
     throwError(res, {
       status: 400,
-      msg: `User '${email}' password do not match.`,
+      msg: `Password do not match.`,
     });
   }
 
   if (!user.verification) {
-    returnResponse(res, {
-      status: 401,
+    return returnResponse(res, {
+      status: 403,
       success: false,
       msg: `User with email '${email}' is not verified.`,
       data: {
-        user: { _id: user.id, name: user.name, email: user.email },
+        user: { id: user.id, name: user.name, email: user.email },
       },
     });
   }
@@ -83,7 +72,12 @@ const login = async (body, res) => {
     status: 200,
     msg: `User '${email}' is successfully logged in`,
     data: {
-      user: { id: user.id, name: user.name, email: user.email },
+      user: {
+        id: user.id,
+        name: user.name,
+        email: user.email,
+        url: "https://bit.ly/dan-abramov",
+      },
       access_token: generateToken(user.id, user.email),
       refresh_token: remember ? generateToken(user.id, user.email, true) : null,
     },
@@ -94,36 +88,6 @@ const register = async (body, res) => {
   const { name, email, password } = body;
   logger.info("User is registering...");
 
-  //validation check
-  if (!name || !email || !password) {
-    throwError(res, {
-      status: 400,
-      msg: "Details are missing",
-    });
-  }
-
-  if (name.length <= 3) {
-    throwError(res, {
-      status: 400,
-      msg: "Username should be atleast three characters long.",
-    });
-  }
-
-  if (!emailValidator.validate(email)) {
-    throwError(res, {
-      status: 400,
-      msg: "Email Address is not valid.",
-    });
-  }
-
-  if (!passwordValidation(password)) {
-    throwError(res, {
-      status: 400,
-      msg: "Password must contain at least 8 characters, a capital letter, small letter a symbol and a number.",
-    });
-  }
-
-  //check if user exists
   const userExists = await User.findOne({ email });
 
   if (userExists) {
@@ -172,14 +136,19 @@ const me = async (user, res) => {
     status: 200,
     msg: `User is logged in`,
     data: {
-      user: { _id: _id, name: name, email: email },
+      user: {
+        id: _id,
+        name: name,
+        email: email,
+        url: "https://bit.ly/dan-abramov",
+      },
     },
   });
 };
 
 const generateRefreshToken = async (req, res) => {
   const { user } = req;
-  const { _id, name, email } = await User.findById(user.id);
+  const { _id, name, email } = await findById(user.id);
 
   returnResponse(res, {
     status: 200,
@@ -193,22 +162,6 @@ const generateRefreshToken = async (req, res) => {
 };
 
 const sendEmail = async (email, res) => {
-  //if email address is missing
-  if (!email) {
-    throwError(res, {
-      status: 400,
-      msg: `"Email address is required."`,
-    });
-  }
-
-  //validates email address
-  if (!emailValidator.validate(email)) {
-    throwError(res, {
-      status: 400,
-      msg: `Invalid Email Address.`,
-    });
-  }
-
   //validate user
   const user = await User.findOne({ email });
   if (!user) {
@@ -270,19 +223,6 @@ const sendEmail = async (email, res) => {
 
 const OPTverification = async (body, res) => {
   const { user_id, code } = body;
-
-  if (!user_id || !code) {
-    throwError(res, {
-      status: 400,
-      msg: "Details are missing.",
-    });
-  }
-
-  if (user_id.length < 12) {
-    logger.error("Invalid user id.");
-    res.status(400);
-    throw new Error("Invalid User id.");
-  }
 
   //is user registered
   const user = await User.findById(user_id);

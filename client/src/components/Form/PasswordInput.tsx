@@ -9,16 +9,17 @@ import {
 } from "@chakra-ui/react";
 import React, { useState } from "react";
 import { AiFillEye, AiFillEyeInvisible } from "react-icons/ai";
-import { formIdSchema } from "../../Schema/form.schema";
+import { formIdSchema } from "../../Schema/common";
 
 interface Props {
   id: formIdSchema;
   label: string;
   formik: any;
+  variant?: "flushed" | "filled" | "outline";
 }
 
 const PasswordInput: React.FC<Props> = (props) => {
-  const { id, label, formik } = props;
+  const { id, label, formik, variant = "outline" } = props;
 
   const [show, setShow] = useState(false);
 
@@ -33,6 +34,7 @@ const PasswordInput: React.FC<Props> = (props) => {
           placeholder="********"
           onBlur={formik.handleBlur}
           onChange={formik.handleChange}
+          variant={variant}
         />
         <InputRightElement>
           <Button

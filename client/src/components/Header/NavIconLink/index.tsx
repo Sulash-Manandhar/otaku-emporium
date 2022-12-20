@@ -1,14 +1,24 @@
 import { Flex, Tooltip, Avatar, Circle, Badge } from "@chakra-ui/react";
-import React from "react";
 import { AiOutlineShoppingCart, AiOutlineHeart } from "react-icons/ai";
+import { useQuery } from "react-query";
 import { useNavigate } from "react-router-dom";
 import { useUserModalContext } from "../../../context/UserModalProvider";
 import urls from "../../../routes/urls";
-import { getAccessToken } from "../../../utils/auth";
+import { getAccessToken, setUserInfo } from "../../../utils/auth";
+import { getLoggedInUserAPI } from "../../../utils/requestApi";
 
 const NavIconLink = () => {
   const navigate = useNavigate();
   const { setIsUserModalOpen } = useUserModalContext();
+  const access_token = getAccessToken();
+
+  useQuery(["one-time-run", access_token], () => getLoggedInUserAPI(), {
+    onSuccess: (res) => {
+      setUserInfo(JSON.stringify(res?.data?.user));
+    },
+    enabled: !!access_token,
+    retry: false,
+  });
 
   const handleProfileClick = (e: any) => {
     e.preventDefault();
@@ -19,7 +29,7 @@ const NavIconLink = () => {
 
   return (
     <Flex justifyContent="flex-start" alignItems="center" gap="8px">
-      <Tooltip label="Profile" hasArrow>
+      <Tooltip label="Profile" hasArrow openDelay={1500} placement="bottom">
         <Avatar
           size="sm"
           name="Sulash Manandhar"
@@ -28,7 +38,7 @@ const NavIconLink = () => {
           onClick={handleProfileClick}
         />
       </Tooltip>
-      <Tooltip label="Favourite" hasArrow>
+      <Tooltip label="Favourite" hasArrow openDelay={1500} placement="bottom">
         <Circle
           size="35px"
           bg="red.500"
@@ -39,7 +49,7 @@ const NavIconLink = () => {
           <AiOutlineHeart />
         </Circle>
       </Tooltip>
-      <Tooltip label="Cart" hasArrow>
+      <Tooltip label="Cart" hasArrow openDelay={1500} placement="bottom">
         <Circle
           size="35px"
           bg="telegram.500"
