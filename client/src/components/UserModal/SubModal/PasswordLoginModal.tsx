@@ -12,16 +12,24 @@ import {
   Text,
   Box,
   Link,
+  Alert,
+  AlertIcon,
+  CloseButton,
 } from "@chakra-ui/react";
 import React from "react";
-import { useNavigate } from "react-router-dom";
-import urls from "../../../routes/urls";
-import { localUserInfoSchema } from "../../../Schema/common";
+import {
+  localUserInfoSchema,
+  loginMutateDataSchema,
+} from "../../../Schema/common";
+import { useRef } from "react";
 
 interface Props {
   user: localUserInfoSchema;
   handleCreateAccountNavigation: () => void;
   handleForgotPasswordNavigation: () => void;
+  errorMessage: string;
+  closeErrorMessage: () => void;
+  handleLogin: (params: loginMutateDataSchema) => void;
 }
 
 const PasswordLoginModal: React.FC<Props> = (props) => {
@@ -29,9 +37,21 @@ const PasswordLoginModal: React.FC<Props> = (props) => {
     user,
     handleForgotPasswordNavigation,
     handleCreateAccountNavigation,
+    errorMessage,
+    closeErrorMessage,
+    handleLogin,
   } = props;
 
-  const navigate = useNavigate();
+  const passwordRef = useRef<any>(null);
+
+  const onSubmit = (e: any) => {
+    e.preventDefault();
+    handleLogin({
+      email: user.email,
+      password: passwordRef.current.value,
+      remember: true,
+    });
+  };
 
   return (
     <ModalContent>
@@ -47,17 +67,40 @@ const PasswordLoginModal: React.FC<Props> = (props) => {
       </ModalHeader>
       <ModalCloseButton />
       <ModalBody textAlign="center">
+        {errorMessage.length > 0 && (
+          <Alert status="error" mb="4">
+            <AlertIcon />
+            <Box w="100%">{errorMessage}</Box>
+            <CloseButton
+              alignSelf="flex-start"
+              position="relative"
+              right={0}
+              top={0}
+              onClick={closeErrorMessage}
+            />
+          </Alert>
+        )}
         <Flex direction="column" gap="8" alignItems="center">
-          <Input
-            variant="flushed"
-            placeholder="Enter Password"
-            w="80%"
-            type="password"
-            autoFocus
-          />
-          <Button type="button" variant="solid" colorScheme="linkedin">
-            Login
-          </Button>
+          <form style={{ width: "100%" }}>
+            <Flex direction="column" gap="8" alignItems="center">
+              <Input
+                variant="flushed"
+                placeholder="Enter Password"
+                w="80%"
+                type="password"
+                autoFocus
+                ref={passwordRef}
+              />
+              <Button
+                type="button"
+                variant="solid"
+                colorScheme="linkedin"
+                onClick={onSubmit}
+              >
+                Login
+              </Button>
+            </Flex>
+          </form>
 
           <Box>
             <Flex>

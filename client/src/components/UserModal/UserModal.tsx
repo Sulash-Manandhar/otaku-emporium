@@ -1,25 +1,16 @@
 import {
-  Avatar,
   Box,
-  Button,
-  Divider,
-  Flex,
-  Heading,
-  Input,
-  Link,
   Modal,
-  ModalBody,
-  ModalCloseButton,
-  ModalContent,
-  ModalHeader,
   ModalOverlay,
-  Text,
+  useDisclosure,
   useToast,
 } from "@chakra-ui/react";
+import { useState } from "react";
 import { useMutation } from "react-query";
 import { useNavigate } from "react-router-dom";
 import { useUserModalContext } from "../../context/UserModalProvider";
 import urls from "../../routes/urls";
+import { loginMutateDataSchema } from "../../Schema/common";
 import {
   getUserInfo,
   setAccessToken,
@@ -27,6 +18,7 @@ import {
   setUserInfo,
 } from "../../utils/auth";
 import { loginAPI } from "../../utils/requestApi";
+import NavigationModal from "../signup/NavigationModal";
 import LoginModal from "./SubModal/LoginModal";
 import PasswordLoginModal from "./SubModal/PasswordLoginModal";
 
@@ -40,6 +32,11 @@ const UserModal = () => {
     position: "bottom",
   });
   const user = getUserInfo();
+  const { isOpen, onOpen, onClose } = useDisclosure();
+
+  const [errorMessage, setErrorMessage] = useState("");
+  const [userId, setUserId] = useState("");
+
   const handleOnClose = () => {
     setIsUserModalOpen(false);
   };
@@ -52,6 +49,10 @@ const UserModal = () => {
   const handleForgotPasswordNavigation = () => {
     navigate(urls.forgot_password);
     handleOnClose();
+  };
+
+  const closeErrorMessage = () => {
+    setErrorMessage("");
   };
 
   const loginQuery = useMutation((data: any) => loginAPI(data), {
@@ -69,39 +70,56 @@ const UserModal = () => {
     },
     onError: (err: any) => {
       if (err?.response?.status === 403) {
-        // onOpen();
-        toast({
-          title: err?.response?.data?.msg,
-          status: "info",
-        });
-
-        // setUserId(err?.response?.data?.data?.user?.id);
+        handleOnClose();
+        setUserId(err?.response?.data?.data?.user?.id);
+        closeErrorMessage();
+        onOpen();
       } else {
-        // setErrorMessage(err?.response?.data?.msg);
+        setErrorMessage(err?.response?.data?.msg);
       }
     },
   });
 
+  const handleLogin = (data: loginMutateDataSchema) => {
+    loginQuery.mutate(data);
+  };
+
   return (
-    <Modal
-      isOpen={isUserModalOpen}
-      onClose={handleOnClose}
-      preserveScrollBarGap
-    >
-      <ModalOverlay />
-      {false ? (
-        <PasswordLoginModal
-          user={user}
-          handleForgotPasswordNavigation={handleForgotPasswordNavigation}
-          handleCreateAccountNavigation={handleCreateAccountNavigation}
-        />
-      ) : (
-        <LoginModal
-          handleForgotPasswordNavigation={handleForgotPasswordNavigation}
-          handleCreateAccountNavigation={handleCreateAccountNavigation}
-        />
-      )}
-    </Modal>
+    <Box>
+      <NavigationModal
+        isOpen={isOpen}
+        onClose={onClose}
+        contentHeader="Verify your email address now!"
+        contentBody="You need to verify your email to login"
+        buttonMsg="Verify Email"
+        url={urls.verify_email.replace(":id", userId)}
+      />
+      <Modal
+        isOpen={isUserModalOpen}
+        onClose={handleOnClose}
+        preserveScrollBarGap
+      >
+        <ModalOverlay />
+        {user ? (
+          <PasswordLoginModal
+            user={user}
+            handleLogin={handleLogin}
+            errorMessage={errorMessage}
+            closeErrorMessage={closeErrorMessage}
+            handleForgotPasswordNavigation={handleForgotPasswordNavigation}
+            handleCreateAccountNavigation={handleCreateAccountNavigation}
+          />
+        ) : (
+          <LoginModal
+            handleLogin={handleLogin}
+            errorMessage={errorMessage}
+            closeErrorMessage={closeErrorMessage}
+            handleForgotPasswordNavigation={handleForgotPasswordNavigation}
+            handleCreateAccountNavigation={handleCreateAccountNavigation}
+          />
+        )}
+      </Modal>
+    </Box>
   );
 };
 

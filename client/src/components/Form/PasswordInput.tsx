@@ -15,10 +15,11 @@ interface Props {
   id: formIdSchema;
   label: string;
   formik: any;
+  variant?: "flushed" | "filled" | "outline";
 }
 
 const PasswordInput: React.FC<Props> = (props) => {
-  const { id, label, formik } = props;
+  const { id, label, formik, variant = "outline" } = props;
 
   const [show, setShow] = useState(false);
 
@@ -33,6 +34,7 @@ const PasswordInput: React.FC<Props> = (props) => {
           placeholder="********"
           onBlur={formik.handleBlur}
           onChange={formik.handleChange}
+          variant={variant}
         />
         <InputRightElement>
           <Button

@@ -29,7 +29,7 @@ const NavIconLink = () => {
 
   return (
     <Flex justifyContent="flex-start" alignItems="center" gap="8px">
-      <Tooltip label="Profile" hasArrow>
+      <Tooltip label="Profile" hasArrow openDelay={1500} placement="bottom">
         <Avatar
           size="sm"
           name="Sulash Manandhar"
@@ -38,7 +38,7 @@ const NavIconLink = () => {
           onClick={handleProfileClick}
         />
       </Tooltip>
-      <Tooltip label="Favourite" hasArrow>
+      <Tooltip label="Favourite" hasArrow openDelay={1500} placement="bottom">
         <Circle
           size="35px"
           bg="red.500"
@@ -49,7 +49,7 @@ const NavIconLink = () => {
           <AiOutlineHeart />
         </Circle>
       </Tooltip>
-      <Tooltip label="Cart" hasArrow>
+      <Tooltip label="Cart" hasArrow openDelay={1500} placement="bottom">
         <Circle
           size="35px"
           bg="telegram.500"

@@ -6,3 +6,9 @@ export type localUserInfoSchema = {
   email: string;
   url: string;
 };
+
+export type loginMutateDataSchema = {
+  email: string;
+  password: string;
+  remember: boolean;
+};

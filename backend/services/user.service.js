@@ -35,9 +35,7 @@ transporter.use(
 );
 
 const login = async (body, res) => {
-  const { email, password } = body;
-  const remember = body.remember || false;
-  console.log(email, password, remember);
+  const { email, password, remember = false } = body;
   logger.info(`User is logging In..`);
 
   const user = await User.findOne({ email });
