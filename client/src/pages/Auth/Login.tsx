@@ -43,7 +43,6 @@ const Login = () => {
 
   const [errorMessage, setErrorMessage] = useState("");
   const [userId, setUserId] = useState("");
-  // let userId = "";
 
   const loginQuery = useMutation((data: any) => loginAPI(data), {
     onSuccess: (res) => {

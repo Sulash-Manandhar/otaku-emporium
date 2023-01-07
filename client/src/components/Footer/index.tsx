@@ -6,7 +6,7 @@ import Subsscribe from "./Subsscribe";
 
 const Footer = () => {
   return (
-    <Box mt="8px">
+    <Box mt="8">
       <Spacer background="green.400" />
       <Box px={8}>
         <Flex

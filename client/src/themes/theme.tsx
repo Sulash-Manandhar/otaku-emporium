@@ -25,10 +25,12 @@ export const theme = extendTheme({
     },
     gray: {
       400: "#EBEBEB",
+      300: "#f5f5f5",
     },
   },
   shadows: {
     light: "0px 1px 15px #00000029",
+    box: "0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19)",
   },
   components: {
     Button,
