@@ -1,86 +1,61 @@
-const e = require("express");
-const asyncHandler = require("express-async-handler");
-const Apparel = require("../models/apparelModel")
+const {
+  addApparel,
+  deleteApparel,
+  updatedApparel,
+  getApparel,
+  getApparels,
+} = require("../services/apparels.service");
 
-const addApparel = asyncHandler(async(req, res) => {
-    const { name, price, size, description, category, relatedTo } = req.body;
+/**
+ * @desc Get All Products
+ * @route GET /api/apparels/
+ */
+const handleGetApparels = (req, res) => {
+  getApparels(res);
+};
 
-    const prodExist = await Apparel.findOne({ name });
-    if (prodExist) {
-        res.status(400);
-        throw new Error("Product Name Already exists")
-    }
+/**
+ * @desc Get All a Product
+ * @route GET /api/apparels/:id
+ * @param {string} id
+ */
+const handleGetApparel = (req, res) => {
+  getApparel(req.params.id, res);
+};
 
-    //adds new product to database
-    const product = await Apparel.create({
-        name,
-        price,
-        description,
-        category,
-        relatedTo,
-        size,
-    });
-    if (product) {
-        res.status(201).json({
-            _id: product.id,
-            name: product.name,
-            price: product.price,
-            description: product.description,
-            category: product.category,
-            relatedTo: product.relatedTo,
-            size: product.size
-        });
-    } else {
-        res.status(500);
-        throw new Error(`Server Error`)
-    }
-});
+/**
+ * @desc POST Add a product
+ * @route POST /api/apparels/
+ */
+const handleAddApparel = (req, res) => {
+  addApparel(req.body, res);
+};
 
-// delete the product prom database
-const deleteApparel = asyncHandler(async(req, res) => {
-    const { _id } = req.body;
-    const product = await Apparel.findOne({ _id });
-    if (!product) {
-        res.status(400);
-        throw new Error('Product Dosent Exists')
-    }
-    const deleteProduct = await product.remove()
-    if (!deleteProduct) {
-        return res
-            .status(500)
-            .json({ message: `Failed to delete product with id ${_id}` });
-    }
-    res.status(200).json({
-        sucess: true,
-        message: "product delete sucessfully"
-    });
+/**
+ * @desc DELETE Delete a product
+ * @route DELETE /api/apparels/:id
+ * @param {string} id
+ */
+const handleDeleteApparel = (req, res) => {
+  const { id } = req.body;
+  deleteApparel(id, res);
+};
 
-});
-
-
-//update a certain product from database
-const updateApparel = asyncHandler(async(req, res) => {
-    const _id = req.params.id;
-
-    if (Object.keys(req.body).length === 0) {
-        res.status(400);
-        throw new Error('No Body to Update')
-    }
-
-    const updateProduct = await Apparel.findByIdAndUpdate(_id, req.body, { new: false, });
-    if (!updateProduct) {
-        return res
-            .status(500)
-            .json({ message: `Failed to update product with id ${_id}` });
-    }
-    res.status(200).json({
-        sucess: true,
-        message: "Product updated sucessfully"
-    })
-});
+/**
+ * @desc UPDATE Update a product
+ * @route UPDATE /api/apparels/:id
+ * @param {string} id
+ * @param {object} data
+ */
+const handleUpdataApparel = (req, res) => {
+  const id = req.params.id;
+  updatedApparel(id, req.body, res);
+};
 
 module.exports = {
-    addApparel,
-    deleteApparel,
-    updateApparel,
+  handleGetApparel,
+  handleGetApparels,
+  handleAddApparel,
+  handleDeleteApparel,
+  handleUpdataApparel,
 };

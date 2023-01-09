@@ -5,7 +5,7 @@ import TopProducts from "../../components/Home/TopProducts";
 
 const Home = () => {
   return (
-    <Flex direction="column" gap="24" color="#252525">
+    <Flex direction="column" gap="16" color="#252525">
       <Heading as="h1" variant="h1">
         <Box>
           <Image src="images/slide2.jpg" alt="Hero Image" w="100%" />

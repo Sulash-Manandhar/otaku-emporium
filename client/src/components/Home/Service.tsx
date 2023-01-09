@@ -68,7 +68,7 @@ const Service = () => {
   return (
     <Box px={8}>
       <Box textAlign="center" my={8}>
-        <Heading as="h3" size="h3">
+        <Heading as="h3" size="h3" backgroundColor="green.400" color="white">
           Services We Provide
         </Heading>
       </Box>

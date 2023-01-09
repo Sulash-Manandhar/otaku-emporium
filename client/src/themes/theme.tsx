@@ -31,6 +31,7 @@ export const theme = extendTheme({
   shadows: {
     light: "0px 1px 15px #00000029",
     box: "0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19)",
+    card: "0 0 15px rgb(0, 0, 0, 0.3)",
   },
   components: {
     Button,

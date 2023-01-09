@@ -57,11 +57,12 @@ const throwError = (res, error) => {
 const returnResponse = (res, result) => {
   const { data, status, msg, success = true } = result;
   logger.info(msg);
-  res.status(status).json({
+  const responseMessage = {
     success: success ?? true,
     msg: msg,
-    data: data || null,
-  });
+  };
+  if (data) responseMessage.data = data;
+  res.status(status).json(responseMessage);
 };
 
 module.exports = {

@@ -1,16 +1,19 @@
 const express = require("express");
 const router = express.Router();
 const { protect } = require("../middleware/authMiddleware");
-const { findOneAndReplace } = require("../models/apparelModel");
-const {
-  addApparel,
-  deleteApparel,
-  updateApparel,
-} = require("../controllers/apparelController");
-const { model } = require("mongoose");
 
-router.post("/", addApparel);
-router.delete("/:id", protect, deleteApparel);
-router.patch("/:id", protect, updateApparel);
+const {
+  handleAddApparel,
+  handleDeleteApparel,
+  handleUpdataApparel,
+  handleGetApparels,
+  handleGetApparel,
+} = require("../controllers/apparelController");
+
+router.get("/:id", handleGetApparel);
+router.get("/", handleGetApparels);
+router.post("/", protect, handleAddApparel);
+router.delete("/:id", protect, handleDeleteApparel);
+router.put("/:id", protect, handleUpdataApparel);
 
 module.exports = router;

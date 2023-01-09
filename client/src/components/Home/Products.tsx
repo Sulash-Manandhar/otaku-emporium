@@ -28,7 +28,7 @@ const Products = () => {
         </Flex>
         <Flex sx={ContainerStyle}>
           <Box width="70%">
-            <Text color="#b8b8b8">#Mask</Text>
+            <Text color="#b8b8b8">#Accessories</Text>
             <Heading as="h5" size="h5">
               Make Your Masks More Comfortable
             </Heading>
@@ -43,7 +43,7 @@ const Products = () => {
       </Flex>
       <Flex sx={ContainerStyle} width="50%">
         <Box width="50%">
-          <Text color="#b8b8b8">#Clothes</Text>
+          <Text color="#b8b8b8">#Apparels</Text>
           <Heading as="h5" size="h5">
             Express your Life through our Apparels
           </Heading>
