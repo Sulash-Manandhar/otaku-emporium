@@ -1,0 +1,57 @@
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Verify Email Address</title>
+    <style>
+      .body { margin: 0; padding: 0; position: relative; font-family: "Arial";
+      text-align: center; color: #646464; background-color: #fff; height: 100vh;
+      } .wrapper { display: block; padding: 10px; } h1 { font-family: "Times New
+      Roman"; color: #373737; margin: 0px; } h2 { font-family: "Times New
+      Roman"; color: #373737; margin: 0px; } .bold { color: #373737;
+      font-weight: bolder; } .mb-4 { margin-bottom: 40px; } .mb-3 {
+      margin-bottom: 30px; }
+    </style>
+  </head>
+  <body>
+    <div class="body">
+      <header class="wrapper">
+        <div class="mb-3">
+          <h1>Otaku Emporium</h1>
+        </div>
+      </header>
+      <main class="wrapper">
+        <div class="mb-4">
+          <img
+            src="cid:openEmail"
+            alt="Open Email Image"
+            width="120px"
+            height="auto"
+          />
+        </div>
+        <div class="mb-4">
+          <h2>Verification Code</h2>
+          <p>Hello, {{email}}</p>
+          <p>Your verificaiton code is</p>
+          <h2 class="bold">{{opt_code}}</h2>
+        </div>
+        <div class="mb-3">
+          <p>
+            This verification link will expire in 30 minutes.<br />
+            If you didn’t request this email, there’s nothing to
+            <br />
+            worry about — you can safely ignore it.
+          </p>
+        </div>
+      </main>
+      <footer class="wrapper">
+        <p>
+          Copyright &copy; 2022
+          <span class="bold">Otaku Emporium</span>
+        </p>
+
+      </footer>
+    </div>
+  </body>
+</html>
