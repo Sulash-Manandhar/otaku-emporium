@@ -11,6 +11,7 @@ import * as errorHandler from "./middleware/errorHandler.js";
 
 //Routes
 import userRoute from "./routes/user.route.js";
+import adminRoute from "./routes/admin.route.js";
 
 const port = process.env.PORT || 5000;
 
@@ -32,6 +33,7 @@ app.get("/status", (_req, res) => {
 });
 
 app.use("/api/user", userRoute);
+app.use("/api/admin", adminRoute);
 // app.use("/api/files", require("./routes/fileRoute"));
 // app.use("/api/apparels", require("./routes/apparelRoute"));
 
