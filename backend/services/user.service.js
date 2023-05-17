@@ -183,3 +183,23 @@ export const handleUserUpdate = asyncHandler(async (_id, body) => {
     data: updateUser,
   };
 });
+
+export const getUserDetail = asyncHandler(async (_id) => {
+  if (!ObjectID.isValid(_id)) {
+    throw boom.badData(messagesResponse.invalid_user_id);
+  }
+  const user = await User.findById({ _id });
+  if (!user) {
+    throw boom.badData(messagesResponse.invalid_user_id);
+  }
+  return user;
+});
+
+export const getAllUsers = asyncHandler(async () => {
+  const users = await User.find().select("_id name email");
+  return {
+    success: true,
+    message: "Successfully fetched all user data",
+    users,
+  };
+});

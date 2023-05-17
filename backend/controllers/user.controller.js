@@ -60,3 +60,21 @@ export const deleteUser = asyncHandler(async (req, res, next) => {
     .then((data) => res.status(HttpStatus.OK).json(data))
     .catch((err) => next(err));
 });
+
+export const getUser = asyncHandler(async (req, res, next) => {
+  UserService.getUserDetail(req.params._id)
+    .then((user) => {
+      res.json({
+        success: true,
+        message: "User detail successfully fetched",
+        user: { id: user._id, name: user.name, email: user.email },
+      });
+    })
+    .catch((err) => next(err));
+});
+
+export const getAllUser = asyncHandler(async (req, res, next) => {
+  UserService.getAllUsers()
+    .then((user) => res.status(HttpStatus.OK).json(user))
+    .catch((err) => next(err));
+});
