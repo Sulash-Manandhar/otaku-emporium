@@ -1,14 +1,18 @@
-import Dashboard from "./pages/Dashboard";
-import LoginPanel from "./pages/LoginPanel";
-import "./stylesheets/App.css";
+import { styled } from "styled-components";
+import { RouterProvider } from "react-router-dom";
+import { router } from "./router/routerList";
 
 function App() {
   return (
-    <div className="app">
-      <Dashboard />
-      <LoginPanel />
-    </div>
+    <AppWrapper>
+      <RouterProvider router={router} />
+    </AppWrapper>
   );
 }
 
 export default App;
+
+const AppWrapper = styled.div`
+  width: 100dvw;
+  height: 100dvh;
+`;
