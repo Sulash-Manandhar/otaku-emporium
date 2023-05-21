@@ -1,10 +1,16 @@
 import { styled } from "styled-components";
 import { Link } from "react-router-dom";
 import { SidebarData } from "../../data/SidebarMenuData";
+import { GiLaurelCrown } from "react-icons/gi";
 
 const Sidebar = () => {
   return (
     <SidebarContainer>
+      <LogoContainer>
+        <Link to="/">
+          <GiLaurelCrown />
+        </Link>
+      </LogoContainer>
       {SidebarData.map((item) => {
         const Icon: any = item.icon;
         return (
@@ -23,7 +29,7 @@ const SidebarContainer = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
-  background-color: #212121;
+  background-color: #262626;
   height: 100%;
 
   a {
@@ -42,4 +48,8 @@ const SidebarContainer = styled.div`
       background-color: #333333;
     }
   }
+`;
+
+const LogoContainer = styled.div`
+  background-color: #000000;
 `;

@@ -1,12 +1,21 @@
 import { styled } from "styled-components";
 import { RouterProvider } from "react-router-dom";
-import { router } from "./router/routerList";
+import { getRouteList } from "./router/routerList";
+import IsLoggedInProvider from "./storage/IsLoggedInContext";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 
 function App() {
+  const queryClient = new QueryClient();
+  const router = getRouteList();
+
   return (
-    <AppWrapper>
-      <RouterProvider router={router} />
-    </AppWrapper>
+    <QueryClientProvider client={queryClient}>
+      <IsLoggedInProvider>
+        <AppWrapper>
+          <RouterProvider router={router} />
+        </AppWrapper>
+      </IsLoggedInProvider>
+    </QueryClientProvider>
   );
 }
 

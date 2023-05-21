@@ -6,12 +6,11 @@ const PATCH = "PATCH";
 const PUT = "PUT";
 const DELETE = "DELETE";
 
-export async function adminLogin(data: any) {
+export async function getUserList() {
   return axios({
-    method: POST,
-    url: "/",
-    data: data,
+    method: GET,
+    url: "http://localhost:5000/api/user",
   }).then((response) => {
-    return response;
+    return response?.data;
   });
 }

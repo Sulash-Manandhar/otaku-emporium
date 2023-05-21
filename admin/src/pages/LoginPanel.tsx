@@ -3,8 +3,13 @@ import { AdminLoginFieldSchema } from "../schema/common";
 import { ADMIN_USER } from "../config/adminCredientals";
 import { ADMIN_PASS } from "../config/adminCredientals";
 import { styled } from "styled-components";
+import { useIsLoggedInContext } from "../storage/IsLoggedInContext";
 
 const LoginPanel = () => {
+  const { handleLogIn, loggedIn } = useIsLoggedInContext();
+
+  console.log("loggedIn", loggedIn);
+
   const [formData, setFormData] = useState<AdminLoginFieldSchema>({
     name: "",
     password: "",
@@ -18,6 +23,9 @@ const LoginPanel = () => {
       setErrorMessage("Invalid username or password.");
       return;
     }
+    console.log("Log In success");
+    handleLogIn();
+    console.log("running");
   };
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
