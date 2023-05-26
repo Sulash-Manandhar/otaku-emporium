@@ -1,40 +1,30 @@
 import { useState } from "react";
-import { AdminLoginFieldSchema } from "../schema/common";
 import { ADMIN_USER } from "../config/adminCredientals";
 import { ADMIN_PASS } from "../config/adminCredientals";
 import { styled } from "styled-components";
 import { useIsLoggedInContext } from "../storage/IsLoggedInContext";
 
 const LoginPanel = () => {
-  const { handleLogIn, loggedIn } = useIsLoggedInContext();
+  const { logIn, loggedIn } = useIsLoggedInContext();
 
   console.log("loggedIn", loggedIn);
 
-  const [formData, setFormData] = useState<AdminLoginFieldSchema>({
-    name: "",
-    password: "",
-  });
   const [errorMessage, setErrorMessage] = useState("");
 
-  const handleLogin = (form: React.FormEvent<HTMLFormElement>) => {
-    form.preventDefault();
-    const { name, password } = formData;
+  const handleLogin = (e: any) => {
+    e.preventDefault();
+    const formData = new FormData(e.target);
+    const name = formData.get("name");
+    const password = formData.get("password");
+    console.log(name, password);
+
     if (name !== ADMIN_USER || password !== ADMIN_PASS) {
       setErrorMessage("Invalid username or password.");
       return;
     }
     console.log("Log In success");
-    handleLogIn();
+    logIn();
     console.log("running");
-  };
-
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    e.preventDefault();
-    const { name, value } = e.currentTarget;
-    setFormData((prev) => ({
-      ...prev,
-      [name]: value,
-    }));
   };
 
   return (
@@ -54,8 +44,6 @@ const LoginPanel = () => {
             id="name"
             type="text"
             name="name"
-            value={formData.name}
-            onChange={handleInputChange}
             placeholder="Jhon Doe"
             className="form-control"
             required
@@ -69,8 +57,6 @@ const LoginPanel = () => {
             id="password"
             type="password"
             name="password"
-            value={formData.password}
-            onChange={handleInputChange}
             placeholder="*****"
             className="form-control"
             required

@@ -2,14 +2,14 @@ import { createContext, useState, useContext } from "react";
 
 interface IsLoggedInContextData {
   loggedIn: boolean;
-  handleLogIn: () => void;
-  handleLogOut: () => void;
+  logIn: () => void;
+  logOut: () => void;
 }
 
 const IsLoggedInContext = createContext<IsLoggedInContextData>({
-  loggedIn: true,
-  handleLogIn: () => {},
-  handleLogOut: () => {},
+  loggedIn: false,
+  logIn: () => {},
+  logOut: () => {},
 });
 
 export const useIsLoggedInContext = () => useContext(IsLoggedInContext);
@@ -21,18 +21,18 @@ type Props = {
 const IsLoggedInProvider: React.FC<Props> = ({ children }) => {
   const [loggedIn, setLoggedIn] = useState<boolean>(false);
 
-  function handleLogIn() {
+  function logIn() {
     setLoggedIn(true);
   }
 
-  function handleLogOut() {
+  function logOut() {
     setLoggedIn(false);
   }
 
   const value: IsLoggedInContextData = {
     loggedIn,
-    handleLogIn,
-    handleLogOut,
+    logIn,
+    logOut,
   };
 
   return (

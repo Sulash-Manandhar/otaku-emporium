@@ -58,10 +58,49 @@ export const UserID = Joi.string()
     return true;
   });
 
+export const genderSchema = Joi.string()
+  .label("Gender")
+  .valid("male", "female", "others")
+  .required()
+  .messages({
+    "strings.empty": messagesResponse.gender_is_requird,
+  });
+
+export const contactSchema = Joi.number()
+  .integer()
+  .max(9999999999)
+  .min(9800000000)
+  .required()
+  .messages({
+    "number.min": messagesResponse.invalid_contact_number,
+    "number.max": messagesResponse.invalid_contact_number,
+    "number.empty": messagesResponse.contact_number_required,
+  });
+
+export const citySchema = Joi.string().label("city").required().messages({
+  "string.empty": messagesResponse.city_name_required,
+});
+export const zipCodeSchema = Joi.string()
+  .label("Zip Code")
+  .required()
+  .messages({
+    "string.empty": messagesResponse.zip_code_required,
+  });
+export const stateSchema = Joi.string().label("Street").required().messages({
+  "string.empty": messagesResponse.state_name_required,
+});
+
 export const registerUserTypeSchema = Joi.object({
   name: userNameSchema,
   email: emailSchema,
   password: passwordSchema,
+  gender: genderSchema,
+  primary_contact: contactSchema,
+  address: {
+    state: stateSchema,
+    zipCode: zipCodeSchema,
+    city: citySchema,
+  },
 });
 
 export const loginUserTypeSchema = Joi.object({
