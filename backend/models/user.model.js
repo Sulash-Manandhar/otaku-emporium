@@ -31,7 +31,7 @@ const UserSchema = mongoose.Schema(
       enum: ["male", "female", "others"],
       default: "others",
     },
-    primary_contact: {
+    contact: {
       type: Number,
       required: "Contact number is missing",
     },
