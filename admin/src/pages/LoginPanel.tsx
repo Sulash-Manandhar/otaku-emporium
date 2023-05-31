@@ -7,8 +7,6 @@ import { useIsLoggedInContext } from "../storage/IsLoggedInContext";
 const LoginPanel = () => {
   const { logIn, loggedIn } = useIsLoggedInContext();
 
-  console.log("loggedIn", loggedIn);
-
   const [errorMessage, setErrorMessage] = useState("");
 
   const handleLogin = (e: any) => {
@@ -16,15 +14,12 @@ const LoginPanel = () => {
     const formData = new FormData(e.target);
     const name = formData.get("name");
     const password = formData.get("password");
-    console.log(name, password);
 
     if (name !== ADMIN_USER || password !== ADMIN_PASS) {
       setErrorMessage("Invalid username or password.");
       return;
     }
-    console.log("Log In success");
     logIn();
-    console.log("running");
   };
 
   return (

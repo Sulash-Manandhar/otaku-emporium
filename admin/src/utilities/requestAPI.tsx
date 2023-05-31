@@ -1,5 +1,5 @@
 import axios from "axios";
-import { GET, PUT, baseUrl } from "../constant";
+import { DELETE, GET, PUT, baseUrl } from "../constant";
 
 axios.defaults.baseURL = baseUrl;
 
@@ -17,5 +17,12 @@ export async function banUser(userId: string, ban: boolean) {
     method: PUT,
     url: `/user/ban/${userId}`,
     data: { ban },
+  }).then((response) => response?.data);
+}
+
+export async function deleteUser(userId: string) {
+  return axios({
+    method: DELETE,
+    url: `user/delete/${userId}`,
   }).then((response) => response?.data);
 }

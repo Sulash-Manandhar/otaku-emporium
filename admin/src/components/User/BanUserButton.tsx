@@ -7,7 +7,7 @@ interface Props {
   ban: boolean;
 }
 
-const BanUser: React.FC<Props> = (props) => {
+const BanUserButton: React.FC<Props> = (props) => {
   const { userId, ban } = props;
   const queryClient = useQueryClient();
 
@@ -32,4 +32,4 @@ const BanUser: React.FC<Props> = (props) => {
   );
 };
 
-export default BanUser;
+export default BanUserButton;

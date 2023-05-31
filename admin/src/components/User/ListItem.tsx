@@ -1,8 +1,9 @@
 import { User } from "../../schema/UserSchema";
-import { AiFillEdit, AiFillEye, AiFillDelete } from "react-icons/ai";
+import { AiFillEdit, AiFillEye } from "react-icons/ai";
 import { useNavigate } from "react-router-dom";
 import { TableActionContainer } from "../../styled-components/common";
-import BanUser from "./BanUser";
+import BanUserButton from "./BanUserButton";
+import DeleteUserButton from "./DeleteUserButton";
 
 interface Props {
   index: number;
@@ -46,10 +47,8 @@ const ListItem: React.FC<Props> = (props) => {
         <button type="button" className="btn btn-primary btn-sm">
           <AiFillEdit color="white" /> Edit
         </button>
-        <BanUser userId={user._id} ban={user.ban} />
-        <button type="button" className="btn btn-danger btn-sm">
-          <AiFillDelete /> Delete
-        </button>
+        <BanUserButton userId={user._id} ban={user.ban} />
+        <DeleteUserButton userId={user._id} />
       </TableActionContainer>
     </tr>
   );

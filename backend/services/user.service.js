@@ -165,7 +165,6 @@ export const handeUserDelete = asyncHandler(async (_id) => {
 });
 
 export const handleUserUpdate = asyncHandler(async (_id, body) => {
-  console.log("body", body);
   const { name } = body;
   if (!ObjectID.isValid(_id)) {
     throw boom.badData(messagesResponse.invalid_user_id);
@@ -175,7 +174,6 @@ export const handleUserUpdate = asyncHandler(async (_id, body) => {
     throw boom.badData(messagesResponse.invalid_user_id);
   }
   const updateUser = await User.findByIdAndUpdate({ _id }, { name });
-  console.log("updateUser", updateUser);
   return {
     success: true,
     message: messagesResponse.user_detail_updated,
