@@ -1,8 +1,8 @@
 import { useQuery } from "@tanstack/react-query";
-import ListItem from "../../components/User/ListItem";
-import { PageHeader } from "../../styled-components/common";
-import { getUserList } from "../../utilities/requestAPI";
-import { UserListSchema } from "../../schema/UserSchema";
+import ListItem from "../../../components/User/ListItem";
+import { PageHeader } from "../../../styled-components/common";
+import { getUserList } from "../../../utilities/requestAPI";
+import { UserListSchema } from "../../../schema/UserSchema";
 
 const User = () => {
   const { data } = useQuery<UserListSchema>({
@@ -20,13 +20,15 @@ const User = () => {
             <th scope="col">Name</th>
             <th scope="col">Email</th>
             <th scope="col">Contact</th>
+            <th scope="col">Address</th>
             <th scope="col">Gender</th>
+            <th scope="col">Status</th>
             <th scope="col">Action</th>
           </tr>
         </thead>
         <tbody>
-          {data?.users?.map((item, index) => (
-            <ListItem key={item._id} index={index + 1} user={item} />
+          {data?.users?.map((user, index) => (
+            <ListItem key={user._id} index={index + 1} user={user} />
           ))}
         </tbody>
       </table>

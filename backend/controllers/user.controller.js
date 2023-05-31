@@ -63,7 +63,7 @@ export const getUser = asyncHandler(async (req, res, next) => {
       res.json({
         success: true,
         message: "User detail successfully fetched",
-        user: { id: user._id, name: user.name, email: user.email },
+        user,
       });
     })
     .catch((err) => next(err));

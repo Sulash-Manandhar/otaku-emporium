@@ -1,16 +1,21 @@
 import axios from "axios";
+import { GET, PUT, baseUrl } from "../constant";
 
-const POST = "POST";
-const GET = "GET";
-const PATCH = "PATCH";
-const PUT = "PUT";
-const DELETE = "DELETE";
+axios.defaults.baseURL = baseUrl;
 
 export async function getUserList() {
   return axios({
     method: GET,
-    url: "http://localhost:5000/api/user",
+    url: `/user`,
   }).then((response) => {
     return response?.data;
   });
+}
+
+export async function banUser(userId: string, ban: boolean) {
+  return axios({
+    method: PUT,
+    url: `/user/ban/${userId}`,
+    data: { ban },
+  }).then((response) => response?.data);
 }

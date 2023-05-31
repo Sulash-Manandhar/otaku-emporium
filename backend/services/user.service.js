@@ -187,7 +187,9 @@ export const getUserDetail = asyncHandler(async (_id) => {
   if (!ObjectID.isValid(_id)) {
     throw boom.badData(messagesResponse.invalid_user_id);
   }
-  const user = await User.findById({ _id });
+  const user = await User.findById({ _id }).select(
+    "-password -createdAt -updatedAt -__v -address._id"
+  );
   if (!user) {
     throw boom.badData(messagesResponse.invalid_user_id);
   }
@@ -195,7 +197,9 @@ export const getUserDetail = asyncHandler(async (_id) => {
 });
 
 export const getAllUsers = asyncHandler(async () => {
-  const users = await User.find().select("_id name email");
+  const users = await User.find().select(
+    "-password -createdAt -updatedAt -__v "
+  );
   return {
     success: true,
     message: "Successfully fetched all user data",
