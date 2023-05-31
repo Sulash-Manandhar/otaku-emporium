@@ -5,7 +5,7 @@ import { styled } from "styled-components";
 import { useIsLoggedInContext } from "../storage/IsLoggedInContext";
 
 const LoginPanel = () => {
-  const { logIn, loggedIn } = useIsLoggedInContext();
+  const { logIn } = useIsLoggedInContext();
 
   const [errorMessage, setErrorMessage] = useState("");
 

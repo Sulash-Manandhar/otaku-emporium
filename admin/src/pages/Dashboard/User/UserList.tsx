@@ -4,7 +4,7 @@ import { PageHeader } from "../../../styled-components/common";
 import { getUserList } from "../../../utilities/requestAPI";
 import { UserListSchema } from "../../../schema/UserSchema";
 
-const User = () => {
+const UserList = () => {
   const { data } = useQuery<UserListSchema>({
     queryKey: ["user-list"],
     queryFn: () => getUserList(),
@@ -36,4 +36,4 @@ const User = () => {
   );
 };
 
-export default User;
+export default UserList;
