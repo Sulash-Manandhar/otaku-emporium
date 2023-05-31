@@ -80,7 +80,7 @@ export const contactSchema = Joi.number()
 export const citySchema = Joi.string().label("city").required().messages({
   "string.empty": messagesResponse.city_name_required,
 });
-export const zipCodeSchema = Joi.string()
+export const zipCodeSchema = Joi.number()
   .label("Zip Code")
   .required()
   .messages({
@@ -95,12 +95,12 @@ export const registerUserTypeSchema = Joi.object({
   email: emailSchema,
   password: passwordSchema,
   gender: genderSchema,
-  primary_contact: contactSchema,
-  address: {
+  contact: contactSchema,
+  address: Joi.object({
     state: stateSchema,
-    zipCode: zipCodeSchema,
+    zip_code: zipCodeSchema,
     city: citySchema,
-  },
+  }).required(),
 });
 
 export const loginUserTypeSchema = Joi.object({

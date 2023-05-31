@@ -15,19 +15,18 @@ import mongoose from "mongoose";
 const ObjectID = mongoose.Types.ObjectId;
 
 export const handleUserRegistration = asyncHandler(async (body) => {
-  const { name, email, password } = body;
+  const { password, ...rest } = body;
   const hassedPassword = await encryptPassword(password);
 
   try {
     const user = await User.create({
-      name,
-      email,
+      ...rest,
       password: hassedPassword,
     });
     return {
-      id: user.id,
-      name: user.name,
-      email: user.email,
+      user: { id: user.id, name: user.name, email: user.email },
+      msg: "user is successfully logged in",
+      success: true,
     };
   } catch (err) {
     if (err.code === 11000) {

@@ -30,7 +30,9 @@ app.use(fileUpload());
 app.use(routeLogger);
 
 //Pre-Data
-addUserToDocument();
+{
+  process.env.RUN_POPULATION === "true" && addUserToDocument();
+}
 
 //Routes
 app.get("/status", (_req, res) => {

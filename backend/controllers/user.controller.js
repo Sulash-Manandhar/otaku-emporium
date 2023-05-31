@@ -17,11 +17,7 @@ export const registerUser = asyncHandler(async (req, res, next) => {
 
 export const loginUser = asyncHandler(async (req, res, next) => {
   UserService.handleUserLogin(req.body)
-    .then((data) =>
-      res
-        .status(HttpStatus.OK)
-        .json({ data, msg: "User is successfully logged in.", success: true })
-    )
+    .then((data) => res.status(HttpStatus.OK).json(data))
     .catch((err) => next(err));
 });
 
