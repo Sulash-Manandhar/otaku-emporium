@@ -1,10 +1,10 @@
 export interface UserListSchema {
   success: boolean;
   message: string;
-  users: User[];
+  users: UserDetailSchema[];
 }
 
-export interface User {
+export interface UserDetailSchema {
   _id: string;
   name: string;
   email: string;

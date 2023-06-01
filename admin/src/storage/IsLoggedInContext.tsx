@@ -7,7 +7,7 @@ interface IsLoggedInContextData {
 }
 
 const IsLoggedInContext = createContext<IsLoggedInContextData>({
-  loggedIn: false,
+  loggedIn: true,
   logIn: () => {},
   logOut: () => {},
 });
@@ -19,7 +19,7 @@ type Props = {
 };
 
 const IsLoggedInProvider: React.FC<Props> = ({ children }) => {
-  const [loggedIn, setLoggedIn] = useState<boolean>(false);
+  const [loggedIn, setLoggedIn] = useState<boolean>(true);
 
   function logIn() {
     setLoggedIn(true);

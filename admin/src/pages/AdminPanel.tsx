@@ -1,6 +1,8 @@
 import { styled } from "styled-components";
 import Sidebar from "./Sidebar";
 import { Outlet } from "react-router-dom";
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 const AdminPanel = () => {
   return (
     <Container>
@@ -8,6 +10,7 @@ const AdminPanel = () => {
       <Dashboard>
         <Outlet />
       </Dashboard>
+      <ToastContainer />
     </Container>
   );
 };

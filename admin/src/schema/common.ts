@@ -11,3 +11,9 @@ export interface SidebarMenuDataSchema {
   path: string;
   icon: ReturnType<IconType>;
 }
+
+export interface Wrapper<T> {
+  message: string;
+  success: boolean;
+  data: T;
+}

@@ -1,4 +1,4 @@
-import { User } from "../../schema/UserSchema";
+import { UserDetailSchema } from "../../schema/UserSchema";
 import { AiFillEdit, AiFillEye } from "react-icons/ai";
 import { useNavigate } from "react-router-dom";
 import { TableActionContainer } from "../../styled-components/common";
@@ -7,7 +7,7 @@ import DeleteUserButton from "./DeleteUserButton";
 
 interface Props {
   index: number;
-  user: User;
+  user: UserDetailSchema;
 }
 
 const ListItem: React.FC<Props> = (props) => {

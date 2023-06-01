@@ -12,6 +12,13 @@ export async function getUserList() {
   });
 }
 
+export async function getUserDetails(userId: string | undefined) {
+  return axios({
+    method: GET,
+    url: `user/${userId}`,
+  }).then((response) => response?.data);
+}
+
 export async function banUser(userId: string, ban: boolean) {
   return axios({
     method: PUT,
