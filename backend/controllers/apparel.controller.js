@@ -13,3 +13,14 @@ export const createApparel = asyncHandler(async (req, res, next) => {
     )
     .catch((err) => next(err));
 });
+
+export const deleteApparel = asyncHandler(async (req, res, next) => {
+  ApparelService.handleDeleteProduct(req.params._id)
+    .then(() =>
+      res.status(HttpStatus.OK).json({
+        success: true,
+        message: "Product successfully deleted",
+      })
+    )
+    .catch((err) => next(err));
+});

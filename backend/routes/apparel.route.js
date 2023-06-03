@@ -10,4 +10,6 @@ router.post(
   ApparelController.createApparel
 );
 
+router.delete("/:_id", ApparelController.deleteApparel);
+
 export default router;
