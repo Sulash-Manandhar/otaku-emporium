@@ -124,3 +124,53 @@ export const banUserSchema = Joi.object({
 export const updateUserSchema = Joi.object({
   name: userNameSchema,
 });
+
+/**Apparels Validation Schema */
+
+const productName = Joi.string().label("Product Name").required().messages({
+  "string.empty": "Product name required.",
+});
+
+const price = Joi.number().label("Price").required().messages({
+  "number.empty": "Product price is required",
+});
+
+const color = Joi.string().label("Color").required().messages({
+  "string.empty": "Product color is required",
+});
+
+const size = Joi.object({
+  small: Joi.number().label("Small size"),
+  medium: Joi.number().label("Medium Size"),
+  large: Joi.number().label("Large size"),
+}).required();
+
+const productCategory = Joi.string()
+  .label("Category")
+  .valid("hoodie", "sweetshirt", "t-shirt")
+  .required()
+  .messages({
+    "string.empty": "Product category type is required",
+  });
+
+const description = Joi.string().label("description").required().messages({
+  "string.empty": "Product description is required",
+});
+
+const keyword = Joi.array().items(Joi.string()).required();
+
+const image = Joi.object({
+  name: Joi.string().label("Image name").required(),
+  path: Joi.string().label("Image Path").required(),
+}).required();
+
+export const createProductTypeSchema = Joi.object({
+  name: productName,
+  price,
+  color,
+  size,
+  category: productCategory,
+  description,
+  keyword,
+  image: Joi.array().items(image).required(),
+});

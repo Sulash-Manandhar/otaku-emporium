@@ -11,6 +11,7 @@ import * as errorHandler from "./middleware/errorHandler.js";
 
 //Routes
 import userRoute from "./routes/user.route.js";
+import apparelRoute from "./routes/apparel.route.js";
 
 //Add pre-data
 import { addUserToDocument } from "./command/addUserToDatabases.js";
@@ -40,8 +41,8 @@ app.get("/status", (_req, res) => {
 });
 
 app.use("/api/user", userRoute);
+app.use("/api/apparels", apparelRoute);
 // app.use("/api/files", require("./routes/fileRoute"));
-// app.use("/api/apparels", require("./routes/apparelRoute"));
 
 app.use(errorHandler.boomErrorHandler);
 app.use(errorHandler.validationErrorHandler);
