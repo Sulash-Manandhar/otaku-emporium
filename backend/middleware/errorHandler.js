@@ -45,7 +45,6 @@ export function boomErrorHandler(err, req, res, next) {
  * @param  {Function} next
  */
 export function validationErrorHandler(err, req, res, next) {
-  console.log("err", err);
   if (err instanceof ValidationError) {
     const error = buildError(err);
     logger.error(err.stack);

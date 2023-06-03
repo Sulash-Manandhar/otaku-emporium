@@ -17,11 +17,7 @@ export const registerUser = asyncHandler(async (req, res, next) => {
 
 export const loginUser = asyncHandler(async (req, res, next) => {
   UserService.handleUserLogin(req.body)
-    .then((data) =>
-      res
-        .status(HttpStatus.OK)
-        .json({ data, msg: "User is successfully logged in.", success: true })
-    )
+    .then((data) => res.status(HttpStatus.OK).json(data))
     .catch((err) => next(err));
 });
 
@@ -58,5 +54,23 @@ export const updateUser = asyncHandler(async (req, res, next) => {
 export const deleteUser = asyncHandler(async (req, res, next) => {
   UserService.handeUserDelete(req.params._id)
     .then((data) => res.status(HttpStatus.OK).json(data))
+    .catch((err) => next(err));
+});
+
+export const getUser = asyncHandler(async (req, res, next) => {
+  UserService.getUserDetail(req.params._id)
+    .then((user) => {
+      res.json({
+        success: true,
+        message: "User detail successfully fetched",
+        data: user,
+      });
+    })
+    .catch((err) => next(err));
+});
+
+export const getAllUser = asyncHandler(async (req, res, next) => {
+  UserService.getAllUsers()
+    .then((user) => res.status(HttpStatus.OK).json(user))
     .catch((err) => next(err));
 });

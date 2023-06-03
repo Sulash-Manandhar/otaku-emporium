@@ -1,5 +1,20 @@
 import mongoose from "mongoose";
 
+const addressSchema = mongoose.Schema({
+  city: {
+    type: String,
+    required: "City is missing in address",
+  },
+  state: {
+    type: String,
+    required: "Street is missing in address.",
+  },
+  zip_code: {
+    type: Number,
+    required: "Zip code is missing in address",
+  },
+});
+
 const UserSchema = mongoose.Schema(
   {
     name: {
@@ -11,6 +26,17 @@ const UserSchema = mongoose.Schema(
       required: [true, "Please add a email"],
       unique: true,
     },
+    gender: {
+      type: String,
+      enum: ["male", "female", "others"],
+      default: "others",
+    },
+    contact: {
+      type: Number,
+      required: "Contact number is missing",
+    },
+
+    address: addressSchema,
     password: {
       type: String,
       required: [true, "Please add a password"],
