@@ -56,6 +56,10 @@ const apparelModel = mongoose.Schema(
       type: [imageModel],
       required: [true, "Atleast one image of the product is required."],
     },
+    status: {
+      type: Boolean,
+      default: true,
+    },
   },
   {
     timestamps: true,

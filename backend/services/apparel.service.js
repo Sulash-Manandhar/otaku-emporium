@@ -32,3 +32,27 @@ export const handleDeleteProduct = asyncHandler(async (_id) => {
   const deletedApparel = await Apparel.findByIdAndRemove({ _id });
   if (!deletedApparel) throw boom.internal("Internal server error");
 });
+
+export const handleGetAllApparels = asyncHandler(async () => {
+  const apparels = await Apparel.find();
+  const count = await Apparel.countDocuments();
+  if (!apparels) throw boom.internal();
+  return { apparels, totalCount: count };
+});
+
+export const handleApparelDetails = asyncHandler(async (_id) => {
+  if (!ObjectID.isValid(_id)) {
+    throw boom.badData(messagesResponse.invalid_user_id);
+  }
+  const apparel = await Apparel.findById({ _id });
+  if (!apparel) throw boom.badData("Invalid Id");
+  return apparel;
+});
+
+export const handleStatusChange = asyncHandler(async (_id, status) => {
+  if (!ObjectID.isValid(_id)) {
+    throw boom.badData(messagesResponse.invalid_user_id);
+  }
+  const apparel = await Apparel.findByIdAndUpdate({ _id }, { status });
+  if (!apparel) throw boom.internal();
+});

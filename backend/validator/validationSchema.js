@@ -174,3 +174,7 @@ export const createProductTypeSchema = Joi.object({
   keyword,
   image: Joi.array().items(image).required(),
 });
+
+export const apparelStatus = Joi.object({
+  status: Joi.boolean().label("Status").required(),
+});

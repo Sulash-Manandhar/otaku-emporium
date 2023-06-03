@@ -10,6 +10,16 @@ router.post(
   ApparelController.createApparel
 );
 
+router.get("/", ApparelController.getAllApparel);
+
+router.get("/:_id", ApparelController.getApparelDetails);
+
 router.delete("/:_id", ApparelController.deleteApparel);
+
+router.patch(
+  "/:_id",
+  Validator.statusChangeValidator,
+  ApparelController.changeStatus
+);
 
 export default router;
