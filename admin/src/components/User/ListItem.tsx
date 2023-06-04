@@ -1,9 +1,10 @@
 import { UserDetailSchema } from "../../schema/UserSchema";
-import { AiFillEdit, AiFillEye } from "react-icons/ai";
 import { useNavigate } from "react-router-dom";
 import { TableActionContainer } from "../../styled-components/common";
 import BanUserButton from "./BanUserButton";
 import DeleteUserButton from "./DeleteUserButton";
+import ViewButton from "../Buttons/ViewButton";
+import EditButton from "../Buttons/EditButton";
 
 interface Props {
   index: number;
@@ -37,16 +38,8 @@ const ListItem: React.FC<Props> = (props) => {
         </span>
       </td>
       <TableActionContainer>
-        <button
-          type="button"
-          className="btn btn-success btn-sm"
-          onClick={() => navigate("/user/" + user._id)}
-        >
-          <AiFillEye /> View
-        </button>
-        <button type="button" className="btn btn-primary btn-sm">
-          <AiFillEdit color="white" /> Edit
-        </button>
+        <ViewButton redirectTo={`/user/${user._id}`} />
+        <EditButton redirectTo={`/user/edit/${user._id}`} />
         <BanUserButton userId={user._id} ban={user.ban} />
         <DeleteUserButton userId={user._id} />
       </TableActionContainer>
