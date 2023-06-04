@@ -3,6 +3,7 @@ import Sidebar from "./Sidebar";
 import { Outlet } from "react-router-dom";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+
 const AdminPanel = () => {
   return (
     <Container>
@@ -10,7 +11,15 @@ const AdminPanel = () => {
       <Dashboard>
         <Outlet />
       </Dashboard>
-      <ToastContainer />
+      <ToastContainer
+        position="bottom-center"
+        autoClose={3000}
+        closeOnClick
+        theme="light"
+        pauseOnHover
+        draggable={false}
+        hideProgressBar={true}
+      />
     </Container>
   );
 };
@@ -30,4 +39,5 @@ const Dashboard = styled.div`
   padding: 0.5rem 2rem;
   width: 100%;
   height: 100%;
+  overflow: auto;
 `;

@@ -3,9 +3,10 @@ import ListItem from "../../../components/User/ListItem";
 import { PageHeader } from "../../../styled-components/common";
 import { getUserList } from "../../../utilities/requestAPI";
 import { UserListSchema } from "../../../schema/UserSchema";
+import Spinner from "../../../components/utils/Spinner";
 
 const UserList = () => {
-  const { data } = useQuery<UserListSchema>({
+  const { data, isLoading } = useQuery<UserListSchema>({
     queryKey: ["user-list"],
     queryFn: () => getUserList(),
   });
@@ -13,6 +14,7 @@ const UserList = () => {
   return (
     <div>
       <PageHeader>User</PageHeader>
+
       <table className="table table-striped table-hover">
         <thead>
           <tr>
@@ -26,11 +28,14 @@ const UserList = () => {
             <th scope="col">Action</th>
           </tr>
         </thead>
-        <tbody>
-          {data?.users?.map((user, index) => (
-            <ListItem key={user._id} index={index + 1} user={user} />
-          ))}
-        </tbody>
+        {isLoading && <Spinner />}
+        {!isLoading && (
+          <tbody>
+            {data?.users?.map((user, index) => (
+              <ListItem key={user._id} index={index + 1} user={user} />
+            ))}
+          </tbody>
+        )}
       </table>
     </div>
   );

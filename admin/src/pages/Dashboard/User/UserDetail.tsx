@@ -5,6 +5,7 @@ import { Wrapper } from "../../../schema/common";
 import { UserDetailSchema } from "../../../schema/UserSchema";
 import { styled } from "styled-components";
 import { FaUserCircle } from "react-icons/fa";
+import Spinner from "../../../components/utils/Spinner";
 
 const UserDetail = () => {
   const { userId } = useParams<{ userId: string }>();
@@ -15,7 +16,7 @@ const UserDetail = () => {
   });
 
   return isLoading ? (
-    "Loading"
+    <Spinner />
   ) : (
     <Card>
       <Header>

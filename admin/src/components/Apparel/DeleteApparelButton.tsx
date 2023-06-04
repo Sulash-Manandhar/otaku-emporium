@@ -1,25 +1,25 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import React from "react";
 import { AiFillDelete } from "react-icons/ai";
-import { deleteUser } from "../../utilities/requestAPI";
+import { deleteApparel } from "../../utilities/requestAPI";
 import { toast } from "react-toastify";
 
 interface Props {
-  userId: string;
+  id: string;
 }
 
-const DeleteUserButton: React.FC<Props> = (props) => {
-  const { userId } = props;
+const DeleteApparelButton: React.FC<Props> = (props) => {
+  const { id } = props;
   const queryClient = useQueryClient();
 
   const { mutate } = useMutation({
-    mutationKey: ["delete-user"],
-    mutationFn: () => deleteUser(userId),
+    mutationKey: [`delete-apparel-${id}`],
+    mutationFn: () => deleteApparel(id),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["user-list"] });
-      toast.success("User has been deleted.");
+      queryClient.invalidateQueries({ queryKey: ["get-apparel-list"] });
+      toast.success("Successfully deleted product.");
     },
-    onError: () => toast.error("Something went wrong"),
+    onError: () => toast.error("Something went wrong."),
   });
 
   return (
@@ -53,7 +53,7 @@ const DeleteUserButton: React.FC<Props> = (props) => {
               ></button>
             </div>
             <div className="modal-body">
-              Are you sure you want to delete user?
+              Are you sure you want to delete apparel?
             </div>
             <div className="modal-footer">
               <button
@@ -79,4 +79,4 @@ const DeleteUserButton: React.FC<Props> = (props) => {
   );
 };
 
-export default DeleteUserButton;
+export default DeleteApparelButton;

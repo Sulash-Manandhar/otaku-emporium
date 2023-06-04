@@ -33,3 +33,17 @@ export async function deleteUser(userId: string) {
     url: `user/delete/${userId}`,
   }).then((response) => response?.data);
 }
+
+export async function getApparelList() {
+  return axios({
+    method: GET,
+    url: "/apparels",
+  }).then((response) => response?.data);
+}
+
+export async function deleteApparel(apparelId: string) {
+  return axios({
+    method: DELETE,
+    url: `/apparels/${apparelId}`,
+  });
+}
