@@ -2,23 +2,36 @@ import { styled } from "styled-components";
 import { Link } from "react-router-dom";
 import { SidebarData } from "../../data/SidebarMenuData";
 import { GiLaurelCrown } from "react-icons/gi";
+import { IoLogOut } from "react-icons/io5";
+interface Props {
+  logOut: () => void;
+}
 
-const Sidebar = () => {
+const Sidebar: React.FC<Props> = (props) => {
+  const { logOut } = props;
+
   return (
     <SidebarContainer>
-      <LogoContainer>
-        <Link to="/">
-          <GiLaurelCrown />
-        </Link>
-      </LogoContainer>
-      {SidebarData.map((item) => {
-        const Icon: any = item.icon;
-        return (
-          <Link to={item.path} key={item.id}>
-            <Icon />
+      <NavContainer>
+        <LogoContainer>
+          <Link to="/">
+            <GiLaurelCrown />
           </Link>
-        );
-      })}
+        </LogoContainer>
+        {SidebarData.map((item) => {
+          const Icon: any = item.icon;
+          return (
+            <Link to={item.path} key={item.id}>
+              <Icon />
+            </Link>
+          );
+        })}
+      </NavContainer>
+      <NavContainer>
+        <div className="logout-container" onClick={logOut}>
+          <IoLogOut />
+        </div>
+      </NavContainer>
     </SidebarContainer>
   );
 };
@@ -26,13 +39,20 @@ const Sidebar = () => {
 export default Sidebar;
 
 const SidebarContainer = styled.div`
+  background-color: #262626;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+`;
+
+const NavContainer = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
-  background-color: #262626;
-  height: 100%;
 
-  a {
+  a,
+  .logout-container {
     width: 100%;
     display: flex;
     justify-content: center;
@@ -46,6 +66,9 @@ const SidebarContainer = styled.div`
 
     &:hover {
       background-color: #333333;
+    }
+    &:last-child {
+      border-bottom: none;
     }
   }
 `;

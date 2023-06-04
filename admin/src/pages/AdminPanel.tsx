@@ -12,7 +12,7 @@ const AdminPanel: React.FC<Props> = (props) => {
   const { logOut } = props;
   return (
     <Container>
-      <Sidebar />
+      <Sidebar logOut={logOut} />
       <Dashboard>
         <Outlet />
       </Dashboard>
