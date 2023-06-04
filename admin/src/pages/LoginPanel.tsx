@@ -2,10 +2,13 @@ import { useState } from "react";
 import { ADMIN_USER } from "../config/adminCredientals";
 import { ADMIN_PASS } from "../config/adminCredientals";
 import { styled } from "styled-components";
-import { useIsLoggedInContext } from "../storage/IsLoggedInContext";
 
-const LoginPanel = () => {
-  const { logIn } = useIsLoggedInContext();
+interface Props {
+  logIn: () => void;
+}
+
+const LoginPanel: React.FC<Props> = (props) => {
+  const { logIn } = props;
 
   const [errorMessage, setErrorMessage] = useState("");
 

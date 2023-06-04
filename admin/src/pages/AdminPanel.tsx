@@ -4,7 +4,12 @@ import { Outlet } from "react-router-dom";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
-const AdminPanel = () => {
+interface Props {
+  logOut: () => void;
+}
+
+const AdminPanel: React.FC<Props> = (props) => {
+  const { logOut } = props;
   return (
     <Container>
       <Sidebar />
