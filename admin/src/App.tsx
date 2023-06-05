@@ -1,9 +1,5 @@
 import { styled } from "styled-components";
-import { RouterProvider } from "react-router-dom";
-import { getRouteList } from "./router/routerList";
-import IsLoggedInProvider, {
-  useIsLoggedInContext,
-} from "./storage/IsLoggedInContext";
+import RouteList from "./router/RouterList";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 
 function App() {
@@ -11,27 +7,16 @@ function App() {
 
   return (
     <QueryClientProvider client={queryClient}>
-      <IsLoggedInProvider>
-        <AppWrapper />
-      </IsLoggedInProvider>
+      <AppWrapper>
+        <RouteList />
+      </AppWrapper>
     </QueryClientProvider>
   );
 }
 
 export default App;
 
-const AppWrappera = styled.div`
+const AppWrapper = styled.div`
   width: 100dvw;
   height: 100dvh;
 `;
-function AppWrapper() {
-  const { loggedIn } = useIsLoggedInContext();
-
-  const router = getRouteList(loggedIn);
-
-  return (
-    <AppWrappera>
-      <RouterProvider router={router} />
-    </AppWrappera>
-  );
-}
