@@ -30,11 +30,18 @@ const ListItem: React.FC<Props> = (props) => {
         <span className="badge bg-primary text-capitalize">{user.gender}</span>
       </td>
       <td>
+        <div className="form-check form-switch">
+          <input
+            className="form-check-input"
+            type="checkbox"
+            id="verified"
+            value={1}
+          />
+        </div>
+      </td>
+      <td>
         <span className="badge bg-light text-dark text-capitalize text-wrap me-2">
           {user.ban ? "Banned" : "Not Banned"}
-        </span>
-        <span className="badge bg-light text-dark text-capitalize text-wrap ">
-          {user.verification ? "Verified" : "Not Verified"}
         </span>
       </td>
       <TableActionContainer>

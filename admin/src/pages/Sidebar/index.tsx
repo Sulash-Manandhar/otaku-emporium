@@ -27,7 +27,7 @@ const Sidebar: React.FC<Props> = (props) => {
           );
         })}
       </NavContainer>
-      <NavContainer noBorder>
+      <NavContainer noborder>
         <div className="logout-container" onClick={logOut}>
           <IoLogOut />
         </div>
@@ -47,7 +47,7 @@ const SidebarContainer = styled.div`
 `;
 
 interface NavContainerProps {
-  noBorder?: boolean;
+  noborder?: boolean;
 }
 
 const NavContainer = styled.div<NavContainerProps>`
@@ -63,7 +63,7 @@ const NavContainer = styled.div<NavContainerProps>`
     padding: 1rem;
     align-items: center;
     gap: 4rem;
-    border-bottom: ${(props) => !props.noBorder && "1px solid white"};
+    border-bottom: ${(props) => !props.noborder && "1px solid white"};
     font-size: 1.6rem;
     text-decoration: none;
     color: white;

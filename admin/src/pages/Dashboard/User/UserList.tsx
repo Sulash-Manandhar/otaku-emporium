@@ -24,7 +24,8 @@ const UserList = () => {
             <th scope="col">Contact</th>
             <th scope="col">Address</th>
             <th scope="col">Gender</th>
-            <th scope="col">Status</th>
+            <th scope="col">Verified</th>
+            <th scope="col">Ban</th>
             <th scope="col">Action</th>
           </tr>
         </thead>
