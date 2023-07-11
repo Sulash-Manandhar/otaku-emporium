@@ -1,22 +1,13 @@
-import { styled } from "styled-components";
-import RouteList from "./router/RouterList";
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { Box } from "@chakra-ui/layout";
+import RouterList from "./router/RouterList";
+import "./App.css";
 
-function App() {
-  const queryClient = new QueryClient();
-
+const App = () => {
   return (
-    <QueryClientProvider client={queryClient}>
-      <AppWrapper>
-        <RouteList />
-      </AppWrapper>
-    </QueryClientProvider>
+    <Box w="100dvw" height="100dvh">
+      <RouterList />
+    </Box>
   );
-}
+};
 
 export default App;
-
-const AppWrapper = styled.div`
-  width: 100dvw;
-  height: 100dvh;
-`;

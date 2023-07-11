@@ -1,33 +1,35 @@
 import { RouterProvider, createBrowserRouter } from "react-router-dom";
-import ErrorBoundry from "./ErrorBoundry.tsx";
-import UserList from "../pages/Dashboard/User/UserList.tsx";
-import LoginPanel from "../pages/LoginPanel.tsx";
-import AdminPanel from "../pages/AdminPanel.tsx";
-import UserDetail from "../pages/Dashboard/User/UserDetail.tsx";
-import ApparelList from "../pages/Dashboard/Apparels/ApparelList.tsx";
-import EditUser from "../pages/Dashboard/User/EditUser.tsx";
-import EditApparels from "../components/Apparel/EditApparels.tsx";
-import ApparelDetails from "../pages/Dashboard/Apparels/ApparelDetails.tsx";
 import { useState } from "react";
+import AdminPanel from "@src/pages/AdminPanel";
+import LoginPanel from "@src/pages/LoginPanel";
+import ErrorBoundry from "./ErrorBoundry";
+import UserList from "@src/pages/user/UserList";
+import ApparelList from "@src/pages/appreal/ApparelList";
+import UserDetail from "@src/components/user/UserDetail";
 
-const RouteList = () => {
-  const [loggedIn, setLoggedIn] = useState(false);
+const RouterList = () => {
+  const [loggedIn, setLoggedIn] = useState(
+    sessionStorage.getItem("login") ?? false
+  );
 
-  const logIn = () => {
+  const login = () => {
+    sessionStorage.clear();
+    sessionStorage.setItem("login", "true");
     setLoggedIn(true);
   };
 
-  const logOut = () => {
+  const logout = () => {
     setLoggedIn(false);
+    sessionStorage.clear();
   };
 
   const router = createBrowserRouter([
     {
       path: "/",
       element: loggedIn ? (
-        <AdminPanel logOut={logOut} />
+        <AdminPanel logout={logout} />
       ) : (
-        <LoginPanel logIn={logIn} />
+        <LoginPanel login={login} />
       ),
       errorElement: <ErrorBoundry />,
       children: [
@@ -36,24 +38,12 @@ const RouteList = () => {
           element: <UserList />,
         },
         {
-          path: "/user/:userId",
+          path: "user/:id",
           element: <UserDetail />,
-        },
-        {
-          path: "/user/edit/:userId",
-          element: <EditUser />,
         },
         {
           path: "/apparels",
           element: <ApparelList />,
-        },
-        {
-          path: "/apparels/:apparelId",
-          element: <ApparelDetails />,
-        },
-        {
-          path: "/apparels/edit/:apparelId",
-          element: <EditApparels />,
         },
       ],
     },
@@ -62,4 +52,4 @@ const RouteList = () => {
   return <RouterProvider router={router} />;
 };
 
-export default RouteList;
+export default RouterList;
