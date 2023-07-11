@@ -127,25 +127,6 @@ export const handleOPTverification = asyncHandler(async (body) => {
   };
 });
 
-export const handleUserBan = asyncHandler(async (_id, ban) => {
-  if (!ObjectID.isValid(_id)) {
-    return boom.badData(messagesResponse.invalid_user_id);
-  }
-  const user = await User.findById({ _id });
-  if (!user) {
-    throw boom.badData(messagesResponse.invalid_user_id);
-  }
-  const updateUser = await User.findByIdAndUpdate({ _id }, { ban });
-  if (!updateUser) {
-    throw boom.internal(messagesResponse.something_went_wrong);
-  }
-  return {
-    success: true,
-    message:
-      ban === "true" ? messagesResponse.user_ban : messagesResponse.user_unban,
-  };
-});
-
 export const handeUserDelete = asyncHandler(async (_id) => {
   if (!ObjectID.isValid(_id)) {
     throw boom.badData(messagesResponse.invalid_user_id);
@@ -165,7 +146,7 @@ export const handeUserDelete = asyncHandler(async (_id) => {
 });
 
 export const handleUserUpdate = asyncHandler(async (_id, body) => {
-  const { name } = body;
+  console.log("body", body);
   if (!ObjectID.isValid(_id)) {
     throw boom.badData(messagesResponse.invalid_user_id);
   }
@@ -173,11 +154,10 @@ export const handleUserUpdate = asyncHandler(async (_id, body) => {
   if (!user) {
     throw boom.badData(messagesResponse.invalid_user_id);
   }
-  const updateUser = await User.findByIdAndUpdate({ _id }, { name });
+  await User.findByIdAndUpdate({ _id }, body);
   return {
     success: true,
     message: messagesResponse.user_detail_updated,
-    data: updateUser,
   };
 });
 

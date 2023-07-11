@@ -39,12 +39,6 @@ export const verifyOPT = asyncHandler(async (req, res, next) => {
     .catch((err) => next(err));
 });
 
-export const ban = asyncHandler(async (req, res, next) => {
-  UserService.handleUserBan(req.params._id, req.body.ban)
-    .then((data) => res.status(HttpStatus.OK).json(data))
-    .catch((err) => next(err));
-});
-
 export const updateUser = asyncHandler(async (req, res, next) => {
   UserService.handleUserUpdate(req.params._id, req.body)
     .then((data) => res.status(HttpStatus.ACCEPTED).json(data))

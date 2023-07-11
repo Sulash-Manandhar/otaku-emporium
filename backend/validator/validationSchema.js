@@ -60,7 +60,7 @@ export const UserID = Joi.string()
 
 export const genderSchema = Joi.string()
   .label("Gender")
-  .valid("male", "female", "others")
+  .valid("male", "female", "other")
   .required()
   .messages({
     "strings.empty": messagesResponse.gender_is_requird,
@@ -117,12 +117,15 @@ export const verifyOPTCodeSchema = Joi.object({
   code: OPTCode,
 });
 
-export const banUserSchema = Joi.object({
-  ban: Joi.boolean().label("Ban value").required(),
-});
-
 export const updateUserSchema = Joi.object({
   name: userNameSchema,
+  gender: Joi.string().label("Gender").valid("male", "female", "other"),
+  contact: Joi.number().integer().max(9999999999).min(9800000000).messages({
+    "number.min": messagesResponse.invalid_contact_number,
+    "number.max": messagesResponse.invalid_contact_number,
+  }),
+  ban: Joi.boolean().label("Ban value"),
+  verification: Joi.boolean().label("Ban value"),
 });
 
 /**Apparels Validation Schema */

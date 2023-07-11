@@ -27,12 +27,6 @@ export async function verifyOPTCode(req, res, next) {
     .catch((err) => next(err));
 }
 
-export async function banUserValidator(req, res, next) {
-  return await validate(req.body, ValidatorSchema.banUserSchema)
-    .then(() => next())
-    .catch((err) => next(err));
-}
-
 export async function updateUserValidator(req, res, next) {
   return await validate(req.body, ValidatorSchema.updateUserSchema)
     .then(() => next())
