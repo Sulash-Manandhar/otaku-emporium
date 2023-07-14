@@ -1,5 +1,5 @@
 import User from "../models/user.model.js";
-import { userData } from "../data/uesrData.js";
+import { userData } from "../data/userData.js";
 import logger from "../utils/Logger.js";
 
 export async function addUserToDocument() {

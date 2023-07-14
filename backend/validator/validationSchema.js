@@ -66,16 +66,9 @@ export const genderSchema = Joi.string()
     "strings.empty": messagesResponse.gender_is_requird,
   });
 
-export const contactSchema = Joi.number()
-  .integer()
-  .max(9999999999)
-  .min(9800000000)
-  .required()
-  .messages({
-    "number.min": messagesResponse.invalid_contact_number,
-    "number.max": messagesResponse.invalid_contact_number,
-    "number.empty": messagesResponse.contact_number_required,
-  });
+export const contactSchema = Joi.string().label("Contact").required().messages({
+  "string.empty": "Contact is required",
+});
 
 export const citySchema = Joi.string().label("city").required().messages({
   "string.empty": messagesResponse.city_name_required,
@@ -120,10 +113,7 @@ export const verifyOPTCodeSchema = Joi.object({
 export const updateUserSchema = Joi.object({
   name: userNameSchema,
   gender: Joi.string().label("Gender").valid("male", "female", "other"),
-  contact: Joi.number().integer().max(9999999999).min(9800000000).messages({
-    "number.min": messagesResponse.invalid_contact_number,
-    "number.max": messagesResponse.invalid_contact_number,
-  }),
+  contact: Joi.string().label("Contact"),
   ban: Joi.boolean().label("Ban value"),
   verification: Joi.boolean().label("Ban value"),
 });

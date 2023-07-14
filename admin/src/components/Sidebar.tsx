@@ -1,66 +1,95 @@
-import { Flex, Tooltip, IconButton } from "@chakra-ui/react";
-import { SidebarData } from "@src/data/SidebarData";
+import {
+  Flex,
+  Tooltip,
+  IconButton,
+  useDisclosure,
+  Button,
+  List,
+  ListItem,
+  ListIcon,
+  SystemStyleObject,
+  Icon,
+  Text,
+} from "@chakra-ui/react";
+import { SidebarNavData } from "@src/data/SidebarData";
 import React from "react";
-import { BiLogOut } from "react-icons/bi";
+import { AiOutlineLogout } from "react-icons/ai";
 import { NavLink } from "react-router-dom";
+import { TbLayoutSidebarLeftExpand } from "react-icons/tb";
 
-const IconButtonStlye = {
-  fontSize: "1.5rem",
-  padding: "1rem",
-  variant: "link",
-  color: "white",
-  _hover: {
-    backgroundColor: "blackAlpha.700",
-  },
-};
 interface Props {
   logout: () => void;
 }
 
+const ListItemStlye: SystemStyleObject = {
+  display: "flex",
+  alignItems: "center",
+  p: 4,
+  w: "100%",
+  fontWeight: "bold",
+  cursor: "pointer",
+  fontSize: "14px",
+  borderBottom: "1px solid white",
+  _hover: {
+    backgroundColor: "blackAlpha.700",
+  },
+};
+
 const Sidebar: React.FC<Props> = (props) => {
   const { logout } = props;
+  const { isOpen, onToggle } = useDisclosure();
   return (
     <Flex
       flexDirection="column"
       justifyContent="space-between"
       h="100%"
+      w="fit-content"
       backgroundColor="blackAlpha.800"
       color="white"
       overflowY="auto"
       className="hide-scroll"
+      transition="width 0.5s ease"
     >
-      <Flex flexDir="column" padding="0.275rem" justifyContent="center">
-        {SidebarData.map((item) => {
-          let Icon: any = item.icon;
-          return (
-            <Tooltip
-              label={item.name}
-              fontSize="sm"
-              hasArrow
-              placement="right"
-              key={item.id}
-            >
-              <NavLink to={item.path}>
-                <IconButton
-                  variant="link"
-                  aria-label="Logout"
-                  icon={<Icon />}
-                  sx={IconButtonStlye}
-                />
-              </NavLink>
-            </Tooltip>
-          );
-        })}
+      <Flex flexDir="column" alignItems="center" w="100%">
+        {SidebarNavData.map((item) => (
+          <Tooltip label={item.name} placement="right" hasArrow key={item.id}>
+            <NavLink to={item.path} style={{ width: "100%" }}>
+              <Flex sx={ListItemStlye}>
+                <Icon as={item.icon} fontSize="1.3rem" />
+                {isOpen && (
+                  <Text as="span" ml="2">
+                    {item.name}
+                  </Text>
+                )}
+              </Flex>
+            </NavLink>
+          </Tooltip>
+        ))}
       </Flex>
-      <Flex justifyContent="center" padding="0.275rem">
-        <Tooltip label="Logout" fontSize="sm" hasArrow placement="right">
-          <IconButton
-            aria-label="Logout"
-            icon={<BiLogOut />}
-            variant="link"
-            onClick={logout}
-            sx={IconButtonStlye}
-          />
+      <Flex flexDir="column" alignItems="center" w="100%">
+        <Tooltip label="Expand" placement="right" hasArrow>
+          <Flex
+            sx={ListItemStlye}
+            borderTop="1px solid white"
+            onClick={onToggle}
+          >
+            <Icon as={TbLayoutSidebarLeftExpand} fontSize="1.3rem" />
+            {isOpen && (
+              <Text as="span" ml="2">
+                {isOpen ? "Collapse" : "Expand"}
+              </Text>
+            )}
+          </Flex>
+        </Tooltip>
+        <Tooltip label="Logout" placement="right" hasArrow>
+          <Flex sx={ListItemStlye} borderTop="1px solid white" onClick={logout}>
+            <Icon as={AiOutlineLogout} fontSize="1.3rem" />
+            {isOpen && (
+              <Text as="span" ml="2">
+                Logout
+              </Text>
+            )}
+          </Flex>
         </Tooltip>
       </Flex>
     </Flex>

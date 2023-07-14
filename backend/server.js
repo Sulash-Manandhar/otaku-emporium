@@ -15,6 +15,7 @@ import apparelRoute from "./routes/apparel.route.js";
 
 //Add pre-data
 import { addUserToDocument } from "./command/addUserToDatabases.js";
+import { runPopulation } from "./command/index.js";
 
 const port = process.env.PORT || 5000;
 
@@ -32,7 +33,7 @@ app.use(routeLogger);
 
 //Pre-Data
 {
-  process.env.RUN_POPULATION === "true" && addUserToDocument();
+  process.env.RUN_POPULATION === "true" && runPopulation();
 }
 
 //Routes

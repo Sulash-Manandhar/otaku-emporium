@@ -175,12 +175,16 @@ export const getUserDetail = asyncHandler(async (_id) => {
 });
 
 export const getAllUsers = asyncHandler(async () => {
-  const users = await User.find().select(
-    "-password -createdAt -updatedAt -__v "
-  );
+  const users = await User.find()
+    .select("-password -createdAt -updatedAt -__v ")
+    .limit(15)
+    .skip(1);
+
+  const count = await User.countDocuments();
+  if (!users) throw boom.internal();
+
   return {
-    success: true,
-    message: "Successfully fetched all user data",
     users,
+    meta: { totalCount: count },
   };
 });

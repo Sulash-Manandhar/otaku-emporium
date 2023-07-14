@@ -65,6 +65,12 @@ export const getUser = asyncHandler(async (req, res, next) => {
 
 export const getAllUser = asyncHandler(async (req, res, next) => {
   UserService.getAllUsers()
-    .then((user) => res.status(HttpStatus.OK).json(user))
+    .then((data) =>
+      res.status(HttpStatus.OK).json({
+        success: true,
+        message: "Successfully fetched all user data",
+        data,
+      })
+    )
     .catch((err) => next(err));
 });

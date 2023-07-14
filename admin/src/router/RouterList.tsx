@@ -5,11 +5,11 @@ import LoginPanel from "@src/pages/LoginPanel";
 import ErrorBoundry from "./ErrorBoundry";
 import UserList from "@src/pages/user/UserList";
 import ApparelList from "@src/pages/appreal/ApparelList";
-import UserDetail from "@src/components/user/UserDetail";
+import UserDetail from "@src/pages/user/UserDetail";
 
 const RouterList = () => {
   const [loggedIn, setLoggedIn] = useState(
-    sessionStorage.getItem("login") ?? false
+    sessionStorage.getItem("login") === "true" ?? false
   );
 
   const login = () => {

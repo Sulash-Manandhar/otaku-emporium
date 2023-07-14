@@ -1,8 +1,8 @@
 import { SidebarMenuDataSchema } from "@src/schema/common";
 import { BiUserCircle } from "react-icons/bi";
-import { GiAmpleDress, GiLaurelCrown } from "react-icons/gi";
+import { GiClothes, GiLaurelCrown } from "react-icons/gi";
 
-export const SidebarData: SidebarMenuDataSchema[] = [
+export const SidebarNavData: SidebarMenuDataSchema[] = [
   {
     id: 1,
     name: "Dashboard",
@@ -19,6 +19,6 @@ export const SidebarData: SidebarMenuDataSchema[] = [
     id: 3,
     name: "Apparel",
     path: "/apparels",
-    icon: GiAmpleDress,
+    icon: GiClothes,
   },
 ];
