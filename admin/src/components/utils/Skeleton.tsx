@@ -1,4 +1,4 @@
-import { Box, Skeleton, Tbody, Td, Tr } from "@chakra-ui/react";
+import { Skeleton, Tbody, Td, Tr } from "@chakra-ui/react";
 
 interface TableSkeletonProps {
   rows: number;

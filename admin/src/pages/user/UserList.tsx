@@ -20,7 +20,7 @@ import {
 } from "@chakra-ui/react";
 import { getUserList } from "@src/api";
 import UserListItem from "@src/components/user/UserListItem";
-import { TableSkeleton } from "@src/components/utils/skeleton";
+import { TableSkeleton } from "@src/components/utils/Skeleton";
 import { ListWrapper } from "@src/schema/common";
 import { UserListSchema } from "@src/schema/userSchema";
 import { wrapperStyle } from "@src/style/common";

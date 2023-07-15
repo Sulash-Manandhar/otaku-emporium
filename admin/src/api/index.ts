@@ -14,6 +14,13 @@ export async function getUserList(props?: ListParams) {
   }).then((response) => response?.data);
 }
 
+export async function deleteUser(id: string) {
+  return axios({
+    method: "DELETE",
+    url: `/user/delete/${id}`,
+  }).then((response) => response.data);
+}
+
 export async function getApparelList() {
   return axios({
     method: "GET",

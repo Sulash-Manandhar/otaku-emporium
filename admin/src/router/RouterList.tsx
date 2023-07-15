@@ -6,6 +6,7 @@ import ErrorBoundry from "./ErrorBoundry";
 import UserList from "@src/pages/user/UserList";
 import ApparelList from "@src/pages/appreal/ApparelList";
 import UserDetail from "@src/pages/user/UserDetail";
+import EditUser from "@src/pages/user/EditUser";
 
 const RouterList = () => {
   const [loggedIn, setLoggedIn] = useState(
@@ -40,6 +41,10 @@ const RouterList = () => {
         {
           path: "user/:id",
           element: <UserDetail />,
+        },
+        {
+          path: "user/edit/:id",
+          element: <EditUser />,
         },
         {
           path: "/apparels",
