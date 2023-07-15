@@ -111,7 +111,11 @@ export const verifyOPTCodeSchema = Joi.object({
 });
 
 export const updateUserSchema = Joi.object({
-  name: userNameSchema,
+  name: Joi.string().label("Name").min(3).max(30).messages({
+    "string.min": messagesResponse.name_should_atleast_three_character_long,
+    "string.max":
+      messagesResponse.name_should_not_exceed_more_than_30_character,
+  }),
   gender: Joi.string().label("Gender").valid("male", "female", "other"),
   contact: Joi.string().label("Contact"),
   ban: Joi.boolean().label("Ban value"),

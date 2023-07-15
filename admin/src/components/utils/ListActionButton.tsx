@@ -28,7 +28,6 @@ const ListActionButton: React.FC<Props> = (props) => {
   const navigate = useNavigate();
   const { isOpen, onOpen, onClose } = useDisclosure();
 
-  console.log("viewPath", viewPath);
   return (
     <ButtonGroup>
       <Tooltip label="View" hasArrow placement="bottom">

@@ -1,8 +1,13 @@
 import { Badge, Switch, Td, Tr, useToast } from "@chakra-ui/react";
-import { deleteUser } from "@src/api";
-import { AddressInterfce, UserDetailSchema } from "@src/schema/userSchema";
+import { deleteUser, updateUser } from "@src/api";
+import {
+  AddressInterfce,
+  UserDetailSchema,
+  UserListSchema,
+} from "@src/schema/userSchema";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import ListActionButton from "../utils/ListActionButton";
+import ListActionButton from "@src/components/utils/ListActionButton";
+import { ListWrapper } from "@src/schema/common";
 
 interface Props {
   sn: number;
@@ -45,6 +50,52 @@ const UserListItem: React.FC<Props> = (props) => {
     },
   });
 
+  const updateMutate = useMutation({
+    mutationFn: (data: Record<string, boolean>) => updateUser(user._id, data),
+    onMutate: async (data) => {
+      await queryClient.cancelQueries({ queryKey: ["user-list"] });
+      const previousUserList = queryClient.getQueryData(["user-list"]);
+
+      queryClient.setQueryData(["user-list"], (prev: any) => {
+        const updatedUserData = prev?.data?.users?.map(
+          (item: UserDetailSchema) =>
+            user._id === user._id ? { ...item, ...data } : item
+        );
+
+        return {
+          ...prev,
+          data: {
+            ...prev.data,
+            user: updatedUserData,
+          },
+        };
+      });
+
+      return previousUserList;
+    },
+    onSuccess: () => {
+      toast({ status: "success", title: "Successfully updated status" });
+    },
+    onError: (_err, _updatedData, context: any) => {
+      toast({
+        status: "error",
+        title: "Something went wrong",
+      });
+      queryClient.setQueryData(["user-list"], context.previousUserList);
+    },
+    onSettled: () => {
+      queryClient.invalidateQueries({ queryKey: ["user-list"] });
+    },
+  });
+
+  const handleSwitchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, checked } = e.currentTarget;
+    const data = {
+      [name]: checked,
+    };
+    updateMutate.mutate(data);
+  };
+
   return (
     <Tr>
       <Td>{sn}</Td>
@@ -58,10 +109,24 @@ const UserListItem: React.FC<Props> = (props) => {
       <Td>{user.contact}</Td>
       <Td>{formatAddress(user.address)}</Td>
       <Td>
-        <Switch size="sm" isChecked={user.verification} colorScheme="green" />
+        <Switch
+          size="sm"
+          name="verification"
+          colorScheme="green"
+          isChecked={user.verification}
+          onChange={handleSwitchChange}
+          isDisabled={updateMutate.isLoading}
+        />
       </Td>
       <Td>
-        <Switch size="sm" isChecked={user.ban} colorScheme="green" />
+        <Switch
+          size="sm"
+          colorScheme="green"
+          name="ban"
+          isChecked={user.ban}
+          onChange={handleSwitchChange}
+          isDisabled={updateMutate.isLoading}
+        />
       </Td>
       <Td>
         <ListActionButton

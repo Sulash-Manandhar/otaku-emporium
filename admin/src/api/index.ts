@@ -21,6 +21,14 @@ export async function deleteUser(id: string) {
   }).then((response) => response.data);
 }
 
+export async function updateUser(id: string, data: any) {
+  return axios({
+    method: "PATCH",
+    url: `/user/update-user/${id}`,
+    data,
+  }).then((response) => response?.data);
+}
+
 export async function getApparelList() {
   return axios({
     method: "GET",
