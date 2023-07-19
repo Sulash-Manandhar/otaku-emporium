@@ -41,7 +41,7 @@ const apparelModel = mongoose.Schema(
     },
     category: {
       type: String,
-      enum: ["hoodie", "sweetshirt", "t-shirt"],
+      enum: ["hoodie", "sweatshirt", "t-shirt"],
       required: [true, "Category of the product is required."],
     },
     description: {

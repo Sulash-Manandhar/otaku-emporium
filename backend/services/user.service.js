@@ -11,6 +11,7 @@ import { VALIDATION_ERROR } from "../constant/common.js";
 import { getToken } from "../utils/generateToken.js";
 import OPT from "../models/opt.model.js";
 import mongoose from "mongoose";
+import { generateMeta } from "../utils/generateMeta.js";
 
 const ObjectID = mongoose.Types.ObjectId;
 
@@ -127,25 +128,6 @@ export const handleOPTverification = asyncHandler(async (body) => {
   };
 });
 
-export const handleUserBan = asyncHandler(async (_id, ban) => {
-  if (!ObjectID.isValid(_id)) {
-    return boom.badData(messagesResponse.invalid_user_id);
-  }
-  const user = await User.findById({ _id });
-  if (!user) {
-    throw boom.badData(messagesResponse.invalid_user_id);
-  }
-  const updateUser = await User.findByIdAndUpdate({ _id }, { ban });
-  if (!updateUser) {
-    throw boom.internal(messagesResponse.something_went_wrong);
-  }
-  return {
-    success: true,
-    message:
-      ban === "true" ? messagesResponse.user_ban : messagesResponse.user_unban,
-  };
-});
-
 export const handeUserDelete = asyncHandler(async (_id) => {
   if (!ObjectID.isValid(_id)) {
     throw boom.badData(messagesResponse.invalid_user_id);
@@ -165,7 +147,7 @@ export const handeUserDelete = asyncHandler(async (_id) => {
 });
 
 export const handleUserUpdate = asyncHandler(async (_id, body) => {
-  const { name } = body;
+  console.log("body", body);
   if (!ObjectID.isValid(_id)) {
     throw boom.badData(messagesResponse.invalid_user_id);
   }
@@ -173,11 +155,10 @@ export const handleUserUpdate = asyncHandler(async (_id, body) => {
   if (!user) {
     throw boom.badData(messagesResponse.invalid_user_id);
   }
-  const updateUser = await User.findByIdAndUpdate({ _id }, { name });
+  await User.findByIdAndUpdate({ _id }, body);
   return {
     success: true,
     message: messagesResponse.user_detail_updated,
-    data: updateUser,
   };
 });
 
@@ -194,13 +175,20 @@ export const getUserDetail = asyncHandler(async (_id) => {
   return user;
 });
 
-export const getAllUsers = asyncHandler(async () => {
-  const users = await User.find().select(
-    "-password -createdAt -updatedAt -__v "
-  );
+export const getAllUsers = asyncHandler(async (params) => {
+  const page = params.page ?? 1;
+  const limit = params.limit ?? 15;
+
+  const users = await User.find()
+    .select("-password -createdAt -updatedAt -__v ")
+    .skip(page)
+    .limit(limit);
+
+  const count = await User.countDocuments();
+  if (!users) throw boom.internal();
+
   return {
-    success: true,
-    message: "Successfully fetched all user data",
     users,
+    meta: generateMeta({ page, limit, count }),
   };
 });

@@ -1,48 +1,32 @@
-import { styled } from "styled-components";
-import Sidebar from "./Sidebar";
+import { Flex, Box, SystemStyleObject } from "@chakra-ui/react";
+import Sidebar from "@src/components/Sidebar";
 import { Outlet } from "react-router-dom";
-import { ToastContainer } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
-
 interface Props {
-  logOut: () => void;
+  logout: () => void;
 }
 
+const OutletContainer: SystemStyleObject = {
+  flex: 1,
+  padding: ["0.75rem", "2rem"],
+  width: "100%",
+  height: "100%",
+  overflow: "auto",
+  backgroundColor: "gray.200",
+  display: "flex",
+  flexDir: "column",
+  gap: 1,
+};
+
 const AdminPanel: React.FC<Props> = (props) => {
-  const { logOut } = props;
+  const { logout } = props;
   return (
-    <Container>
-      <Sidebar logOut={logOut} />
-      <Dashboard>
+    <Flex width="100%" height="100%">
+      <Sidebar logout={logout} />
+      <Box sx={OutletContainer}>
         <Outlet />
-      </Dashboard>
-      <ToastContainer
-        position="bottom-center"
-        autoClose={3000}
-        closeOnClick
-        theme="light"
-        pauseOnHover
-        draggable={false}
-        hideProgressBar={true}
-      />
-    </Container>
+      </Box>
+    </Flex>
   );
 };
 
 export default AdminPanel;
-
-const Container = styled.div`
-  display: flex;
-  justify-content: flex-start;
-  align-items: center;
-  width: 100%;
-  height: 100%;
-`;
-
-const Dashboard = styled.div`
-  flex: 1;
-  padding: 0.5rem 2rem;
-  width: 100%;
-  height: 100%;
-  overflow: auto;
-`;

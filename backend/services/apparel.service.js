@@ -1,5 +1,4 @@
 import asyncHandler from "express-async-handler";
-import logger from "../utils/Logger.js";
 import Apparel from "../models/apparels.model.js";
 import boom from "@hapi/boom";
 import mongoose from "mongoose";
@@ -34,10 +33,10 @@ export const handleDeleteProduct = asyncHandler(async (_id) => {
 });
 
 export const handleGetAllApparels = asyncHandler(async () => {
-  const apparels = await Apparel.find();
+  const apparels = await Apparel.find().limit(15).skip(1);
   const count = await Apparel.countDocuments();
   if (!apparels) throw boom.internal();
-  return { apparels, totalCount: count };
+  return { apparels, meta: { totalCount: count } };
 });
 
 export const handleApparelDetails = asyncHandler(async (_id) => {

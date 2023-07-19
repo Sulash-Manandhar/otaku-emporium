@@ -1,17 +1,25 @@
 import mongoose from "mongoose";
 
 const addressSchema = mongoose.Schema({
+  country: {
+    type: String,
+    required: "Country is missing in address",
+  },
   city: {
     type: String,
     required: "City is missing in address",
   },
-  state: {
+  street_name: {
     type: String,
-    required: "Street is missing in address.",
+    required: "Street name is missing in address.",
   },
-  zip_code: {
-    type: Number,
-    required: "Zip code is missing in address",
+  street_number: {
+    type: String,
+    required: "Street number is missing in address.",
+  },
+  postal_code: {
+    type: String,
+    required: "Postal code is missing in address",
   },
 });
 
@@ -28,11 +36,11 @@ const UserSchema = mongoose.Schema(
     },
     gender: {
       type: String,
-      enum: ["male", "female", "others"],
+      enum: ["male", "female", "other"],
       default: "others",
     },
     contact: {
-      type: Number,
+      type: String,
       required: "Contact number is missing",
     },
 

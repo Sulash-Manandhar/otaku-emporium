@@ -25,8 +25,6 @@ router.patch(
   UserController.updateUser
 );
 
-router.put("/ban/:_id", Validator.banUserValidator, UserController.ban);
-
 router.delete("/delete/:_id", UserController.deleteUser);
 
 router.get("/", UserController.getAllUser);

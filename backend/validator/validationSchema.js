@@ -60,22 +60,15 @@ export const UserID = Joi.string()
 
 export const genderSchema = Joi.string()
   .label("Gender")
-  .valid("male", "female", "others")
+  .valid("male", "female", "other")
   .required()
   .messages({
     "strings.empty": messagesResponse.gender_is_requird,
   });
 
-export const contactSchema = Joi.number()
-  .integer()
-  .max(9999999999)
-  .min(9800000000)
-  .required()
-  .messages({
-    "number.min": messagesResponse.invalid_contact_number,
-    "number.max": messagesResponse.invalid_contact_number,
-    "number.empty": messagesResponse.contact_number_required,
-  });
+export const contactSchema = Joi.string().label("Contact").required().messages({
+  "string.empty": "Contact is required",
+});
 
 export const citySchema = Joi.string().label("city").required().messages({
   "string.empty": messagesResponse.city_name_required,
@@ -117,12 +110,16 @@ export const verifyOPTCodeSchema = Joi.object({
   code: OPTCode,
 });
 
-export const banUserSchema = Joi.object({
-  ban: Joi.boolean().label("Ban value").required(),
-});
-
 export const updateUserSchema = Joi.object({
-  name: userNameSchema,
+  name: Joi.string().label("Name").min(3).max(30).messages({
+    "string.min": messagesResponse.name_should_atleast_three_character_long,
+    "string.max":
+      messagesResponse.name_should_not_exceed_more_than_30_character,
+  }),
+  gender: Joi.string().label("Gender").valid("male", "female", "other"),
+  contact: Joi.string().label("Contact"),
+  ban: Joi.boolean().label("Ban value"),
+  verification: Joi.boolean().label("Ban value"),
 });
 
 /**Apparels Validation Schema */
