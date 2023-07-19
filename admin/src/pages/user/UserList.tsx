@@ -10,28 +10,47 @@ import {
   BreadcrumbLink,
   Flex,
   Heading,
-  Grid,
-  GridItem,
-  FormControl,
-  FormLabel,
-  Input,
-  Select,
   Button,
 } from "@chakra-ui/react";
 import { getUserList } from "@src/api";
+import UserFilterSearch from "@src/components/user/UserFilterSearch";
 import UserListItem from "@src/components/user/UserListItem";
+import ListPagination from "@src/components/utils/ListPagination";
 import { TableSkeleton } from "@src/components/utils/Skeleton";
+import { USER_FILTER_PARAMS } from "@src/constant/filterConstant";
 import { ListWrapper } from "@src/schema/common";
+import { UserFilterParamsType } from "@src/schema/filterSchema";
 import { UserListSchema } from "@src/schema/userSchema";
 import { wrapperStyle } from "@src/style/common";
 import { useQuery } from "@tanstack/react-query";
+import { useState } from "react";
 import { BiChevronRight } from "react-icons/bi";
 import { NavLink } from "react-router-dom";
+
 const UserList = () => {
+  const [filterParams, setFilterParams] =
+    useState<UserFilterParamsType>(USER_FILTER_PARAMS);
+
   const { data, isLoading } = useQuery<ListWrapper<UserListSchema>>({
-    queryKey: ["user-list"],
-    queryFn: () => getUserList(),
+    queryKey: ["user-list", filterParams],
+    queryFn: async () => {
+      const queryData: Partial<UserFilterParamsType> = {
+        limit: filterParams?.limit,
+        page: filterParams?.page,
+      };
+      if (filterParams?.name) queryData.name = filterParams.name;
+      if (filterParams?.contact) queryData.contact = filterParams.contact;
+      if (filterParams?.ban) queryData.ban = filterParams.ban;
+      if (filterParams?.gender) queryData.gender = filterParams.gender;
+      if (filterParams?.verification)
+        queryData.verification = filterParams.verification;
+      return getUserList(queryData);
+    },
   });
+
+  const handleFilterReset = () => {
+    setFilterParams(USER_FILTER_PARAMS);
+  };
 
   return (
     <Flex flexDir="column" gap="5">
@@ -53,52 +72,11 @@ const UserList = () => {
         </Button>
       </Flex>
 
-      <Grid
-        sx={wrapperStyle}
-        templateColumns={["repeat(1,1fr)", "repeat(5,1fr)"]}
-        gap="4"
-      >
-        <GridItem>
-          <FormControl>
-            <FormLabel>Name</FormLabel>
-            <Input placeholder="Name" size="sm" />
-          </FormControl>
-        </GridItem>
-        <GridItem>
-          <FormControl>
-            <FormLabel size="sm">Contact</FormLabel>
-            <Input placeholder="Contact name" size="sm" />
-          </FormControl>
-        </GridItem>
-        <GridItem>
-          <FormControl>
-            <FormLabel size="sm">Gender</FormLabel>
-            <Select placeholder="Gender" size="sm">
-              <option>Male</option>
-              <option>Female</option>
-              <option>Other</option>
-            </Select>
-          </FormControl>
-        </GridItem>
-        <GridItem>
-          <FormControl>
-            <FormLabel size="sm">Verification</FormLabel>
-            <Select placeholder="Verification" size="sm">
-              <option>Verified</option>
-              <option>Not verified</option>
-            </Select>
-          </FormControl>
-        </GridItem>
-        <GridItem>
-          <FormControl>
-            <FormLabel size="sm">Ban</FormLabel>
-            <Select placeholder="Ban" size="sm">
-              <option>Ban</option>
-              <option>Not Ban</option>
-            </Select>
-          </FormControl>
-        </GridItem>
-      </Grid>
+      <UserFilterSearch
+        filterParams={filterParams}
+        setFilterParams={setFilterParams}
+        handleFilterReset={handleFilterReset}
+      />
 
       <TableContainer sx={wrapperStyle}>
         <Table variant="simple" size={["sm", "md"]}>
@@ -123,6 +101,13 @@ const UserList = () => {
           </Tbody>
         </Table>
       </TableContainer>
+      {data?.data && (
+        <ListPagination
+          filterPrams={filterParams}
+          setFilterParams={setFilterParams}
+          meta={data?.data?.meta}
+        />
+      )}
     </Flex>
   );
 };

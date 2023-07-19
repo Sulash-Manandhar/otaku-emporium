@@ -64,7 +64,7 @@ export const getUser = asyncHandler(async (req, res, next) => {
 });
 
 export const getAllUser = asyncHandler(async (req, res, next) => {
-  UserService.getAllUsers()
+  UserService.getAllUsers(req.params)
     .then((data) =>
       res.status(HttpStatus.OK).json({
         success: true,

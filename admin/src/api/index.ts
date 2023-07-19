@@ -2,15 +2,11 @@ import axios from "axios";
 
 axios.defaults.baseURL = "http://localhost:5000/api";
 
-interface ListParams {
-  query?: Record<string, string>;
-}
-
-export async function getUserList(props?: ListParams) {
+export async function getUserList(params?: any) {
   return axios({
     method: "GET",
     url: "/user",
-    params: props?.query,
+    params,
   }).then((response) => response?.data);
 }
 

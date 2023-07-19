@@ -11,6 +11,7 @@ import { VALIDATION_ERROR } from "../constant/common.js";
 import { getToken } from "../utils/generateToken.js";
 import OPT from "../models/opt.model.js";
 import mongoose from "mongoose";
+import { generateMeta } from "../utils/generateMeta.js";
 
 const ObjectID = mongoose.Types.ObjectId;
 
@@ -174,17 +175,20 @@ export const getUserDetail = asyncHandler(async (_id) => {
   return user;
 });
 
-export const getAllUsers = asyncHandler(async () => {
+export const getAllUsers = asyncHandler(async (params) => {
+  const page = params.page ?? 1;
+  const limit = params.limit ?? 15;
+
   const users = await User.find()
     .select("-password -createdAt -updatedAt -__v ")
-    .limit(15)
-    .skip(1);
+    .skip(page)
+    .limit(limit);
 
   const count = await User.countDocuments();
   if (!users) throw boom.internal();
 
   return {
     users,
-    meta: { totalCount: count },
+    meta: generateMeta({ page, limit, count }),
   };
 });
