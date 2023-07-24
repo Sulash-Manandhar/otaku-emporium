@@ -175,11 +175,20 @@ export const getUserDetail = asyncHandler(async (_id) => {
   return user;
 });
 
-export const getAllUsers = asyncHandler(async (params) => {
-  const page = params.page ?? 1;
-  const limit = params.limit ?? 15;
+export const getAllUsers = asyncHandler(async (query) => {
+  const page = query.page ?? 1;
+  const limit = query.limit ?? 15;
+  let filterParams = {};
+  if (query?.name) filterParams.name = { $regex: new RegExp(query.name, "i") };
 
-  const users = await User.find()
+  if (query?.contact)
+    filterParams.contact = { $regex: new RegExp(query.contact, "i") };
+
+  if (query?.gender) filterParams.gender = query.gender;
+  if (query?.verification) filterParams.verification = query.verification;
+  if (query?.ban) filterParams.ban = query.ban;
+  console.log("filterParams", filterParams);
+  const users = await User.find(filterParams)
     .select("-password -createdAt -updatedAt -__v ")
     .skip(page)
     .limit(limit);

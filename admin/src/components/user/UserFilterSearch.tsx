@@ -6,7 +6,6 @@ import {
   Input,
   Select,
   Button,
-  filter,
 } from "@chakra-ui/react";
 import { UserFilterParamsType } from "@src/schema/filterSchema";
 import { wrapperStyle } from "@src/style/common";

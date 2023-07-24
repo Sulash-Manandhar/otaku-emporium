@@ -1,13 +1,8 @@
 import { Badge, Switch, Td, Tr, useToast } from "@chakra-ui/react";
 import { deleteUser, updateUser } from "@src/api";
-import {
-  AddressInterfce,
-  UserDetailSchema,
-  UserListSchema,
-} from "@src/schema/userSchema";
+import { AddressInterfce, UserDetailSchema } from "@src/schema/userSchema";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import ListActionButton from "@src/components/utils/ListActionButton";
-import { ListWrapper } from "@src/schema/common";
 
 interface Props {
   sn: number;

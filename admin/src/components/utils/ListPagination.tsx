@@ -8,7 +8,7 @@ import {
   PaginationNext,
   PaginationSeparator,
 } from "@ajna/pagination";
-import { Box, Flex, Select, filter } from "@chakra-ui/react";
+import { Box, Flex, Select } from "@chakra-ui/react";
 import { Meta } from "@src/schema/common";
 import { AiFillCaretLeft, AiFillCaretRight } from "react-icons/ai";
 
