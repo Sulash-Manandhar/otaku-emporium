@@ -17,19 +17,34 @@ import UserFilterSearch from "@src/components/user/UserFilterSearch";
 import UserListItem from "@src/components/user/UserListItem";
 import ListPagination from "@src/components/utils/ListPagination";
 import { TableSkeleton } from "@src/components/utils/Skeleton";
-import { USER_FILTER_PARAMS } from "@src/constant/filterConstant";
+import {
+  DEFAULT_LIMIT,
+  DEFAULT_PAGE,
+  USER_FILTER_PARAMS,
+} from "@src/constant/filterConstant";
 import { ListWrapper } from "@src/schema/common";
 import { UserFilterParamsType } from "@src/schema/filterSchema";
 import { UserListSchema } from "@src/schema/userSchema";
 import { wrapperStyle } from "@src/style/common";
+import { removeEmptyKeys } from "@src/utils/removeEmptyKeys";
 import { useQuery } from "@tanstack/react-query";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { BiChevronRight } from "react-icons/bi";
 import { NavLink } from "react-router-dom";
+import { useSearchParams } from "react-router-dom";
 
 const UserList = () => {
-  const [filterParams, setFilterParams] =
-    useState<UserFilterParamsType>(USER_FILTER_PARAMS);
+  const [searchPrams, setSearchParams] = useSearchParams();
+
+  const [filterParams, setFilterParams] = useState<UserFilterParamsType>({
+    name: searchPrams.get("name") ?? "",
+    contact: searchPrams.get("contact") ?? "",
+    gender: searchPrams.get("gender") ?? "",
+    verification: searchPrams.get("verification") ? true : false,
+    ban: searchPrams.get("ban") ? true : false,
+    page: DEFAULT_PAGE,
+    limit: DEFAULT_LIMIT,
+  });
 
   const { data, isLoading } = useQuery<ListWrapper<UserListSchema>>({
     queryKey: ["user-list", filterParams],
@@ -51,6 +66,11 @@ const UserList = () => {
   const handleFilterReset = () => {
     setFilterParams(USER_FILTER_PARAMS);
   };
+
+  useEffect(() => {
+    const query: any = removeEmptyKeys(filterParams);
+    if (query) setSearchParams(query);
+  }, [filterParams]);
 
   return (
     <Flex flexDir="column" gap="5">
@@ -96,7 +116,12 @@ const UserList = () => {
           {isLoading && <TableSkeleton rows={15} cols={9} />}
           <Tbody>
             {data?.data?.users?.map((item, i) => (
-              <UserListItem key={item._id} sn={++i} user={item} />
+              <UserListItem
+                key={item._id}
+                sn={++i}
+                user={item}
+                filterParams={filterParams}
+              />
             ))}
           </Tbody>
         </Table>

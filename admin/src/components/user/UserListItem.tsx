@@ -7,6 +7,7 @@ import ListActionButton from "@src/components/utils/ListActionButton";
 interface Props {
   sn: number;
   user: UserDetailSchema;
+  filterParams: any;
 }
 
 const genderColor = {
@@ -21,7 +22,7 @@ const formatAddress = (obj: AddressInterfce) => {
 };
 
 const UserListItem: React.FC<Props> = (props) => {
-  const { sn, user } = props;
+  const { sn, user, filterParams } = props;
 
   const toast = useToast();
   const queryClient = useQueryClient();
@@ -48,10 +49,15 @@ const UserListItem: React.FC<Props> = (props) => {
   const updateMutate = useMutation({
     mutationFn: (data: Record<string, boolean>) => updateUser(user._id, data),
     onMutate: async (data) => {
-      await queryClient.cancelQueries({ queryKey: ["user-list"] });
-      const previousUserList = queryClient.getQueryData(["user-list"]);
+      await queryClient.cancelQueries({
+        queryKey: ["user-list", filterParams],
+      });
+      const previousUserList = queryClient.getQueryData([
+        "user-list",
+        filterParams,
+      ]);
 
-      queryClient.setQueryData(["user-list"], (prev: any) => {
+      queryClient.setQueryData(["user-list", filterParams], (prev: any) => {
         const updatedUserData = prev?.data?.users?.map(
           (item: UserDetailSchema) =>
             user._id === user._id ? { ...item, ...data } : item
