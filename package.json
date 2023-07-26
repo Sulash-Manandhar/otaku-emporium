@@ -8,10 +8,7 @@
   "license": "MIT",
   "scripts": {
     "start": "node backend/server.js",
-    "server": "nodemon backend/server.js",
-    "client": "yarn dev --prefix client",
-    "admin": "yarn dev --prefix admin",
-    "dev": "concurrently \"yarn server\" \"yarn client\""
+    "server": "nodemon backend/server.js"
   },
   "dependencies": {
     "@hapi/boom": "^10.0.1",

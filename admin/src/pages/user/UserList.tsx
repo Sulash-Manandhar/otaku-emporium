@@ -26,6 +26,7 @@ import { ListWrapper } from "@src/schema/common";
 import { UserFilterParamsType } from "@src/schema/filterSchema";
 import { UserListSchema } from "@src/schema/userSchema";
 import { wrapperStyle } from "@src/style/common";
+import convertSearchParamsToBoolean from "@src/utils/convertSearchParamsToBoolean";
 import { removeEmptyKeys } from "@src/utils/removeEmptyKeys";
 import { useQuery } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
@@ -40,8 +41,8 @@ const UserList = () => {
     name: searchPrams.get("name") ?? "",
     contact: searchPrams.get("contact") ?? "",
     gender: searchPrams.get("gender") ?? "",
-    verification: searchPrams.get("verification") ? true : false,
-    ban: searchPrams.get("ban") ? true : false,
+    verification: convertSearchParamsToBoolean(searchPrams.get("verification")),
+    ban: convertSearchParamsToBoolean(searchPrams.get("ban")),
     page: DEFAULT_PAGE,
     limit: DEFAULT_LIMIT,
   });

@@ -179,21 +179,22 @@ export const getAllUsers = asyncHandler(async (query) => {
   const page = query.page ?? 1;
   const limit = query.limit ?? 15;
   let filterParams = {};
-  if (query?.name) filterParams.name = { $regex: new RegExp(query.name, "i") };
 
-  if (query?.contact)
-    filterParams.contact = { $regex: new RegExp(query.contact, "i") };
-
+  if (query?.name) filterParams.name = new RegExp(query.name, "i");
+  if (query?.contact) filterParams.contact = new RegExp(query.contact, "i");
   if (query?.gender) filterParams.gender = query.gender;
-  if (query?.verification) filterParams.verification = query.verification;
-  if (query?.ban) filterParams.ban = query.ban;
-  console.log("filterParams", filterParams);
+  if (query?.verification !== undefined)
+    filterParams.verification = query.verification;
+  if (query?.ban !== undefined) filterParams.ban = query.ban;
+
   const users = await User.find(filterParams)
     .select("-password -createdAt -updatedAt -__v ")
     .skip(page)
-    .limit(limit);
+    .limit(limit)
+    .exec();
 
   const count = await User.countDocuments();
+
   if (!users) throw boom.internal();
 
   return {
@@ -201,3 +202,14 @@ export const getAllUsers = asyncHandler(async (query) => {
     meta: generateMeta({ page, limit, count }),
   };
 });
+
+// db.users.find({
+//   $or: [
+//     {
+//       name: {
+//         $regex: "Eleanore Coonihan",
+//         $options: "i",
+//       },
+//     },
+//   ],
+// });

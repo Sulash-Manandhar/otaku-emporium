@@ -14,7 +14,6 @@ import userRoute from "./routes/user.route.js";
 import apparelRoute from "./routes/apparel.route.js";
 
 //Add pre-data
-import { addUserToDocument } from "./command/addUserToDatabases.js";
 import { runPopulation } from "./command/index.js";
 
 const port = process.env.PORT || 5000;

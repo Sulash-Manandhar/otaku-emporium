@@ -10,6 +10,7 @@ import {
 import { UserFilterParamsType } from "@src/schema/filterSchema";
 import { wrapperStyle } from "@src/style/common";
 import { Dispatch, SetStateAction } from "react";
+import { DebounceInput } from "react-debounce-input";
 
 interface Props {
   filterParams: UserFilterParamsType;
@@ -20,10 +21,8 @@ interface Props {
 const UserFilterSearch: React.FC<Props> = (props) => {
   const { filterParams, setFilterParams, handleFilterReset } = props;
 
-  const handleInputChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
-  ) => {
-    const { id, value } = e.currentTarget;
+  const handleInputChange = (e: any) => {
+    const { id, value } = e.target;
     setFilterParams((prev) => ({
       ...prev,
       [id]: value,
@@ -49,11 +48,13 @@ const UserFilterSearch: React.FC<Props> = (props) => {
     >
       <GridItem>
         <FormControl>
-          <FormLabel>Name</FormLabel>
-          <Input
-            placeholder="Name"
+          <FormLabel htmlFor="name">Name</FormLabel>
+          <DebounceInput
+            element={Input}
             size="sm"
             id="name"
+            placeholder="Name"
+            debounceTimeout={800}
             value={filterParams.name}
             onChange={handleInputChange}
           />
@@ -61,11 +62,15 @@ const UserFilterSearch: React.FC<Props> = (props) => {
       </GridItem>
       <GridItem>
         <FormControl>
-          <FormLabel size="sm">Contact</FormLabel>
-          <Input
-            placeholder="Contact name"
+          <FormLabel size="sm" htmlFor="contact">
+            Contact
+          </FormLabel>
+          <DebounceInput
+            element={Input}
             size="sm"
             id="contact"
+            placeholder="Contact Name"
+            debounceTimeout={800}
             value={filterParams.contact}
             onChange={handleInputChange}
           />
@@ -73,7 +78,9 @@ const UserFilterSearch: React.FC<Props> = (props) => {
       </GridItem>
       <GridItem>
         <FormControl>
-          <FormLabel size="sm">Gender</FormLabel>
+          <FormLabel size="sm" htmlFor="gender">
+            Gender
+          </FormLabel>
           <Select
             placeholder="Gender"
             size="sm"
